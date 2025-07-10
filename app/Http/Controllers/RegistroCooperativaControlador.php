@@ -16,16 +16,17 @@ class RegistroCooperativaController extends Controller
 public function recibir(Request $request)
 {
     $data = $request->validate([
-        'NombreCompleto' => 'required|string',
+        'Nombre_Completo' => 'required|string',
         'Cedula' => 'required|string',
         'Celular' => 'required|string',                      
-        'fecha_nacimiento' => 'required|date',
+        'Fecha_Nacimiento' => 'required|date',
         'Correo' => 'required|string',
         'Nacionalidad' => 'required|string',
-        'EstadoCivil' => 'required|string',
+        'Estado_Civil' => 'required|string',
         'IngresosTotales' => 'required|int',                       
     ]);
-   
+   $data['Estado'] = 'pendiente';
+    
         return response()->json(['mensaje' => 'Solicitud recibida correctamente']);
     }
 }
