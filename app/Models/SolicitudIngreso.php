@@ -10,6 +10,7 @@ class SolicitudCooperativa extends Model
     use HasFactory;
 
     protected $fillable = [
+        'ID'
         'Nombre_Completo',
         'Cedula',
         'Celular',
