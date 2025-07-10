@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class RegistroCooperativaController extends Controller
+class ControladorRegistroCooperativa extends Controller
 {
     public function recibir(Request $request)
     {
