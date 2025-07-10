@@ -10,7 +10,7 @@ class SolicitudRegistro extends Model
     use HasFactory;
 
     protected $fillable = [
-        'ID'
+        'ID',
         'Nombre_Completo',
         'Cedula',
         'Celular',
