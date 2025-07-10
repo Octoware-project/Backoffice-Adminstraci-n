@@ -16,6 +16,7 @@ class RegistroCooperativaController extends Controller
 public function recibir(Request $request)
 {
     $data = $request->validate([
+        'ID' => 'required|string',                       
         'Nombre_Completo' => 'required|string',
         'Cedula' => 'required|string',
         'Celular' => 'required|string',                      
