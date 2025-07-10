@@ -1,7 +1,9 @@
 <?php
 
-  use App\Http\Controllers\RegistroCooperativaController;
+ use App\Http\Controllers\ControladorRegistroCooperativa;
 
-  Route::post('/registro-cooperativa', [RegistroCooperativaController::class, 'recibir']);
+Route::get('/backoffice', [ControladorRegistroCooperativa::class, 'index']);
+Route::post('/backoffice/{id}/aceptar', [ControladorRegistroCooperativa::class, 'aceptar']);
+Route::post('/backoffice/{id}/rechazar', [ControladorRegistroCooperativa::class, 'rechazar']);
 
 ?>
