@@ -1,24 +1,24 @@
 <?php
 
-use App\Models\SolicitudCooperativa;
+use App\Models\SolicitudRegistro;
 
 public function index()
 {
-    $solicitudes = SolicitudCooperativa::all();
+    $solicitudes = SolicitudRegistro::all();
     return view('backoffice.index', compact('solicitudes'));
 }
 
-public function aceptar($id)
+public function aceptar($ID)
 {
-    $solicitud = SolicitudCooperativa::findOrFail($id);
+    $solicitud = SolicitudRegistro::findOrFail($ID);
     $solicitud->estado = 'aceptado';
     $solicitud->save();
     return redirect('/backoffice');
 }
 
-public function rechazar($id)
+public function rechazar($ID)
 {
-    $solicitud = SolicitudCooperativa::findOrFail($id);
+    $solicitud = SolicitudRegistro::findOrFail($ID);
     $solicitud->estado = 'rechazado';
     $solicitud->save();
     return redirect('/backoffice');
