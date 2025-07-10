@@ -1,68 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Back Office - Solicitudes</title>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href=""></a></li>
-            <li><a href=""></a></li>
-            <li><a href=""></a></li>
-            <li><a href=""></a></li>
-        </ul>
-    </nav>
-
-    <main>
-        <div class="solicitudes">
-            <h2>Solicitudes</h2>
-            <ul>
-                <li><a href="Formularios.blade.php#1">Juan</a></li>
-                <li><a href="Formularios.blade.php#2">Fulano</a></li>
-                <li><a href="Formularios.blade.php#3">Pepe</a></li>
-                <li><a href="Formularios.blade.php#4">Lusmiglio</a></li>
-            </ul>
-        </div>
-
-        <div>
-            <h2>Avisos Legales</h2>
-            <div class="Mision">
-                <li><a href="AvisosLegales.blade.php#1"></a></li>
-                <li><a href="AvisosLegales.blade.php#2"></a></li>
-                <li><a href="AvisosLegales.blade.php#3"></a></li>
-            </div>
-        </div>
-    </main>
-
-    <aside>
-        <h2>Novedades</h2>
-        <div class="Residentes">
-            <ul>
-                <li><a href="Datosdelosresidentes.blade.php#1"></a></li>
-                <li><a href="Datosdelosresidente.blade.php#2"></a></li>
-                <li><a href="Datosdelosresidente.blade.php#3"></a></li>
-            </ul>
-        </div>
-
-        <h2>Avisos Legales</h2>
-        <div class="AvisosLegales">
-            <ul>
-                <li><a href="AvisosLegales.blade.php#1"></a></li>
-                <li><a href="AvisosLegales.blade.php#2"></a></li>
-                <li><a href="AvisosLegales.blade.php#3"></a></li>
-            </ul>
-        </div>
-
-        <h2>Configuración</h2>
-        <div class="Configuracion">
-            <ul>
-                <li><a href="configuracion.blade.php#1"></a></li>
-                <li><a href="configuracion.blade.php#2"></a></li>
-                <li><a href="configuracion.blade.php#3"></a></li>
-            </ul>
-        </div>
-    </aside>
+    <h1>Solicitudes de Registro</h1>
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Nombre Completo</th>
+            <th>Cédula</th>
+            <th>Celular</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Correo</th>
+            <th>Nacionalidad</th>
+            <th>Estado Civil</th>
+            <th>Ingresos Totales</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        @foreach($solicitudes as $solicitud)
+            <tr>
+                <td>{{ $solicitud->nombre_completo }}</td>
+                <td>{{ $solicitud->cedula }}</td>
+                <td>{{ $solicitud->celular }}</td>
+                <td>{{ $solicitud->fecha_nacimiento }}</td>
+                <td>{{ $solicitud->correo }}</td>
+                <td>{{ $solicitud->nacionalidad }}</td>
+                <td>{{ $solicitud->estado_civil }}</td>
+                <td>{{ $solicitud->ingresos_totales }}</td>
+                <td>{{ $solicitud->estado }}</td>
+                <td>
+                    @if($solicitud->estado === 'pendiente')
+                        <form action="/backoffice/{{ $solicitud->id }}/aceptar" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit">Aceptar</button>
+                        </form>
+                        <form action="/backoffice/{{ $solicitud->id }}/rechazar" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit">Rechazar</button>
+                        </form>
+                    @else
+                        {{ ucfirst($solicitud->estado) }}
+                    @endif
+                </td>
+            </tr>
+        @endforeach
+    </table>
 </body>
 </html>
