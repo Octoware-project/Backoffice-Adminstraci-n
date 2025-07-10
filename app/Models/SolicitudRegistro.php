@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SolicitudCooperativa extends Model
+class SolicitudRegistro extends Model
 {
     use HasFactory;
 
