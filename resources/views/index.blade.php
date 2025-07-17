@@ -1,50 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Back Office - Solicitudes</title>
+    <meta charset="UTF-8">
+    <title>Personas Pendientes</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 95%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 8px 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #ddd;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Solicitudes de Registro</h1>
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>Nombre Completo</th>
-            <th>Cédula</th>
-            <th>Celular</th>
-            <th>Fecha de Nacimiento</th>
-            <th>Correo</th>
-            <th>Nacionalidad</th>
-            <th>Estado Civil</th>
-            <th>Ingresos Totales</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-        @foreach($solicitudes as $solicitud)
+    <h1>Personas con Estado Pendiente</h1>
+
+    <table>
+        <thead>
             <tr>
-                <td>{{ $solicitud->nombre_completo }}</td>
-                <td>{{ $solicitud->cedula }}</td>
-                <td>{{ $solicitud->celular }}</td>
-                <td>{{ $solicitud->fecha_nacimiento }}</td>
-                <td>{{ $solicitud->correo }}</td>
-                <td>{{ $solicitud->nacionalidad }}</td>
-                <td>{{ $solicitud->estado_civil }}</td>
-                <td>{{ $solicitud->ingresos_totales }}</td>
-                <td>{{ $solicitud->estado }}</td>
-                <td>
-                    @if($solicitud->estado === 'pendiente')
-                        <form action="/backoffice/{{ $solicitud->id }}/aceptar" method="POST" style="display:inline;">
-                            @csrf
-                            <button type="submit">Aceptar</button>
-                        </form>
-                        <form action="/backoffice/{{ $solicitud->id }}/rechazar" method="POST" style="display:inline;">
-                            @csrf
-                            <button type="submit">Rechazar</button>
-                        </form>
-                    @else
-                        {{ ucfirst($solicitud->estado) }}
-                    @endif
-                </td>
+                <th>ID</th>
+                <th>Nombre Completo</th>
+                <th>Cédula</th>
+                <th>Celular</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Correo</th>
+                <th>Nacionalidad</th>
+                <th>Estado Civil</th>
+                <th>Ingresos Totales</th>
+                <th>Estado</th>
             </tr>
-        @endforeach
+        </thead>
+        <tbody>
+            @forelse ($personas as $persona)
+                <tr>
+                    <td>{{ $persona['ID'] }}</td>
+                    <td>{{ $persona['Nombre_Completo'] }}</td>
+                    <td>{{ $persona['Cedula'] }}</td>
+                    <td>{{ $persona['Celular'] }}</td>
+                    <td>{{ $persona['Fecha_nacimiento'] }}</td>
+                    <td>{{ $persona['Correo'] }}</td>
+                    <td>{{ $persona['Nacionalidad'] }}</td>
+                    <td>{{ $persona['Estado_civil'] }}</td>
+                    <td>{{ $persona['Ingresos_totales'] }}</td>
+                    <td>{{ $persona['Estado'] }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="10">No hay personas pendientes.</td>
+                </tr>
+            @endforelse
+        </tbody>
     </table>
 </body>
 </html>
