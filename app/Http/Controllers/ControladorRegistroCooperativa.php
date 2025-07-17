@@ -8,10 +8,8 @@ class ControladorRegistroCooperativa extends Controller
 {    
 public function recibir()
     {
-        $data = Persona::where('Estado_Registro', 'Pendiente')->get();                    
-        ]);
-
-        $PersonaArray = $data->toArray();
-    
+        $personas = Persona::where('Estado', 'pendiente')->get()->toArray();
+        
+    return view('persona', ['personas' => $personas]);
     }
 }
