@@ -5,6 +5,27 @@
     <title>Pagos Mensuales</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('TablaStyles.css') }}">
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+        .main-content {
+            margin-left: 220px;
+            max-width: calc(100vw - 220px);
+            width: 100%;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                max-width: 100vw;
+            }
+        }
+        table {
+            width: 100%;
+            table-layout: auto;
+            word-break: break-word;
+        }
+    </style>
 </head>
 <body>
     @include('componentes.navbar')
@@ -66,7 +87,6 @@
                     <th>Fecha</th>
                     <th>Comprobante</th>
                     <th>Estado</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -83,7 +103,6 @@
                             Sin comprobante
                         @endif
                     </td>
-                    <td>{{ ucfirst($pago->estado) }}</td>
                     <td>
                         @if($pago->estado == 'pendiente')
                             <form action="{{ route('pagos.aprobar', $pago->id) }}" method="POST" style="display:inline;">
@@ -95,7 +114,7 @@
                                 <button type="submit" class="btn btn-danger">Rechazar</button>
                             </form>
                         @else
-                            {{ ucfirst($pago->estado) }}
+                            <!-- No mostrar estado -->
                         @endif
                     </td>
                 </tr>
@@ -103,5 +122,7 @@
             </tbody>
         </table>
     </div>
+</body>
+</html>
 </body>
 </html>

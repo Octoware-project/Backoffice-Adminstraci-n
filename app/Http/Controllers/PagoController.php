@@ -79,6 +79,9 @@ class PagoController extends Controller
         if ($request->filled('año_correspondiente')) {
             $query->where('año_correspondiente', $request->año_correspondiente);
         }
+        if ($request->filled('mes_correspondiente')) {
+            $query->where('mes_correspondiente', $request->mes_correspondiente);
+        }
         $pagos = $query->get();
         return view('admin.pagos.por_persona', compact('pagos'));
     }

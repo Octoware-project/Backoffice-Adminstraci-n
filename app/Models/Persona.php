@@ -10,11 +10,16 @@ class Persona extends Model
     protected $table = 'personas';
 
     protected $fillable = [
-        'nombre',
+        'name',
         'apellido',
         "CI",
         "Telefono",
         "Direccion",
         "Estado_Registro",
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
