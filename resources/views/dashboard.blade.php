@@ -8,7 +8,7 @@
     @extends('layouts.app')
 
     @section('content')
-        @include('componentes.navbar')
+        
         <style>
             .main-content {
                 margin-left: 200px;

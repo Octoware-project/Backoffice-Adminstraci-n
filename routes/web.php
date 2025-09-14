@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -15,14 +16,6 @@ Route::get('/admin/usuarios/{id}/edit', [UsuarioController::class, 'edit'])->nam
 Route::put('/admin/usuarios/{id}', [UsuarioController::class, 'update'])->name('usuarios.update');
 
 
-// (Prueba) Residente sube su comprobante de pago
-Route::post('/pago', [PagoController::class, 'store']); 
-
-// Backoffice admin
-    Route::get('/pagos', [PagoController::class, 'index'])->name('pagos.index');
-    Route::post('/pagos/{id}/aprobar', [PagoController::class, 'aprobar'])->name('pagos.aprobar');
-    Route::post('/pagos/{id}/rechazar', [PagoController::class, 'rechazar'])->name('pagos.rechazar');
-    Route::get('/pagos/persona/{persona_id}', [PagoController::class, 'pagosPorPersona'])->name('pagos.por_persona');
 
 // Rutas de autenticación
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -31,10 +24,19 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', [AuthController::class, 'dashboard'])->middleware('auth')->name('dashboard');
 
+
 // Página Octoware
 Route::get('/octoware', function () {
     return view('octoware');
 })->name('octoware');
+
+// Vista de facturas (admin)
+use App\Http\Controllers\Admin\FacturaController;
+Route::get('/facturas', [FacturaController::class, 'index'])->name('admin.facturas.index');
+Route::put('/facturas/{id}/aceptar', [FacturaController::class, 'aceptar'])->name('admin.facturas.aceptar');
+Route::put('/facturas/{id}/rechazar', [FacturaController::class, 'rechazar'])->name('admin.facturas.rechazar');
+Route::put('/facturas/{id}/cancelar', [FacturaController::class, 'cancelar'])->name('admin.facturas.cancelar');
+Route::get('/facturas/usuario/{email}', [FacturaController::class, 'porUsuario'])->where('email', '.*')->name('admin.facturas.usuario');
 
 // Página Administradores
 Route::get('/administradores', [AdminController::class, 'index'])->name('admin.list');
@@ -47,3 +49,10 @@ Route::delete('/administradores/{id}', [AdminController::class, 'destroy'])->nam
 Route::resource('juntas_asamblea', JuntasAsambleaController::class);
 
 Route::get('/asamblea', [JuntasAsambleaController::class, 'vistaAsamblea'])->name('admin.asamblea.index');
+
+// CRUD Planes de Trabajo
+Route::get('/admin/horas/planes-trabajo', [\App\Http\Controllers\PlanTrabajoController::class, 'index'])->name('plan-trabajos.index');
+Route::get('/admin/horas/planes-trabajo/create', [\App\Http\Controllers\PlanTrabajoController::class, 'create'])->name('plan-trabajos.create');
+Route::post('/admin/horas/planes-trabajo', [\App\Http\Controllers\PlanTrabajoController::class, 'store'])->name('plan-trabajos.store');
+Route::get('/admin/horas/planes-trabajo/{id}', [\App\Http\Controllers\PlanTrabajoController::class, 'show'])->name('plan-trabajos.show');
+Route::delete('/admin/horas/planes-trabajo/{id}', [\App\Http\Controllers\PlanTrabajoController::class, 'destroy'])->name('plan-trabajos.destroy');

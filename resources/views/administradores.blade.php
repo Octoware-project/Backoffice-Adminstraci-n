@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('componentes.navbar')
+    
     <link rel="stylesheet" href="{{ asset('css/admin-custom.css') }}">
     <div class="main-content">
         <div class="admin-title">Administradores</div>

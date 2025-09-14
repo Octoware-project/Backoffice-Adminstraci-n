@@ -10,7 +10,7 @@
     @extends('layouts.app')
 
     @section('content')
-        @include('componentes.navbar')
+        
         <div class="main-content">
             <div class="asamblea-title">Juntas de Asamblea</div>
             <a href="{{ route('juntas_asamblea.create') }}" class="btn-nueva-junta">Crear nueva junta</a>

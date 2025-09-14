@@ -12,31 +12,21 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        $pendientes = Persona::where('estadoRegistro', 'Pendiente')->with('user')->get();
-        $aceptados  = Persona::where('estadoRegistro', 'Aceptado')->with('user')->get();
-        $rechazados = Persona::where('estadoRegistro', 'Rechazado')->with('user')->get();
+    $pendientes = Persona::where('estadoRegistro', 'Pendiente')->with('user')->get();
+    $aceptados  = Persona::where('estadoRegistro', 'Aceptado')->with('user')->get();
+    $rechazados = Persona::where('estadoRegistro', 'Rechazado')->with('user')->get();
+    $inactivos  = Persona::where('estadoRegistro', 'Inactivo')->with('user')->get();
 
-        return view('admin.usuarios.index', compact('pendientes', 'aceptados', 'rechazados'));
+    return view('admin.usuarios.index', compact('pendientes', 'aceptados', 'rechazados', 'inactivos'));
     }
 
     public function aceptar($id)
     {
         $usuario = Persona::findOrFail($id);
         if ($usuario->estadoRegistro === 'Pendiente') {
-            $usuario->estadoRegistro = 'Aceptado';
+            $usuario->estadoRegistro = 'Inactivo';
             $usuario->save();
-
-            // Generar contraseña aleatoria
-            $password = Str::random(10);
-
-            // Asignar contraseña al usuario relacionado
-            if ($usuario->user) {
-                $usuario->user->password = Hash::make($password);
-                $usuario->user->save();
-            }
-
-            // Mostrar la contraseña en la vista show
-            return redirect()->route('usuarios.show', ['id' => $usuario->id, 'password' => $password]);
+            return redirect()->route('usuarios.show', ['id' => $usuario->id]);
         }
         return redirect()->route('usuarios.index');
     }

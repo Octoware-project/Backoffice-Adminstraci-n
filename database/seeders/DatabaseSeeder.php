@@ -8,5 +8,11 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    
+    public function run()
+    {
+        $this->call([
+            UserAdminSeeder::class,
+            JuntasAsambleaSeeder::class,
+        ]);
+    }
 }

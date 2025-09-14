@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('componentes.navbar')
+    
     <style>
         body, .main-content {
             font-family: 'Segoe UI', Arial, sans-serif;

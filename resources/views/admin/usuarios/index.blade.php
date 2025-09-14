@@ -37,6 +37,7 @@
                 <option value="pendientes">Pendientes</option>
                 <option value="aceptados" selected>Aceptados</option>
                 <option value="rechazados">Rechazados</option>
+                <option value="inactivos">Inactivos</option>
             </select>
         </div>
 
@@ -105,6 +106,32 @@
             @endif
         </div>
 
+        <div id="tabla-inactivos" style="display:none;">
+            <h2>Usuarios Inactivos</h2>
+            @if($inactivos->isEmpty())
+                <div class="alert alert-info">No hay usuarios inactivos.</div>
+            @else
+                <table class="table tabla-pagos">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($inactivos as $usuario)
+                            <tr class="usuario-row" data-usuario-id="{{ $usuario->id }}">
+                                <td>{{ $usuario->name }}</td>
+                                <td>{{ $usuario->apellido }}</td>
+                                <td>{{ $usuario->user ? $usuario->user->email : '' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
+
         <div id="tabla-rechazados" style="display:none;">
             <h2>Usuarios Rechazados</h2>
             @if($rechazados->isEmpty())
@@ -144,7 +171,8 @@
             const tablas = {
                 pendientes: document.getElementById('tabla-pendientes'),
                 aceptados: document.getElementById('tabla-aceptados'),
-                rechazados: document.getElementById('tabla-rechazados')
+                rechazados: document.getElementById('tabla-rechazados'),
+                inactivos: document.getElementById('tabla-inactivos')
             };
             function mostrarTabla() {
                 Object.values(tablas).forEach(tabla => tabla.style.display = 'none');

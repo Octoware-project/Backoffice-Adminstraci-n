@@ -97,7 +97,8 @@
         <ul>
             <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
             <li><a href="/usuarios">Usuarios</a></li>
-            <li><a href="/pagos">Pagos</a></li>
+            <li><a href="/facturas">Pagos</a></li>
+            <li><a href="{{ route('plan-trabajos.index') }}">Planes de Trabajo</a></li>
             <li><a href="{{ route('admin.asamblea.index') }}">Asamblea</a></li>
         </ul>
     </div>
