@@ -10,12 +10,12 @@ class JuntasAsambleaController extends Controller
     public function index()
     {
         $juntas = \App\Models\JuntasAsamblea::all();
-        return view('admin.asamblea.Asamblea', compact('juntas'));
+    return view('admin.asamblea.Asamblea', compact('juntas'));
     }
 
     public function create()
     {
-        return view('admin.asamblea.create');
+    return view('admin.asamblea.create');
     }
 
     public function store(Request $request)
@@ -32,12 +32,13 @@ class JuntasAsambleaController extends Controller
     public function edit($id)
     {
         $junta = JuntasAsamblea::findOrFail($id);
-        return view('juntas_asamblea.edit', compact('junta'));
+    return view('admin.asamblea.edit', compact('junta'));
     }
+
 
     public function update(Request $request, $id)
     {
-        $junta = JuntasAsamblea::findOrFail($id);OrFail($id);
+        $junta = JuntasAsamblea::findOrFail($id);
         $request->validate([
             'lugar' => 'required|string|max:255',
             'fecha' => 'required|date',
@@ -47,9 +48,10 @@ class JuntasAsambleaController extends Controller
         return redirect()->route('juntas_asamblea.index')->with('success', 'Junta actualizada correctamente.');
     }
 
+
     public function destroy($id)
     {
-        $junta = JuntasAsamblea::findOrFail($id);OrFail($id);
+        $junta = JuntasAsamblea::findOrFail($id);
         $junta->delete();
         return redirect()->route('juntas_asamblea.index')->with('success', 'Junta eliminada correctamente.');
     }
@@ -63,6 +65,6 @@ class JuntasAsambleaController extends Controller
     public function show($id)
     {
         $junta = \App\Models\JuntasAsamblea::findOrFail($id);
-        return view('admin.asamblea.show', compact('junta'));
+    return view('admin.asamblea.show', compact('junta'));
     }
 }

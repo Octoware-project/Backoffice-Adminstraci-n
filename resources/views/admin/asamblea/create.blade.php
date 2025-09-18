@@ -3,9 +3,10 @@
 @section('content')
     @include('componentes.navbar')
     <link rel="stylesheet" href="{{ asset('css/admin-custom.css') }}">
-    <div class="main-content">
+    <link rel="stylesheet" href="{{ asset('css/asamblea-custom.css') }}">
+    <div class="formulario-asamblea-container">
         <div class="asamblea-title">Crear Nueva Junta</div>
-        <form method="POST" action="{{ route('juntas_asamblea.store') }}" class="asamblea-form">
+        <form method="POST" action="{{ route('admin.asamblea.store') }}" class="asamblea-form">
             @csrf
             <label for="lugar">Lugar</label>
             <input type="text" name="lugar" id="lugar" class="form-control" required>

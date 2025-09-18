@@ -45,7 +45,7 @@
         <div class="row mb-2">
             <div class="col-md-6">
                 <div class="detalle-label">Usuario</div>
-                    <div class="detalle-valor">{{ min($porcentaje, 100) }}%</div>
+                <div class="detalle-valor">{{ $plan->user->name ?? '' }} {{ $plan->user->apellido ?? '' }}</div>
                 <div class="text-muted" style="font-size:0.98rem;">{{ $plan->user->email ?? '' }}</div>
             </div>
             <div class="col-md-3">

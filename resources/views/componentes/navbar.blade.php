@@ -7,7 +7,7 @@
         height: 100%;
         background: #2c3e50;
         color: #fff;
-        padding-top: 30px;
+        padding-top: 10px;
         box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         z-index: 1000;
         display: flex;
@@ -28,7 +28,7 @@
     .sidebar ul li a {
         color: #fff;
         text-decoration: none;
-        padding: 10px 20px;
+        padding: 8px 14px;
         display: block;
         transition: background 0.2s;
     }

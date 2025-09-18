@@ -45,9 +45,21 @@ Route::get('/administradores/{id}/edit', [AdminController::class, 'edit'])->name
 Route::put('/administradores/{id}', [AdminController::class, 'update'])->name('admin.update');
 Route::delete('/administradores/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
 
-// Rutas para el CRUD de juntas
-Route::resource('juntas_asamblea', JuntasAsambleaController::class);
 
+// Rutas para el CRUD de juntas con nombres personalizados
+Route::resource('juntas_asamblea', JuntasAsambleaController::class, [
+    'names' => [
+        'index' => 'juntas_asamblea.index',
+        'create' => 'admin.asamblea.create',
+        'store' => 'admin.asamblea.store',
+        'show' => 'admin.asamblea.show',
+        'edit' => 'juntas_asamblea.edit',
+        'update' => 'juntas_asamblea.update',
+        'destroy' => 'juntas_asamblea.destroy',
+    ]
+]);
+
+// Alias para vista de asamblea (index)
 Route::get('/asamblea', [JuntasAsambleaController::class, 'vistaAsamblea'])->name('admin.asamblea.index');
 
 // CRUD Planes de Trabajo

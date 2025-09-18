@@ -1,52 +1,38 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Juntas de Asamblea</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ asset('css/admin-custom.css') }}">
-</head>
-<body>
-    @extends('layouts.app')
+@extends('layouts.app')
 
-    @section('content')
-        
-        <div class="main-content">
-            <div class="asamblea-title">Juntas de Asamblea</div>
-            <a href="{{ route('juntas_asamblea.create') }}" class="btn-nueva-junta">Crear nueva junta</a>
-            <table class="table asamblea-table">
-                <thead>
-                    <tr>
-                        <th>Lugar</th>
-                        <th>Fecha</th>
-                        <th>Detalle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($juntas as $junta)
-                        <tr class="junta-row" data-junta-id="{{ $junta->id }}">
-                            <td>{{ $junta->lugar }}</td>
-                            <td>{{ $junta->fecha }}</td>
-                            <td>{{ $junta->detalle }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3">No hay juntas registradas.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    document.querySelectorAll('.junta-row').forEach(function(row) {
-                        row.addEventListener('dblclick', function() {
-                            var juntaId = this.getAttribute('data-junta-id');
-                            window.location.href = "{{ url('/juntas_asamblea') }}/" + juntaId;
-                        });
-                    });
-                });
-            </script>
+@section('content')
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Juntas de Asamblea</h2>
+            <a href="{{ route('admin.asamblea.create') }}" class="btn btn-success shadow-sm">
+                <i class="fa fa-plus me-2"></i> Nueva Junta
+            </a>
         </div>
-    @endsection
-</body>
-</html>
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Lugar</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($juntas as $junta)
+                            <tr style="cursor:pointer" onclick="window.location='{{ route('admin.asamblea.show', [$junta->id]) }}';">
+                                <td>{{ $junta->lugar }}</td>
+                                <td>{{ $junta->fecha }}</td>
+                                <td>{{ $junta->detalle }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">No hay juntas registradas.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+@endsection
