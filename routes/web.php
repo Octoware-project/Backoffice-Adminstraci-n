@@ -7,20 +7,16 @@ use App\Http\Controllers\PagoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\JuntasAsambleaController;
+use App\Http\Controllers\Admin\FacturaController;
 
+
+Route::middleware('auth')->group(function () {
 Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
 Route::put('/usuarios/{id}/aceptar', [UsuarioController::class, 'aceptar'])->name('usuarios.aceptar');
 Route::put('/usuarios/{id}/rechazar', [UsuarioController::class, 'rechazar'])->name('usuarios.rechazar');
 Route::get('/admin/usuarios/{id}', [UsuarioController::class, 'show'])->name('usuarios.show');
 Route::get('/admin/usuarios/{id}/edit', [UsuarioController::class, 'edit'])->name('usuarios.edit');
 Route::put('/admin/usuarios/{id}', [UsuarioController::class, 'update'])->name('usuarios.update');
-
-
-
-// Rutas de autenticación
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', [AuthController::class, 'dashboard'])->middleware('auth')->name('dashboard');
 
@@ -31,7 +27,6 @@ Route::get('/octoware', function () {
 })->name('octoware');
 
 // Vista de facturas (admin)
-use App\Http\Controllers\Admin\FacturaController;
 Route::get('/facturas', [FacturaController::class, 'index'])->name('admin.facturas.index');
 Route::put('/facturas/{id}/aceptar', [FacturaController::class, 'aceptar'])->name('admin.facturas.aceptar');
 Route::put('/facturas/{id}/rechazar', [FacturaController::class, 'rechazar'])->name('admin.facturas.rechazar');
@@ -46,18 +41,15 @@ Route::put('/administradores/{id}', [AdminController::class, 'update'])->name('a
 Route::delete('/administradores/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
 
 
-// Rutas para el CRUD de juntas con nombres personalizados
-Route::resource('juntas_asamblea', JuntasAsambleaController::class, [
-    'names' => [
-        'index' => 'juntas_asamblea.index',
-        'create' => 'admin.asamblea.create',
-        'store' => 'admin.asamblea.store',
-        'show' => 'admin.asamblea.show',
-        'edit' => 'juntas_asamblea.edit',
-        'update' => 'juntas_asamblea.update',
-        'destroy' => 'juntas_asamblea.destroy',
-    ]
-]);
+
+// Rutas para el CRUD de juntas de asamblea (coherentes con el resto)
+Route::get('/admin/juntas_asamblea', [JuntasAsambleaController::class, 'index'])->name('admin.juntas_asamblea.index');
+Route::get('/admin/juntas_asamblea/create', [JuntasAsambleaController::class, 'create'])->name('admin.juntas_asamblea.create');
+Route::post('/admin/juntas_asamblea', [JuntasAsambleaController::class, 'store'])->name('admin.juntas_asamblea.store');
+Route::get('/admin/juntas_asamblea/{id}', [JuntasAsambleaController::class, 'show'])->name('admin.juntas_asamblea.show');
+Route::get('/admin/juntas_asamblea/{id}/edit', [JuntasAsambleaController::class, 'edit'])->name('admin.juntas_asamblea.edit');
+Route::put('/admin/juntas_asamblea/{id}', [JuntasAsambleaController::class, 'update'])->name('admin.juntas_asamblea.update');
+Route::delete('/admin/juntas_asamblea/{id}', [JuntasAsambleaController::class, 'destroy'])->name('admin.juntas_asamblea.destroy');
 
 // Alias para vista de asamblea (index)
 Route::get('/asamblea', [JuntasAsambleaController::class, 'vistaAsamblea'])->name('admin.asamblea.index');
@@ -68,3 +60,20 @@ Route::get('/admin/horas/planes-trabajo/create', [\App\Http\Controllers\PlanTrab
 Route::post('/admin/horas/planes-trabajo', [\App\Http\Controllers\PlanTrabajoController::class, 'store'])->name('plan-trabajos.store');
 Route::get('/admin/horas/planes-trabajo/{id}', [\App\Http\Controllers\PlanTrabajoController::class, 'show'])->name('plan-trabajos.show');
 Route::delete('/admin/horas/planes-trabajo/{id}', [\App\Http\Controllers\PlanTrabajoController::class, 'destroy'])->name('plan-trabajos.destroy');
+
+}); // Cierre del grupo de middleware 'auth'
+
+
+// Ruta raíz: redirige según autenticación
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    } else {
+        return redirect()->route('login');
+    }
+});
+
+// Rutas de autenticación
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

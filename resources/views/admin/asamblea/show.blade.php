@@ -11,6 +11,6 @@
             <tr><th>Fecha</th><td>{{ $junta->fecha }}</td></tr>
             <tr><th>Detalle</th><td>{{ $junta->detalle }}</td></tr>
         </table>
-        <a href="{{ route('admin.asamblea.index') }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ route('admin.juntas_asamblea.index') }}" class="btn btn-secondary">Volver</a>
     </div>
 @endsection

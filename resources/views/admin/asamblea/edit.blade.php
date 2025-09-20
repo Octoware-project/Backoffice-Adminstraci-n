@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{ asset('css/asamblea-custom.css') }}">
 @section('content')
     <h1>Editar Junta de Asamblea</h1>
-    <form method="POST" action="{{ route('juntas_asamblea.update', $junta->id) }}">
+    <form method="POST" action="{{ route('admin.juntas_asamblea.update', $junta->id) }}">
         @csrf
         @method('PUT')
         <label for="lugar">Lugar</label>
