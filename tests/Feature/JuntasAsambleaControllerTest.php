@@ -5,14 +5,28 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\JuntasAsamblea;
+use App\Models\UserAdmin;
 
 class JuntasAsambleaControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_muestra_lista_de_juntas()
+    protected function setUp(): void
     {
-        $junta = JuntasAsamblea::factory()->create();
+        parent::setUp();
+        // Ejecutar los seeders para tener datos reales
+        $this->seed();
+        
+        // Autenticar con usuario admin para los tests
+        $admin = UserAdmin::where('email', 'admin@example.com')->first();
+        $this->be($admin);
+    }
+
+    public function test_MuestraListaDeJuntas()
+    {
+        // Usar una junta real del seeder
+        $junta = JuntasAsamblea::where('lugar', 'Salón Principal')->first();
+        
         $response = $this->get(route('admin.asamblea.index'));
         $response->assertStatus(200);
         $response->assertViewIs('admin.asamblea.Asamblea');
@@ -20,67 +34,85 @@ class JuntasAsambleaControllerTest extends TestCase
         $response->assertSee($junta->lugar);
     }
 
-    public function test_muestra_formulario_creacion()
+    public function test_MuestraFormularioCreacion()
     {
-        $response = $this->get(route('admin.asamblea.create'));
+        $response = $this->get(route('admin.juntas_asamblea.create'));
         $response->assertStatus(200);
         $response->assertViewIs('admin.asamblea.create');
     }
 
-    public function test_crea_junta_correctamente()
+    public function test_CreaJuntaCorrectamente()
     {
+        // Datos realistas para crear una nueva junta
         $data = [
-            'lugar' => 'Salón Principal',
-            'fecha' => '2025-09-14',
-            'detalle' => 'Asamblea anual',
+            'lugar' => 'Auditorio Municipal',
+            'fecha' => '2025-12-20',
+            'detalle' => 'Asamblea de fin de año para balance anual',
         ];
-        $response = $this->post(route('admin.asamblea.store'), $data);
+        
+        $response = $this->post(route('admin.juntas_asamblea.store'), $data);
         $response->assertRedirect(route('admin.asamblea.index'));
         $this->assertDatabaseHas('juntas_asambleas', [
-            'lugar' => 'Salón Principal',
-            'fecha' => '2025-09-14',
+            'lugar' => 'Auditorio Municipal',
+            'fecha' => '2025-12-20',
+            'detalle' => 'Asamblea de fin de año para balance anual',
         ]);
     }
 
-    public function test_muestra_formulario_edicion()
+    public function test_MuestraFormularioEdicion()
     {
-        $junta = JuntasAsamblea::factory()->create();
-        $response = $this->get(route('juntas_asamblea.edit', $junta->id));
+        // Usar una junta real del seeder
+        $junta = JuntasAsamblea::where('lugar', 'Sala de Reuniones')->first();
+        
+        $response = $this->get(route('admin.juntas_asamblea.edit', $junta->id));
         $response->assertStatus(200);
-    $response->assertViewIs('admin.asamblea.edit');
+        $response->assertViewIs('admin.asamblea.edit');
         $response->assertViewHas('junta');
     }
 
-    public function test_actualiza_junta()
+    public function test_ActualizaJunta()
     {
-        $junta = JuntasAsamblea::factory()->create();
+        // Usar una junta real del seeder
+        $junta = JuntasAsamblea::where('lugar', 'Patio Central')->first();
+        
         $data = [
-            'lugar' => 'Salón Secundario',
-            'fecha' => '2025-10-01',
-            'detalle' => 'Cambio de lugar',
+            'lugar' => 'Patio Central - Actualizado',
+            'fecha' => '2025-11-20',
+            'detalle' => 'Reunión informativa actualizada con nuevos temas',
         ];
-        $response = $this->put(route('juntas_asamblea.update', $junta->id), $data);
-        $response->assertRedirect(route('juntas_asamblea.index'));
+        
+        $response = $this->put(route('admin.juntas_asamblea.update', $junta->id), $data);
+        $response->assertRedirect(route('admin.asamblea.index'));
         $this->assertDatabaseHas('juntas_asambleas', [
             'id' => $junta->id,
-            'lugar' => 'Salón Secundario',
+            'lugar' => 'Patio Central - Actualizado',
+            'fecha' => '2025-11-20',
         ]);
     }
 
-    public function test_elimina_junta()
+    public function test_EliminaJunta()
     {
-        $junta = JuntasAsamblea::factory()->create();
-        $response = $this->delete(route('juntas_asamblea.destroy', $junta->id));
-        $response->assertRedirect(route('juntas_asamblea.index'));
+        // Crear una junta específica para eliminar (para no afectar otras pruebas)
+        $junta = JuntasAsamblea::create([
+            'lugar' => 'Sala Temporal',
+            'fecha' => '2025-12-31',
+            'detalle' => 'Junta temporal para test de eliminación',
+        ]);
+        
+        $response = $this->delete(route('admin.juntas_asamblea.destroy', $junta->id));
+        $response->assertRedirect(route('admin.asamblea.index'));
         $this->assertDatabaseMissing('juntas_asambleas', [
             'id' => $junta->id,
+            'deleted_at' => null, // Verificar que fue soft deleted
         ]);
     }
 
-    public function test_muestra_detalle_junta()
+    public function test_MuestraDetalleJunta()
     {
-        $junta = JuntasAsamblea::factory()->create();
-        $response = $this->get(route('admin.asamblea.show', $junta->id));
+        // Usar una junta real del seeder
+        $junta = JuntasAsamblea::where('lugar', 'Salón Principal')->first();
+        
+        $response = $this->get(route('admin.juntas_asamblea.show', $junta->id));
         $response->assertStatus(200);
         $response->assertViewIs('admin.asamblea.show');
         $response->assertViewHas('junta');

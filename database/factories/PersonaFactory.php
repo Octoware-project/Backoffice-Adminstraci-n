@@ -41,4 +41,18 @@ class PersonaFactory extends Factory
             'estadoRegistro' => 'Aceptado',
         ]);
     }
+
+    public function rechazado()
+    {
+        return $this->state([
+            'estadoRegistro' => 'Rechazado',
+        ]);
+    }
+
+    public function inactivo()
+    {
+        return $this->state([
+            'estadoRegistro' => 'Inactivo',
+        ]);
+    }
 }

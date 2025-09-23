@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Factura;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\HasFactory;
 
 class FacturaFactory extends Factory
 {

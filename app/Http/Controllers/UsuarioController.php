@@ -59,12 +59,12 @@ class UsuarioController extends Controller
         $usuario = Persona::findOrFail($id);
 
         // Ajusta según los nombres reales de las columnas en la tabla personas
-        $usuario->name = $request->nombre; // Si la columna es 'name'
+        $usuario->name = $request->nombre; // El campo en la BD es 'name' pero el request viene como 'nombre'
         $usuario->apellido = $request->apellido;
         $usuario->CI = $request->CI;
-        $usuario->Telefono = $request->Telefono;
-        $usuario->Direccion = $request->Direccion;
-        $usuario->Estado_Registro = $request->Estado_Registro;
+        $usuario->telefono = $request->telefono;
+        $usuario->direccion = $request->direccion;
+        $usuario->estadoRegistro = $request->estadoRegistro;
         $usuario->save();
 
         if ($usuario->user) {

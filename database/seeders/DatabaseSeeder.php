@@ -21,19 +21,9 @@ class DatabaseSeeder extends Seeder
             JuntasAsambleaSeeder::class,
             Facturas_y_Pagos::class,
             PersonaEstadoSeeder::class,
+            PlanTrabajoSeeder::class,
             HorasMensualesSeeder::class
         ]);
-        
 
-        Client::create([
-            'id' => 1,
-            'name' => 'Tests',
-            'secret' => "wsBa0mp4jwSTYssUGHX5xoqD9IC0X95Gfpg0w3uY",
-            'redirect' => 'http://localhost',
-            'provider' => 'users',
-            'personal_access_client' => false,
-            'password_client' => true,
-            'revoked' => false
-        ]);
     }
 }

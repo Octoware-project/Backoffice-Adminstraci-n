@@ -11,28 +11,36 @@ class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_muestra_formulario_login()
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // Ejecutar el seeder para tener usuarios reales
+        $this->seed();
+    }
+
+    public function test_MuestraFormularioLogin()
     {
         $response = $this->get('/login');
         $response->assertStatus(200);
         $response->assertViewIs('login');
     }
 
-    public function test_login_exitoso_redirige_a_dashboard()
+    public function test_LoginExitosoRedirigeADashboard()
     {
-        $admin = UserAdmin::factory()->create([
-            'email' => 'admin@correo.com',
-            'password' => bcrypt('password123'),
-        ]);
+        // Usar el usuario admin creado por el seeder
         $response = $this->post('/login', [
-            'email' => 'admin@correo.com',
-            'password' => 'password123',
+            'email' => 'admin@example.com',
+            'password' => '123456',
         ]);
+        
         $response->assertRedirect('dashboard');
+        
+        // Verificar que el usuario está autenticado
+        $admin = UserAdmin::where('email', 'admin@example.com')->first();
         $this->assertAuthenticatedAs($admin);
     }
 
-    public function test_login_fallido_muestra_error()
+    public function test_LoginFallidoMuestraError()
     {
         $response = $this->post('/login', [
             'email' => 'noexiste@correo.com',
@@ -42,22 +50,23 @@ class AuthControllerTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_logout_cierra_sesion_y_redirige()
+    public function test_LogoutCierraSesionYRedirige()
     {
-        $admin = UserAdmin::factory()->create([
-            'email' => 'admin@correo.com',
-            'password' => bcrypt('password123'),
-        ]);
+        // Usar el usuario admin real del seeder
+        $admin = UserAdmin::where('email', 'admin@example.com')->first();
         $this->be($admin);
+        
         $response = $this->post('/logout');
         $response->assertRedirect('/login');
         $this->assertGuest();
     }
 
-    public function test_dashboard_muestra_vista_dashboard()
+    public function test_DashboardMuestraVistaDashboard()
     {
-        $admin = UserAdmin::factory()->create();
+        // Usar el usuario admin real del seeder
+        $admin = UserAdmin::where('email', 'admin@example.com')->first();
         $this->be($admin);
+        
         $response = $this->get('/dashboard');
         $response->assertStatus(200);
         $response->assertViewIs('dashboard');

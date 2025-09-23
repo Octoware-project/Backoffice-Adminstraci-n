@@ -14,6 +14,7 @@ class CreateJuntasAsambleasTable extends Migration
             $table->date('fecha');
             $table->text('detalle')->nullable();
             $table->timestamps();
+            $table->softDeletes(); // Agregar soporte para soft deletes
         });
     }
 

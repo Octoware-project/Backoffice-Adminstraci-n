@@ -5,10 +5,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Persona extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'personas';
 
@@ -16,9 +17,9 @@ class Persona extends Model
         'name',
         'apellido',
         "CI",
-        "Telefono",
-        "Direccion",
-        "Estado_Registro",
+        "telefono", // Usar nombre correcto de la migración
+        "direccion", // Usar nombre correcto de la migración
+        "estadoRegistro", // Usar nombre correcto de la migración
     ];
 
     public function user()

@@ -45,7 +45,7 @@ class JuntasAsambleaController extends Controller
             'detalle' => 'nullable|string',
         ]);
         $junta->update($request->all());
-        return redirect()->route('juntas_asamblea.index')->with('success', 'Junta actualizada correctamente.');
+        return redirect()->route('admin.asamblea.index')->with('success', 'Junta actualizada correctamente.');
     }
 
 
@@ -53,7 +53,7 @@ class JuntasAsambleaController extends Controller
     {
         $junta = JuntasAsamblea::findOrFail($id);
         $junta->delete();
-        return redirect()->route('juntas_asamblea.index')->with('success', 'Junta eliminada correctamente.');
+        return redirect()->route('admin.asamblea.index')->with('success', 'Junta eliminada correctamente.');
     }
 
     public function vistaAsamblea()
