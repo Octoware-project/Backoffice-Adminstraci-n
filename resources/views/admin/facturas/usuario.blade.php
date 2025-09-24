@@ -73,6 +73,125 @@
             font-size: 1.2rem;
         }
     }
+    .btn {
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+    .btn-warning {
+        background-color: #ffc107;
+        color: #212529;
+    }
+    .btn-warning:hover {
+        background-color: #e0a800;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+    .btn-sm {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+    }
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+    .action-buttons form {
+        display: inline-block;
+        margin: 0;
+    }
+    @media (max-width: 480px) {
+        .action-buttons {
+            gap: 3px;
+        }
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+    }
+    .estado-pagos-container {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid #6c757d;
+    }
+    .estado-pagos-container.success {
+        border-left-color: #28a745;
+        background: #f8fff8;
+    }
+    .estado-pagos-container.warning {
+        border-left-color: #ffc107;
+        background: #fffef8;
+    }
+    .estado-pagos-container.danger {
+        border-left-color: #dc3545;
+        background: #fff8f8;
+    }
+    .estado-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    .estado-badge.success {
+        background: #d4edda;
+        color: #155724;
+    }
+    .estado-badge.warning {
+        background: #fff3cd;
+        color: #856404;
+    }
+    .estado-badge.danger {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    .estado-detalle {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+    @media (max-width: 768px) {
+        .estado-pagos-container {
+            padding: 1rem;
+        }
+        .estado-pagos-container > div {
+            flex-direction: column;
+            text-align: center;
+            gap: 0.5rem !important;
+        }
+        .estado-badge {
+            font-size: 0.9rem;
+        }
+    }
 </style>
 <div class="factura-table-container">
     @php \Carbon\Carbon::setLocale('es'); @endphp
@@ -83,6 +202,26 @@
         @endphp
         Facturas de {{ $nombreCompleto ? $nombreCompleto : 'Usuario desconocido' }}
     </h1>
+    
+    <!-- Estado de Pagos -->
+    <div class="estado-pagos-container {{ $estadoPagos['color'] }}">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div>
+                <span class="estado-badge {{ $estadoPagos['color'] }}">
+                    {{ $estadoPagos['estado'] }}
+                </span>
+                <p class="estado-detalle">{{ $estadoPagos['detalle'] }}</p>
+            </div>
+            @if($estadoPagos['color'] == 'success')
+                <div style="color: #28a745; font-size: 2rem;">✓</div>
+            @elseif($estadoPagos['color'] == 'warning')
+                <div style="color: #ffc107; font-size: 2rem;">⚠</div>
+            @else
+                <div style="color: #dc3545; font-size: 2rem;">⚠</div>
+            @endif
+        </div>
+    </div>
+    
     <table class="factura-table">
         <thead>
             <tr>
@@ -92,6 +231,7 @@
                 <th>Mes</th>
                 <th>Fecha de pago</th>
                 <th>Comprobante</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -119,7 +259,7 @@
                     <td>{{ $factura->created_at ? $factura->created_at->format('d/m/Y') : '-' }}</td>
                     <td style="text-align:center;">
                         @if($factura->Archivo_Comprobante)
-                            <a href="{{ asset('storage/' . ltrim($factura->Archivo_Comprobante, '/')) }}" target="_blank" title="Ver comprobante">
+                            <a href="http://localhost:8001/comprobantes/{{ $factura->id }}" target="_blank" title="Ver comprobante">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16" style="color:#007bff;vertical-align:middle;">
                                     <path d="M4.5 9.5A.5.5 0 0 1 5 9h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 7h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
                                     <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3-.5a.5.5 0 0 1-.5-.5V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5h-2a1 1 0 0 1-1-1V4z"/>
@@ -127,6 +267,33 @@
                             </a>
                         @else
                             <span style="color:#bbb;">-</span>
+                        @endif
+                    </td>
+                    <td style="text-align:center;">
+                        @if($factura->Estado_Pago === 'Pendiente')
+                            <div class="action-buttons">
+                                <form action="{{ route('admin.facturas.aceptar', $factura->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="from_user" value="1">
+                                    <button type="submit" class="btn btn-success btn-sm" title="Aceptar factura">Aceptar</button>
+                                </form>
+                                <form action="{{ route('admin.facturas.rechazar', $factura->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="from_user" value="1">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Rechazar factura">Rechazar</button>
+                                </form>
+                            </div>
+                        @elseif($factura->Estado_Pago === 'Aceptado' || $factura->Estado_Pago === 'Rechazado')
+                            <form action="{{ route('admin.facturas.cancelar', $factura->id) }}" method="POST" style="display:inline-block;">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="from_user" value="1">
+                                <button type="submit" class="btn btn-warning btn-sm" title="Restablecer a pendiente">Restablecer</button>
+                            </form>
+                        @else
+                            <span style="color:#888;font-size:0.9em;">Sin acciones</span>
                         @endif
                     </td>
                 </tr>

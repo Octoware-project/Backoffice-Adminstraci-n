@@ -73,6 +73,42 @@
             font-size: 1.2rem;
         }
     }
+    .btn {
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+    .btn-warning {
+        background-color: #ffc107;
+        color: #212529;
+    }
+    .btn-warning:hover {
+        background-color: #e0a800;
+    }
+    .btn-sm {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+    }
 </style>
 <div class="factura-table-container">
     @php \Carbon\Carbon::setLocale('es'); @endphp
@@ -182,7 +218,7 @@
                             <form action="{{ route('admin.facturas.cancelar', $factura->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('PUT')
-                                <button type="submit" class="btn btn-warning btn-sm">Cancelar</button>
+                                <button type="submit" class="btn btn-warning btn-sm">Restablecer</button>
                             </form>
                         @endif
                     </td>
@@ -190,20 +226,14 @@
             @endforeach
 </div>
 <script>
-    // Cambia esta URL base si tu API Cooperativa está en otro host o puerto
-    const API_COOPERATIVA_BASE = 'http://localhost:8000/api';
+    // URL base correcta de la API Cooperativa
+    const API_COOPERATIVA_BASE = 'http://localhost:8001/api';
+    const API_COOPERATIVA_WEB = 'http://localhost:8001';
 
     function abrirComprobanteApi(facturaId) {
-        fetch(`${API_COOPERATIVA_BASE}/facturas/${facturaId}/url-comprobante`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.url) {
-                    window.open(data.url, '_blank');
-                } else {
-                    alert('No se encontró el comprobante.');
-                }
-            })
-            .catch(() => alert('Error al consultar la API de comprobantes.'));
+        // Usar la ruta web directa para mejor compatibilidad
+        const url = `${API_COOPERATIVA_WEB}/comprobantes/${facturaId}`;
+        window.open(url, '_blank');
     }
     document.querySelectorAll('.factura-row').forEach(function(row) {
         let clickCount = 0;
