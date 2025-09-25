@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\JuntasAsambleaController;
 use App\Http\Controllers\Admin\FacturaController;
+use App\Http\Controllers\ConfiguracionHorasController;
 
 
 Route::middleware('auth')->group(function () {
@@ -60,6 +61,12 @@ Route::get('/admin/horas/planes-trabajo/create', [\App\Http\Controllers\PlanTrab
 Route::post('/admin/horas/planes-trabajo', [\App\Http\Controllers\PlanTrabajoController::class, 'store'])->name('plan-trabajos.store');
 Route::get('/admin/horas/planes-trabajo/{id}', [\App\Http\Controllers\PlanTrabajoController::class, 'show'])->name('plan-trabajos.show');
 Route::delete('/admin/horas/planes-trabajo/{id}', [\App\Http\Controllers\PlanTrabajoController::class, 'destroy'])->name('plan-trabajos.destroy');
+
+// Rutas de configuración de horas
+Route::get('/admin/horas/configuracion', [ConfiguracionHorasController::class, 'index'])->name('configuracion-horas.index');
+Route::put('/admin/horas/configuracion', [ConfiguracionHorasController::class, 'update'])->name('configuracion-horas.update');
+Route::post('/admin/horas/configuracion/recalcular', [ConfiguracionHorasController::class, 'recalcularRegistros'])->name('configuracion-horas.recalcular');
+Route::get('/admin/horas/configuracion/historial', [ConfiguracionHorasController::class, 'historial'])->name('configuracion-horas.historial');
 
 }); // Cierre del grupo de middleware 'auth'
 

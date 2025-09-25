@@ -1,0 +1,352 @@
+/* ===================================
+   CONFIGURACIÓN HORAS - STYLES
+   =================================== */
+
+/* Grid de configuración */
+.config-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Valor actual */
+.valor-actual {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    text-align: center;
+    margin: 1rem 0;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Formularios modernos */
+.form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.form-control {
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.875rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    background: var(--bg-secondary);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    background: var(--bg-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
+}
+
+.input-group-text {
+    background: var(--primary-color);
+    color: white;
+    border: 2px solid var(--primary-color);
+    font-weight: 600;
+}
+
+/* Botones modernos */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    border: none;
+    padding: 0.875rem 2rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Alertas modernas */
+.alert {
+    border: none;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    font-weight: 500;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border-left: 4px solid var(--success-color);
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    color: #991b1b;
+    border-left: 4px solid var(--danger-color);
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
+    border-left: 4px solid var(--primary-color);
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    border-left: 4px solid #f59e0b;
+}
+
+/* Observaciones Reimaginadas */
+.observaciones-container {
+    margin-bottom: 1rem;
+}
+
+.observaciones-label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.observaciones-wrapper {
+    position: relative;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border-color);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.observaciones-wrapper:hover {
+    border-color: var(--primary-color);
+    background: var(--bg-primary);
+}
+
+.observaciones-wrapper:focus-within {
+    border-color: var(--primary-color);
+    background: var(--bg-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.observaciones-textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 1rem;
+    padding-bottom: 2.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: transparent;
+    resize: none;
+    min-height: 100px;
+    max-height: 150px;
+    line-height: 1.5;
+    font-family: inherit;
+}
+
+.observaciones-textarea::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+    font-weight: 400;
+}
+
+.observaciones-counter {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-light);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.observaciones-wrapper:focus-within .observaciones-counter {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.observaciones-counter.warning {
+    color: #f59e0b;
+    border-color: #f59e0b;
+    background: #fef3c7;
+}
+
+.observaciones-counter.danger {
+    color: #dc2626;
+    border-color: #dc2626;
+    background: #fee2e2;
+}
+
+.observaciones-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #fee2e2;
+    color: #dc2626;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-left: 3px solid #dc2626;
+}
+
+/* Botón de Guardar Modernizado */
+.btn-guardar-config {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    min-width: 280px;
+    justify-content: center;
+}
+
+.btn-guardar-config::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-guardar-config:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    color: white;
+}
+
+.btn-guardar-config:hover::before {
+    left: 100%;
+}
+
+.btn-guardar-config:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-guardar-config:focus {
+    outline: none;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3), 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.btn-guardar-config i {
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+}
+
+.btn-guardar-config:hover i {
+    transform: scale(1.1);
+}
+
+/* Loading state para el botón */
+.btn-guardar-config.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn-guardar-config.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Botón moderno para historial completo */
+.btn-historial-completo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.025em;
+    border: none;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.btn-historial-completo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-historial-completo:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+}
+
+.btn-historial-completo:hover::before {
+    left: 100%;
+}
+
+.btn-historial-completo:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Responsive para configuración */
+@media (max-width: 768px) {
+    .config-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .valor-actual {
+        font-size: 2rem;
+    }
+}

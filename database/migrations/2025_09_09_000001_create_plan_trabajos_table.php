@@ -18,7 +18,8 @@ return new class extends Migration
 			$table->softDeletes(); // Agregar soporte para soft deletes
 
 			$table->foreign('user_id')->references('id')->on('users');
-			$table->unique(['user_id', 'mes', 'anio']);
+			// Restricción única que considera soft deletes
+			$table->unique(['user_id', 'mes', 'anio', 'deleted_at'], 'plan_trabajos_user_id_mes_anio_unique');
 		});
 	}
 

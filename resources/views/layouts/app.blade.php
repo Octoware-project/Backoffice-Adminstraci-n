@@ -38,11 +38,20 @@
         .mb-3 { margin-bottom: 1rem; }
     </style>
     <!-- Puedes agregar aquí tus estilos globales -->
+    
+    {{-- Stack para estilos adicionales --}}
+    @stack('styles')
+    
+    {{-- Stack para scripts en el head --}}
+    @stack('head-scripts')
 </head>
 <body>
     @include('componentes.navbar')
     <div class="main-content">
         @yield('content')
     </div>
+    
+    {{-- Stack para scripts al final del body --}}
+    @stack('scripts')
 </body>
 </html>
