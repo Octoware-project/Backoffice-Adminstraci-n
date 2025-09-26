@@ -3,136 +3,493 @@
         position: fixed;
         left: 0;
         top: 0;
-        width: 200px;
-        height: 100%;
-        background: #2c3e50;
-        color: #fff;
-        padding-top: 10px;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        width: 240px;
+        height: 100vh;
+        background: #1e2a38;
+        color: #ffffff;
+        padding: 0;
+        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
         z-index: 1000;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
+    
     .sidebar-content {
-        /* Contenedor para el contenido principal de la sidebar */
+        padding: 30px 0 20px 0;
+        flex-grow: 1;
     }
+    
     .sidebar ul {
         list-style: none;
         padding: 0;
         margin: 0;
     }
+    
     .sidebar ul li {
-        margin: 20px 0;
+        margin: 4px 16px;
     }
+    
     .sidebar ul li a {
-        color: #fff;
+        color: #b0b0b0;
         text-decoration: none;
-        padding: 8px 14px;
-        display: block;
-        transition: background 0.2s;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.2px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
+    
+    .sidebar ul li a::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 3px;
+        height: 100%;
+        background: #4a4a4a;
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+        border-radius: 0 2px 2px 0;
+    }
+    
     .sidebar ul li a:hover {
-        background: #34495e;
+        background: rgba(255, 255, 255, 0.05);
+        color: #ffffff;
+        transform: translateX(4px);
     }
+    
+    .sidebar ul li a:hover::before {
+        transform: scaleY(1);
+    }
+    
+    .sidebar ul li a.active {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+    }
+    
+    .sidebar ul li a.active::before {
+        transform: scaleY(1);
+        background: #666666;
+    }
+    
+    .sidebar ul li a i {
+        width: 20px;
+        text-align: center;
+        margin-right: 12px;
+        font-size: 16px;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+    
+    .sidebar ul li a:hover i,
+    .sidebar ul li a.active i {
+        opacity: 1;
+    }
+    
+    /* Submenu styles */
+    .sidebar ul li {
+        position: relative;
+    }
+    
+    .sidebar ul li.has-submenu > a::after {
+        content: '\f107';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 20px;
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar ul li.has-submenu:hover > a::after,
+    .sidebar ul li.has-submenu.active > a::after {
+        transform: rotate(180deg);
+    }
+    
+    .submenu {
+        position: absolute;
+        left: 100%;
+        top: 0;
+        min-width: 220px;
+        background: #243442;
+        border-radius: 8px;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(-10px);
+        transition: all 0.3s ease;
+        z-index: 1200;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .sidebar ul li.has-submenu:hover .submenu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+    }
+    
+    .submenu ul {
+        list-style: none;
+        padding: 8px 0;
+        margin: 0;
+    }
+    
+    .submenu ul li {
+        margin: 2px 8px;
+        position: relative;
+    }
+    
+    .submenu ul li a {
+        color: #b0b0b0;
+        text-decoration: none;
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .submenu ul li a::before {
+        display: none;
+    }
+    
+    .submenu ul li a:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        transform: none;
+    }
+    
+    .submenu ul li a i {
+        width: 16px;
+        font-size: 14px;
+        margin-right: 10px;
+        opacity: 0.8;
+    }
+    
     .user-menu {
         position: relative;
         text-align: center;
-        margin-bottom: 20px;
-        margin-top: auto;
-        padding-bottom: 20px;
-        min-height: 60px; /* asegura espacio para el icono */
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
+        margin: 0;
+        padding: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(0, 0, 0, 0.2);
     }
+    
+    .user-menu:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+    }
+    
     .user-icon {
-        font-size: 32px;
+        font-size: 20px;
         cursor: pointer;
-        color: #fff;
-        background: none;
-        border: none;
+        color: #b0b0b0;
+        background: #333333;
+        border: 2px solid rgba(255, 255, 255, 0.08);
         outline: none;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        margin: 0 auto;
     }
+    
+    .user-icon:hover {
+        transform: scale(1.05);
+        background: #404040;
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+    
     .dropdown-menu {
-        display: none;
         position: absolute;
-        right: -190px;
-        left: auto;
-        bottom: 40px;
-        background: #34495e;
-        border-radius: 5px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        min-width: 180px;
-        max-width: 220px;
-        z-index: 1100;
-        padding: 6px 0;
+        left: 100%;
+        bottom: 0;
+        min-width: 200px;
+        background: #243442;
+        border-radius: 8px;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(-10px);
+        transition: all 0.3s ease;
+        z-index: 1200;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 8px 0;
         overflow: hidden;
+        margin-left: 10px;
     }
+    
     .dropdown-menu.show {
-        display: block;
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
     }
+    
     .dropdown-menu a,
     .dropdown-menu button {
-        color: #fff;
+        color: #b0b0b0;
         text-decoration: none;
-        display: block;
+        display: flex;
+        align-items: center;
         width: 100%;
-        padding: 10px 20px;
+        padding: 10px 16px;
         background: none;
         border: none;
         text-align: left;
-        font-size: 1rem;
+        font-size: 13px;
+        font-weight: 500;
         cursor: pointer;
-        transition: background 0.2s;
+        transition: all 0.3s ease;
         font-family: inherit;
+        border-radius: 6px;
+        margin: 2px 8px;
     }
+    
     .dropdown-menu a:hover,
     .dropdown-menu button:hover {
-        background: #2c3e50;
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        transform: none;
+    }
+    
+    .dropdown-menu a i,
+    .dropdown-menu button i {
+        width: 16px;
+        text-align: center;
+        margin-right: 10px;
+        opacity: 0.8;
+        font-size: 14px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 200px;
+        }
+        
+        .dropdown-menu {
+            left: auto;
+            right: 100%;
+            transform: translateX(10px);
+            margin-left: 0;
+            margin-right: 10px;
+        }
+        
+        .user-menu:hover .dropdown-menu {
+            transform: translateX(0);
+        }
+        
+        .submenu {
+            left: auto;
+            right: 100%;
+            transform: translateX(10px);
+        }
+        
+        .sidebar ul li.has-submenu:hover .submenu {
+            transform: translateX(0);
+        }
+    }
+    
+    /* Custom scrollbar for sidebar */
+    .sidebar::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .sidebar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.15);
     }
 </style>
 <div class="sidebar">
     <div class="sidebar-content">
         <ul>
-            <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li><a href="/usuarios">Usuarios</a></li>
-            <li><a href="/facturas">Pagos</a></li>
-            <li><a href="{{ route('plan-trabajos.index') }}">Planes de Trabajo</a></li>
-            <li><a href="{{ route('admin.asamblea.index') }}">Asamblea</a></li>
+            <li><a href="{{ route('dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </a></li>
+            <li><a href="/usuarios">
+                <i class="fas fa-users"></i>
+                Usuarios
+            </a></li>
+            <li><a href="/facturas">
+                <i class="fas fa-credit-card"></i>
+                Pagos
+            </a></li>
+            <li class="has-submenu">
+                <a href="{{ route('plan-trabajos.index') }}">
+                    <i class="fas fa-tasks"></i>
+                    Planes de Trabajo
+                </a>
+                <div class="submenu">
+                    <ul>
+                        <li><a href="{{ route('plan-trabajos.index') }}">
+                            <i class="fas fa-list"></i>
+                            Planes de Trabajo
+                        </a></li>
+                        <li><a href="{{ route('plan-trabajos.create') }}">
+                            <i class="fas fa-plus"></i>
+                            Crear nuevo plan
+                        </a></li>
+                        <li><a href="{{ route('configuracion-horas.index') }}">
+                            <i class="fas fa-cog"></i>
+                            Configuración
+                        </a></li>
+                    </ul>
+                </div>
+            </li>
+            <li><a href="{{ route('admin.asamblea.index') }}">
+                <i class="fas fa-gavel"></i>
+                Asamblea
+            </a></li>
         </ul>
     </div>
     <div class="user-menu">
         <button class="user-icon" id="userMenuBtn">
-            <!-- Font Awesome user icon (or SVG) -->
-            <i class="fa fa-user"></i>
+            <i class="fas fa-user"></i>
         </button>
         <div class="dropdown-menu" id="userDropdown">
             <form method="POST" action="{{ route('logout') }}" style="margin:0;">
                 @csrf
                 <button type="submit">
+                    <i class="fas fa-sign-out-alt"></i>
                     Cerrar Sesión
                 </button>
             </form>
-            <a href="/octoware">Octoware</a>
-            <a href="{{ route('admin.list') }}">Administradores</a>
+            <a href="/octoware">
+                <i class="fas fa-building"></i>
+                Octoware
+            </a>
+            <a href="{{ route('admin.list') }}">
+                <i class="fas fa-user-shield"></i>
+                Administradores
+            </a>
         </div>
     </div>
 </div>
 <!-- Font Awesome CDN (if not already included) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script>
-    // Simple JS to toggle dropdown
     document.addEventListener('DOMContentLoaded', function() {
-        var btn = document.getElementById('userMenuBtn');
-        var dropdown = document.getElementById('userDropdown');
+        // Handle user menu dropdown similar to submenu
+        const userMenu = document.querySelector('.user-menu');
+        const userDropdown = document.getElementById('userDropdown');
+        let userHoverTimeout;
+        
+        userMenu.addEventListener('mouseenter', function() {
+            clearTimeout(userHoverTimeout);
+            userDropdown.classList.add('show');
+        });
+        
+        userMenu.addEventListener('mouseleave', function() {
+            userHoverTimeout = setTimeout(() => {
+                userDropdown.classList.remove('show');
+            }, 100);
+        });
+        
+        // Keep dropdown open when hovering over it
+        userDropdown.addEventListener('mouseenter', function() {
+            clearTimeout(userHoverTimeout);
+            userDropdown.classList.add('show');
+        });
+        
+        userDropdown.addEventListener('mouseleave', function() {
+            userHoverTimeout = setTimeout(() => {
+                userDropdown.classList.remove('show');
+            }, 100);
+        });
+        
+        // Still support click functionality
+        const btn = document.getElementById('userMenuBtn');
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
-            dropdown.classList.toggle('show');
+            userDropdown.classList.toggle('show');
         });
+        
+        // Close dropdown when clicking outside
         document.addEventListener('click', function(e) {
-            if (!btn.contains(e.target)) {
-                dropdown.classList.remove('show');
+            if (!btn.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('show');
+            }
+        });
+        
+        // Close dropdown on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                userDropdown.classList.remove('show');
+            }
+        });
+        
+        // Add active class to current page link
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.sidebar ul li a');
+        
+        navLinks.forEach(link => {
+            const linkPath = new URL(link.href).pathname;
+            if (currentPath === linkPath || 
+                (currentPath.startsWith(linkPath) && linkPath !== '/' && linkPath.length > 1)) {
+                link.classList.add('active');
+                
+                // If it's a submenu item, also mark the parent as active
+                const parentLi = link.closest('.submenu')?.parentElement;
+                if (parentLi) {
+                    parentLi.classList.add('active');
+                    parentLi.querySelector('a').classList.add('active');
+                }
+            }
+        });
+        
+        // Handle submenu interactions
+        const hasSubmenuItems = document.querySelectorAll('.has-submenu');
+        
+        hasSubmenuItems.forEach(item => {
+            const submenu = item.querySelector('.submenu');
+            let hoverTimeout;
+            
+            item.addEventListener('mouseenter', function() {
+                clearTimeout(hoverTimeout);
+                item.classList.add('active');
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                hoverTimeout = setTimeout(() => {
+                    item.classList.remove('active');
+                }, 100);
+            });
+            
+            // Keep submenu open when hovering over it
+            if (submenu) {
+                submenu.addEventListener('mouseenter', function() {
+                    clearTimeout(hoverTimeout);
+                    item.classList.add('active');
+                });
+                
+                submenu.addEventListener('mouseleave', function() {
+                    hoverTimeout = setTimeout(() => {
+                        item.classList.remove('active');
+                    }, 100);
+                });
             }
         });
     });
