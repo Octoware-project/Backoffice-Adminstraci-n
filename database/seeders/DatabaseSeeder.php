@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             JuntasAsambleaSeeder::class,
             Facturas_y_Pagos::class,
             PersonaEstadoSeeder::class,
+            UnidadHabitacionalSeeder::class, // Debe ir antes de PlanTrabajoSeeder
             PlanTrabajoSeeder::class,
             HorasMensualesSeeder::class
         ]);

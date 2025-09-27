@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('personas', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->unique();
+            $table->unsignedBigInteger('unidad_habitacional_id')->nullable();
+            $table->timestamp('fecha_asignacion_unidad')->nullable();
             $table->string('name');
             $table->string('apellido');
             $table->string('CI');
@@ -29,6 +31,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('unidad_habitacional_id')->references('id')->on('unidades_habitacionales')->onDelete('set null');
         });
     }
 

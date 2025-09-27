@@ -98,6 +98,23 @@ class PlanTrabajoController extends Controller
             'horas_requeridas' => 'required|integer|min:1',
         ]);
 
+        // Verificar que el usuario tenga una persona asociada con unidad asignada
+        $user = User::with('persona.unidadHabitacional')->findOrFail($request->user_id);
+        
+        if (!$user->persona) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['user_id' => 'El usuario seleccionado no tiene un perfil de persona asociado.']);
+        }
+
+        $unidadHabitacionalId = null;
+        if (!$user->persona->unidad_habitacional_id) {
+            // Permitir crear el plan pero mostrar advertencia
+            session()->flash('warning', 'ADVERTENCIA: Se ha creado el plan de trabajo, pero la persona no tiene una unidad habitacional asignada. Se recomienda asignar una unidad antes de comenzar a registrar horas.');
+        } else {
+            $unidadHabitacionalId = $user->persona->unidad_habitacional_id;
+        }
+
         // Verificar si ya existe un plan activo (no soft deleted) para este usuario, mes y año
         $existingPlan = PlanTrabajo::withTrashed()
             ->where('user_id', $request->user_id)
@@ -123,7 +140,13 @@ class PlanTrabajoController extends Controller
 
         // Usar try-catch para manejar el error de restricción única de la base de datos
         try {
-            PlanTrabajo::create($request->only('user_id', 'mes', 'anio', 'horas_requeridas'));
+            PlanTrabajo::create([
+                'user_id' => $request->user_id,
+                'unidad_habitacional_id' => $unidadHabitacionalId,
+                'mes' => $request->mes,
+                'anio' => $request->anio,
+                'horas_requeridas' => $request->horas_requeridas
+            ]);
         } catch (\Illuminate\Database\QueryException $e) {
             // Si hay error de restricción única, verificar si hay un plan soft deleted
             if ($e->getCode() == 23000) {
@@ -137,7 +160,10 @@ class PlanTrabajoController extends Controller
                 if ($softDeletedPlan) {
                     // Si existe un plan soft deleted, lo restauramos y actualizamos
                     $softDeletedPlan->restore();
-                    $softDeletedPlan->update(['horas_requeridas' => $request->horas_requeridas]);
+                    $softDeletedPlan->update([
+                        'horas_requeridas' => $request->horas_requeridas,
+                        'unidad_habitacional_id' => $unidadHabitacionalId
+                    ]);
                 } else {
                     // Si no es por soft delete, relanzar el error
                     throw $e;

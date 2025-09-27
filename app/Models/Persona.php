@@ -25,10 +25,35 @@ class Persona extends Model
         'ocupacion',
         'nacionalidad',
         'estadoRegistro',
+        'unidad_habitacional_id',
+        'fecha_asignacion_unidad',
+    ];
+
+    protected $casts = [
+        'fechaNacimiento' => 'date',
+        'fecha_asignacion_unidad' => 'datetime',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Relación con Unidad Habitacional
+    public function unidadHabitacional()
+    {
+        return $this->belongsTo(UnidadHabitacional::class, 'unidad_habitacional_id');
+    }
+
+    // Scope para personas con unidad asignada
+    public function scopeConUnidad($query)
+    {
+        return $query->whereNotNull('unidad_habitacional_id');
+    }
+
+    // Scope para personas sin unidad asignada
+    public function scopeSinUnidad($query)
+    {
+        return $query->whereNull('unidad_habitacional_id');
     }
 }

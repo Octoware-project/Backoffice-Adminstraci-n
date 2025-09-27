@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\JuntasAsambleaController;
 use App\Http\Controllers\Admin\FacturaController;
 use App\Http\Controllers\ConfiguracionHorasController;
+use App\Http\Controllers\UnidadHabitacionalController;
 
 
 Route::middleware('auth')->group(function () {
@@ -71,6 +72,12 @@ Route::get('/admin/horas/configuracion', [ConfiguracionHorasController::class, '
 Route::put('/admin/horas/configuracion', [ConfiguracionHorasController::class, 'update'])->name('configuracion-horas.update');
 Route::post('/admin/horas/configuracion/recalcular', [ConfiguracionHorasController::class, 'recalcularRegistros'])->name('configuracion-horas.recalcular');
 Route::get('/admin/horas/configuracion/historial', [ConfiguracionHorasController::class, 'historial'])->name('configuracion-horas.historial');
+
+// CRUD Unidades Habitacionales
+Route::get('/unidades/personas-disponibles', [UnidadHabitacionalController::class, 'personasDisponibles'])->name('unidades.personas-disponibles');
+Route::resource('unidades', UnidadHabitacionalController::class);
+Route::post('/unidades/{unidad}/asignar-persona', [UnidadHabitacionalController::class, 'asignarPersona'])->name('unidades.asignar-persona');
+Route::delete('/unidades/{unidad}/desasignar-persona/{persona}', [UnidadHabitacionalController::class, 'desasignarPersona'])->name('unidades.desasignar-persona');
 
 }); // Cierre del grupo de middleware 'auth'
 
