@@ -2,9 +2,11 @@
 
 {{-- CSS Modular --}}
 @push('styles')
-<link href="{{ asset('admin/horas/assets/css/horas-common.css') }}" rel="stylesheet">
-<link href="{{ asset('admin/horas/assets/css/configuracion.css') }}" rel="stylesheet">
-<link href="{{ asset('admin/horas/assets/css/configuracion-specific.css') }}" rel="stylesheet">
+<style>
+{!! file_get_contents(resource_path('views/admin/horas/assets/css/horas-common.css')) !!}
+{!! file_get_contents(resource_path('views/admin/horas/assets/css/configuracion.css')) !!}
+{!! file_get_contents(resource_path('views/admin/horas/assets/css/configuracion-specific.css')) !!}
+</style>
 @endpush
 
 @section('content')
@@ -188,6 +190,8 @@
 
 {{-- JavaScript Modular --}}
 @push('scripts')
-<script src="{{ asset('admin/horas/assets/js/configuracion.js') }}"></script>
+<script>
+{!! file_get_contents(resource_path('views/admin/horas/assets/js/configuracion.js')) !!}
+</script>
 @endpush
 @endsection

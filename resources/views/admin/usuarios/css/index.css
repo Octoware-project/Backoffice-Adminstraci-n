@@ -1,0 +1,139 @@
+/* ===== USUARIOS INDEX - PÁGINA PRINCIPAL ===== */
+
+/* Container Principal */
+.usuarios-workspace {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    min-height: 100vh;
+}
+
+/* Header Moderno */
+.usuarios-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    border-radius: var(--radius);
+    padding: 2rem 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-lg);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    margin: 0;
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+.header-subtitle {
+    margin: 0.5rem 0 0 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+/* Botones del Header */
+.btn-primary-modern {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary-modern:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-secondary-modern {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary-modern:hover {
+    background: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.btn-group {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Mensajes */
+.success-message {
+    background: #d1fae5;
+    border: 1px solid #6ee7b7;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.success-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.success-content i {
+    color: #059669;
+    font-size: 1.25rem;
+}
+
+.success-content p {
+    margin: 0;
+    color: #047857;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Responsive para header */
+@media (max-width: 1024px) {
+    .usuarios-workspace {
+        padding: 0 1rem;
+    }
+    
+    .usuarios-header {
+        padding: 1.5rem 2rem;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+    }
+    
+    .btn-group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-title {
+        font-size: 1.875rem;
+    }
+    
+    .btn-modern {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
