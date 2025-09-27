@@ -321,6 +321,38 @@
     .sidebar::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 255, 255, 0.15);
     }
+    
+    /* Badge para contador de pendientes */
+    .nav-badge {
+        position: absolute;
+        top: -2px;
+        right: 8px;
+        background: #f59e0b;
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 10px;
+        min-width: 16px;
+        text-align: center;
+        line-height: 1.2;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+    
+    .sidebar ul li {
+        position: relative;
+    }
+    
+    /* Ocultar badge cuando no hay pendientes */
+    .nav-badge.hidden {
+        display: none;
+    }
 </style>
 <div class="sidebar">
     <div class="sidebar-content">
@@ -329,10 +361,27 @@
                 <i class="fas fa-tachometer-alt"></i>
                 Dashboard
             </a></li>
-            <li><a href="/usuarios">
-                <i class="fas fa-users"></i>
-                Usuarios
-            </a></li>
+            <li class="has-submenu">
+                <a href="/usuarios">
+                    <i class="fas fa-users"></i>
+                    Usuarios
+                </a>
+                <div class="submenu">
+                    <ul>
+                        <li><a href="{{ route('usuarios.index') }}">
+                            <i class="fas fa-user-check"></i>
+                            Residentes
+                        </a></li>
+                        <li><a href="{{ route('usuarios.pendientes') }}">
+                            <i class="fas fa-clock"></i>
+                            Usuarios Pendientes
+                            @if(isset($usuariosPendientes) && $usuariosPendientes > 0)
+                                <span class="nav-badge" style="position: relative; top: 0; right: 0; margin-left: 8px;">{{ $usuariosPendientes }}</span>
+                            @endif
+                        </a></li>
+                    </ul>
+                </div>
+            </li>
             <li><a href="/facturas">
                 <i class="fas fa-credit-card"></i>
                 Pagos
@@ -447,7 +496,30 @@
         
         navLinks.forEach(link => {
             const linkPath = new URL(link.href).pathname;
-            if (currentPath === linkPath || 
+            
+            // Manejar específicamente las rutas de usuarios
+            if (currentPath === '/usuarios' || currentPath === '/usuarios/pendientes') {
+                // Marcar el menú principal de usuarios como activo
+                const usuariosMainLink = document.querySelector('a[href="/usuarios"]');
+                if (usuariosMainLink) {
+                    usuariosMainLink.classList.add('active');
+                    const parentLi = usuariosMainLink.parentElement;
+                    if (parentLi) {
+                        parentLi.classList.add('active');
+                    }
+                }
+                
+                // Marcar el submenu específico como activo
+                if (currentPath === '/usuarios') {
+                    const aceptadosLink = document.querySelector('a[href*="usuarios.index"]');
+                    if (aceptadosLink) aceptadosLink.classList.add('active');
+                } else if (currentPath === '/usuarios/pendientes') {
+                    const pendientesLink = document.querySelector('a[href*="usuarios.pendientes"]');
+                    if (pendientesLink) pendientesLink.classList.add('active');
+                }
+            }
+            // Manejar otras rutas normalmente
+            else if (currentPath === linkPath || 
                 (currentPath.startsWith(linkPath) && linkPath !== '/' && linkPath.length > 1)) {
                 link.classList.add('active');
                 

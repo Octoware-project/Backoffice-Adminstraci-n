@@ -7,6 +7,76 @@
         {!! file_get_contents(resource_path('views/admin/usuarios/css/index.css')) !!}
         {!! file_get_contents(resource_path('views/admin/usuarios/css/partials/filters.css')) !!}
         {!! file_get_contents(resource_path('views/admin/usuarios/css/partials/table.css')) !!}
+        
+        /* Estilos para estadísticas */
+        .stats-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 200px;
+            transition: all 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-section {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                min-width: auto;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
     </style>
     
     {{-- FontAwesome para iconos --}}
@@ -33,17 +103,17 @@
             <div class="usuarios-header header-pattern">
                 <div class="header-content">
                     <div>
-                        <h1 class="header-title">Residentes</h1>
-                        <p class="header-subtitle">Listado de usuarios aprobados e inactivos en el sistema</p>
+                        <h1 class="header-title">Usuarios Pendientes</h1>
+                        <p class="header-subtitle">Gestión de solicitudes de registro pendientes de aprobación</p>
                     </div>
                     <div class="btn-group">
-                        <a href="{{ route('usuarios.index') }}" class="btn-modern btn-secondary-modern">
+                        <a href="{{ route('usuarios.pendientes') }}" class="btn-modern btn-secondary-modern">
                             <i class="fas fa-sync-alt"></i>
                             Actualizar
                         </a>
-                        <a href="{{ route('usuarios.pendientes') }}" class="btn-modern btn-warning" style="background-color: #f59e0b; color: white;">
-                            <i class="fas fa-clock"></i>
-                            Ver Pendientes
+                        <a href="{{ route('usuarios.index') }}" class="btn-modern btn-success" style="background-color: #10b981; color: white;">
+                            <i class="fas fa-users"></i>
+                            Ver Residentes
                         </a>
                     </div>
                 </div>
@@ -73,7 +143,7 @@
                 </div>
                 
                 <div class="filters-content" id="filters-content">
-                    <form method="GET" action="{{ route('usuarios.index') }}" id="filters-form">
+                    <form method="GET" action="{{ route('usuarios.pendientes') }}" id="filters-form">
                         <div class="filters-grid">
                             {{-- Filtro por Nombre --}}
                             <div class="filter-group">
@@ -187,14 +257,27 @@
                             @endif
                         </div>
                     </div>
-                    <a href="{{ route('usuarios.index') }}" class="clear-filters-link">
+                    <a href="{{ route('usuarios.pendientes') }}" class="clear-filters-link">
                         <i class="fas fa-times"></i> Limpiar todos
                     </a>
                 </div>
             </div>
             @endif
 
-            {{-- Tabla de Usuarios --}}
+            {{-- Estadísticas de Usuarios Pendientes --}}
+            <div class="stats-section" style="margin-bottom: 1.5rem;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #f59e0b;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ $usuarios->count() }}</div>
+                        <div class="stat-label">Usuario{{ $usuarios->count() != 1 ? 's' : '' }} Pendiente{{ $usuarios->count() != 1 ? 's' : '' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Tabla de Usuarios Pendientes --}}
             <div class="table-container">
                 @if($usuarios->count() > 0)
                     <table class="modern-table">
@@ -209,23 +292,7 @@
                         </thead>
                         <tbody>
                             @foreach($usuarios as $usuario)
-                            @php
-                                $estadoClass = match($usuario->estadoRegistro) {
-                                    'Pendiente' => 'usuario-pendiente',
-                                    'Aceptado' => 'usuario-aceptado',
-                                    'Rechazado' => 'usuario-rechazado',
-                                    'Inactivo' => 'usuario-inactivo',
-                                    default => ''
-                                };
-                                $statusClass = match($usuario->estadoRegistro) {
-                                    'Pendiente' => 'status-pendiente',
-                                    'Aceptado' => 'status-aceptado',
-                                    'Rechazado' => 'status-rechazado',
-                                    'Inactivo' => 'status-inactivo',
-                                    default => 'status-inactivo'
-                                };
-                            @endphp
-                            <tr class="usuario-row {{ $estadoClass }}" data-usuario-id="{{ $usuario->id }}">
+                            <tr class="usuario-row usuario-pendiente" data-usuario-id="{{ $usuario->id }}">
                                 
                                 {{-- Usuario --}}
                                 <td>
@@ -258,28 +325,30 @@
 
                                 {{-- Estado --}}
                                 <td>
-                                    <span class="status-badge {{ $statusClass }}">
-                                        {{ $usuario->estadoRegistro }}
-                                        @if($usuario->estadoRegistro == 'Aceptado')
-                                            <i class="fas fa-check-circle" style="margin-left: 0.25rem;"></i>
-                                        @elseif($usuario->estadoRegistro == 'Pendiente')
-                                            <i class="fas fa-clock" style="margin-left: 0.25rem;"></i>
-                                        @elseif($usuario->estadoRegistro == 'Rechazado')
-                                            <i class="fas fa-times-circle" style="margin-left: 0.25rem;"></i>
-                                        @endif
+                                    <span class="status-badge status-pendiente">
+                                        Pendiente
+                                        <i class="fas fa-clock" style="margin-left: 0.25rem;"></i>
                                     </span>
                                 </td>
 
                                 {{-- Acciones --}}
                                 <td onclick="event.stopPropagation();">
                                     <div class="actions-group">
+                                        <button type="button" class="action-btn btn-accept" 
+                                                data-user-id="{{ $usuario->id }}" 
+                                                data-user-name="{{ $usuario->name }} {{ $usuario->apellido }}">
+                                            <i class="fas fa-check"></i>
+                                            Aceptar
+                                        </button>
+                                        <button type="button" class="action-btn btn-reject" 
+                                                data-user-id="{{ $usuario->id }}" 
+                                                data-user-name="{{ $usuario->name }} {{ $usuario->apellido }}">
+                                            <i class="fas fa-times"></i>
+                                            Rechazar
+                                        </button>
                                         <a href="{{ route('usuarios.show', $usuario->id) }}" class="action-btn btn-view">
                                             <i class="fas fa-eye"></i>
-                                            Ver Detalle
-                                        </a>
-                                        <a href="{{ route('usuarios.edit', $usuario->id) }}" class="action-btn btn-edit" style="background-color: #f59e0b; color: white;">
-                                            <i class="fas fa-edit"></i>
-                                            Editar
+                                            Ver
                                         </a>
                                     </div>
                                 </td>
@@ -290,13 +359,13 @@
                 @else
                     <div class="empty-state">
                         <div class="empty-state-icon">
-                            <i class="fas fa-users-slash"></i>
+                            <i class="fas fa-user-check" style="color: #10b981;"></i>
                         </div>
-                        <h3>No hay usuarios</h3>
-                        <p>No se encontraron usuarios que coincidan con los filtros aplicados.</p>
+                        <h3>¡Excelente!</h3>
+                        <p>No hay usuarios pendientes de aprobación en este momento.</p>
                         <a href="{{ route('usuarios.index') }}" class="btn-modern btn-primary-modern" style="margin-top: 1rem;">
-                            <i class="fas fa-sync-alt"></i>
-                            Mostrar Todos
+                            <i class="fas fa-users"></i>
+                            Ver Residentes
                         </a>
                     </div>
                 @endif

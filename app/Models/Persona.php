@@ -16,10 +16,15 @@ class Persona extends Model
     protected $fillable = [
         'name',
         'apellido',
-        "CI",
-        "telefono", // Usar nombre correcto de la migración
-        "direccion", // Usar nombre correcto de la migración
-        "estadoRegistro", // Usar nombre correcto de la migración
+        'CI',
+        'telefono',
+        'direccion',
+        'estadoCivil',
+        'genero', 
+        'fechaNacimiento',
+        'ocupacion',
+        'nacionalidad',
+        'estadoRegistro',
     ];
 
     public function user()

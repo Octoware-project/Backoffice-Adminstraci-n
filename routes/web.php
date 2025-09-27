@@ -12,9 +12,13 @@ use App\Http\Controllers\ConfiguracionHorasController;
 
 
 Route::middleware('auth')->group(function () {
-Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+// Rutas para usuarios
+Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index'); // Usuarios aceptados
+Route::get('/usuarios/pendientes', [UsuarioController::class, 'pendientes'])->name('usuarios.pendientes'); // Usuarios pendientes
 Route::put('/usuarios/{id}/aceptar', [UsuarioController::class, 'aceptar'])->name('usuarios.aceptar');
 Route::put('/usuarios/{id}/rechazar', [UsuarioController::class, 'rechazar'])->name('usuarios.rechazar');
+Route::post('/admin/usuarios/{id}/aceptar', [UsuarioController::class, 'aceptar'])->name('usuarios.aceptar.ajax');
+Route::post('/admin/usuarios/{id}/rechazar', [UsuarioController::class, 'rechazar'])->name('usuarios.rechazar.ajax');
 Route::get('/admin/usuarios/{id}', [UsuarioController::class, 'show'])->name('usuarios.show');
 Route::get('/admin/usuarios/{id}/edit', [UsuarioController::class, 'edit'])->name('usuarios.edit');
 Route::put('/admin/usuarios/{id}', [UsuarioController::class, 'update'])->name('usuarios.update');
