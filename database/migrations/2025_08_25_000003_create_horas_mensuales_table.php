@@ -19,8 +19,16 @@ return new class extends Migration
             $table->string('Motivo_Falla')->nullable();
             $table->string('Tipo_Justificacion')->nullable();
             $table->float('Monto_Compensario', 10, 2)->nullable();
+        // Valor por hora que se usó al momento de crear este registro
+        $table->decimal('valor_hora_al_momento', 10, 2)->nullable()
+            ->comment('Valor por hora usado para calcular horas equivalentes');
+        // Horas equivalentes ya calculadas (para no recalcular)
+        $table->decimal('horas_equivalentes_calculadas', 8, 2)->nullable()
+            ->comment('Total de horas reales + horas de justificación calculadas');
             $table->timestamps();
             $table->softDeletes();
+            // Índices para optimizar consultas
+            $table->index(['email', 'anio', 'mes']);
         });
     }
 

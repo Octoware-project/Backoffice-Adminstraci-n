@@ -404,7 +404,7 @@
             <div>
                 <h1 class="header-title">Plan de Trabajo</h1>
                 <p class="header-subtitle">
-                    {{ $plan->user->name ?? '' }} {{ $plan->user->apellido ?? '' }} - 
+                    {{ $plan->user->persona->name ?? $plan->user->name ?? '' }} {{ $plan->user->persona->apellido ?? '' }} - 
                     @php
                         $meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
                                  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -427,7 +427,7 @@
                 <i class="fas fa-user"></i>
             </div>
             <div class="card-title">Usuario</div>
-            <div class="card-value">{{ $plan->user->name ?? '' }} {{ $plan->user->apellido ?? '' }}</div>
+            <div class="card-value">{{ $plan->user->persona->name ?? $plan->user->name ?? '' }} {{ $plan->user->persona->apellido ?? '' }}</div>
             <div class="card-subtitle">{{ $plan->user->email ?? '' }}</div>
         </div>
 

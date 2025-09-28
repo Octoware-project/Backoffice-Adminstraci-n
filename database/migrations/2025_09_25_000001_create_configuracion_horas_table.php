@@ -14,7 +14,6 @@ return new class extends Migration
             $table->boolean('activo')->default(true)->comment('Configuración activa');
             $table->text('observaciones')->nullable()->comment('Notas sobre el cambio de valor');
             $table->timestamps();
-            
             // Índice para búsquedas rápidas
             $table->index(['activo', 'created_at']);
         });

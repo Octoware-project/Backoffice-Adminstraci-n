@@ -233,6 +233,8 @@ class UsuarioController extends Controller
 
         if ($usuario->user) {
             $usuario->user->email = $request->email;
+            // También actualiza el nombre en la tabla users para mantener sincronía
+            $usuario->user->name = $request->nombre;
             $usuario->user->save();
         }
 
