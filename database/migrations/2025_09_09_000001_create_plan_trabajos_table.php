@@ -11,6 +11,7 @@ return new class extends Migration
 		Schema::create('plan_trabajos', function (Blueprint $table) {
 			$table->id();
 			$table->unsignedBigInteger('user_id');
+			$table->unsignedBigInteger('unidad_habitacional_id')->nullable();
 			$table->integer('mes');
 			$table->integer('anio');
 			$table->integer('horas_requeridas');
@@ -18,6 +19,7 @@ return new class extends Migration
 			$table->softDeletes(); // Agregar soporte para soft deletes
 
 			$table->foreign('user_id')->references('id')->on('users');
+			$table->foreign('unidad_habitacional_id')->references('id')->on('unidades_habitacionales')->onDelete('set null');
 			// Restricción única que considera soft deletes
 			$table->unique(['user_id', 'mes', 'anio', 'deleted_at'], 'plan_trabajos_user_id_mes_anio_unique');
 		});

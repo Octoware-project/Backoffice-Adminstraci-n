@@ -202,7 +202,7 @@ class UsuarioController extends Controller
 
     public function show($id)
     {
-        $usuario = Persona::with('user')->findOrFail($id);
+        $usuario = Persona::with(['user', 'unidadHabitacional'])->findOrFail($id);
         $password = request()->query('password'); // Recibe la contraseña si viene de aceptar
         return view('admin.usuarios.show', compact('usuario', 'password'));
     }

@@ -408,6 +408,24 @@
                     </ul>
                 </div>
             </li>
+            <li class="has-submenu">
+                <a href="{{ route('unidades.index') }}">
+                    <i class="fas fa-building"></i>
+                    Unidades Habitacionales
+                </a>
+                <div class="submenu">
+                    <ul>
+                        <li><a href="{{ route('unidades.index') }}">
+                            <i class="fas fa-list"></i>
+                            Ver Unidades
+                        </a></li>
+                        <li><a href="{{ route('unidades.create') }}">
+                            <i class="fas fa-plus"></i>
+                            Crear Unidad
+                        </a></li>
+                    </ul>
+                </div>
+            </li>
             <li><a href="{{ route('admin.asamblea.index') }}">
                 <i class="fas fa-gavel"></i>
                 Asamblea

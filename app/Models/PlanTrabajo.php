@@ -11,10 +11,16 @@ class PlanTrabajo extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'plan_trabajos';
-    protected $fillable = ['user_id', 'mes', 'anio', 'horas_requeridas'];
+    protected $fillable = ['user_id', 'unidad_habitacional_id', 'mes', 'anio', 'horas_requeridas'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Relación con Unidad Habitacional
+    public function unidadHabitacional()
+    {
+        return $this->belongsTo(UnidadHabitacional::class, 'unidad_habitacional_id');
     }
 }

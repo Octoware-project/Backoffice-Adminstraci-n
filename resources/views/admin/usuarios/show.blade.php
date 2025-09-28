@@ -247,6 +247,56 @@
             box-shadow: var(--shadow-sm);
         }
 
+        /* Badges para unidades habitacionales */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* Botón pequeño para ver detalles */
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
         /* Animaciones */
         .usuario-content {
             opacity: 0;
@@ -388,6 +438,57 @@
                         <code>#{{ $usuario->id }}</code>
                         <small class="text-muted">(User ID / Persona ID)</small>
                     </td></tr>
+                    @endif
+                    
+                    {{-- Información de Unidad Habitacional --}}
+                    <tr><th colspan="2" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; font-size: 1.1rem;"><i class="fas fa-home"></i> Unidad Habitacional</th></tr>
+                    @if($usuario->unidadHabitacional)
+                        <tr><th><i class="fas fa-building"></i> Unidad Asignada</th><td>
+                            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                <span class="badge badge-success">
+                                    <i class="fas fa-home"></i>
+                                    Departamento {{ $usuario->unidadHabitacional->numero_departamento }}
+                                </span>
+                                <a href="{{ route('unidades.show', $usuario->unidadHabitacional->id) }}" 
+                                   class="btn btn-sm btn-primary" 
+                                   style="padding: 0.375rem 0.75rem; border-radius: 0.375rem; text-decoration: none; font-size: 0.875rem;">
+                                    <i class="fas fa-eye"></i> Ver Detalles
+                                </a>
+                            </div>
+                        </td></tr>
+                        <tr><th><i class="fas fa-layer-group"></i> Piso</th><td>
+                            <span class="badge badge-info">
+                                <i class="fas fa-sort-numeric-up"></i>
+                                Piso {{ $usuario->unidadHabitacional->piso }}
+                            </span>
+                        </td></tr>
+                        <tr><th><i class="fas fa-info-circle"></i> Estado de la Unidad</th><td>
+                            @php
+                                $estadoClass = match($usuario->unidadHabitacional->estado) {
+                                    'Finalizado' => 'badge-success',
+                                    'En Construcción' => 'badge-warning', 
+                                    'En Pausa' => 'badge-danger',
+                                    default => 'badge-secondary'
+                                };
+                            @endphp
+                            <span class="badge {{ $estadoClass }}">
+                                <i class="fas fa-{{ $usuario->unidadHabitacional->estado == 'Finalizado' ? 'check-circle' : 'clock' }}"></i>
+                                {{ $usuario->unidadHabitacional->estado }}
+                            </span>
+                        </td></tr>
+                        @if($usuario->fecha_asignacion_unidad)
+                        <tr><th><i class="fas fa-calendar-check"></i> Fecha de Asignación</th><td>
+                            {{ \Carbon\Carbon::parse($usuario->fecha_asignacion_unidad)->format('d/m/Y H:i') }}
+                            <small class="text-muted">({{ \Carbon\Carbon::parse($usuario->fecha_asignacion_unidad)->diffForHumans() }})</small>
+                        </td></tr>
+                        @endif
+                    @else
+                        <tr><th><i class="fas fa-home"></i> Unidad Asignada</th><td>
+                            <span class="badge badge-secondary">
+                                <i class="fas fa-times-circle"></i>
+                                Sin unidad asignada
+                            </span>
+                        </td></tr>
                     @endif
                 </table>
             </div>
