@@ -1,0 +1,213 @@
+/* admin-configuracion.css - Estilos personalizados para la página de administradores */
+
+:root {
+    --admin-primary: #2a4d8f;
+    --admin-secondary: #f5f7fa;
+    --admin-accent: #4caf50;
+    --admin-danger: #e53935;
+    --admin-border: #e0e6ed;
+    --admin-radius: 10px;
+    --admin-shadow: 0 2px 8px rgba(42,77,143,0.07);
+}
+
+.planes-workspace {
+    padding: 2rem 0;
+    background: var(--admin-secondary);
+    min-height: 100vh;
+}
+
+.planes-header {
+    margin-bottom: 2rem;
+}
+
+.header-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--admin-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-subtitle {
+    color: #6c7a89;
+    font-size: 1.1rem;
+    margin-top: 0.2rem;
+}
+
+.config-grid {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.config-card {
+    background: #fff;
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+    min-width: 350px;
+    flex: 1 1 350px;
+}
+
+.config-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--admin-primary);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-list-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fafbfc;
+    border-radius: var(--admin-radius);
+    overflow: hidden;
+}
+
+.admin-list-table th, .admin-list-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--admin-border);
+    text-align: left;
+    font-size: 1rem;
+}
+
+.admin-list-table th {
+    background: var(--admin-primary);
+    color: #fff;
+    font-weight: 600;
+}
+
+.admin-list-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-guardar-config, .btn-edit {
+    background: var(--admin-accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.2s;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-guardar-config:hover, .btn-edit:hover {
+    background: #388e3c;
+}
+
+.btn-delete {
+    background: var(--admin-danger);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.2s;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-delete:hover {
+    background: #b71c1c;
+}
+
+.btn-cancel {
+    background: #e0e6ed;
+    color: #2a4d8f;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-cancel:hover {
+    background: #cfd8dc;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--admin-primary);
+    margin-bottom: 0.3rem;
+}
+
+.form-control {
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    padding: 0.5rem 0.9rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    background: #f5f7fa;
+    color: #2a4d8f;
+    transition: border 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--admin-primary);
+    outline: none;
+    background: #fff;
+}
+
+.alert {
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.alert-success {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.alert-danger {
+    background: #ffebee;
+    color: #b71c1c;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #888;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .config-grid {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .config-card {
+        min-width: unset;
+    }
+}
