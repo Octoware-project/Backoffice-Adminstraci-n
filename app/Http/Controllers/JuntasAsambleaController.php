@@ -7,10 +7,35 @@ use App\Models\JuntasAsamblea;
 
 class JuntasAsambleaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $juntas = \App\Models\JuntasAsamblea::all();
-    return view('admin.asamblea.Asamblea', compact('juntas'));
+        $query = \App\Models\JuntasAsamblea::query();
+
+        // Filtro por mes
+        if ($request->filled('filter_mes')) {
+            $query->whereMonth('fecha', $request->filter_mes);
+        }
+
+        // Filtro por año
+        if ($request->filled('filter_anio')) {
+            $query->whereYear('fecha', $request->filter_anio);
+        }
+
+        // Ordenamiento
+        $sortField = $request->get('sort_field', 'fecha');
+        $sortDirection = $request->get('sort_direction', 'desc');
+        
+        // Validar campos de ordenamiento
+        $allowedSortFields = ['fecha', 'lugar', 'created_at'];
+        if (!in_array($sortField, $allowedSortFields)) {
+            $sortField = 'fecha';
+        }
+        
+        $query->orderBy($sortField, $sortDirection);
+
+        $juntas = $query->get();
+        
+        return view('admin.asamblea.Asamblea', compact('juntas'));
     }
 
     public function create()
@@ -56,9 +81,34 @@ class JuntasAsambleaController extends Controller
         return redirect()->route('admin.asamblea.index')->with('success', 'Junta eliminada correctamente.');
     }
 
-    public function vistaAsamblea()
+    public function vistaAsamblea(Request $request)
     {
-        $juntas = \App\Models\JuntasAsamblea::all();
+        $query = \App\Models\JuntasAsamblea::query();
+
+        // Filtro por mes
+        if ($request->filled('filter_mes')) {
+            $query->whereMonth('fecha', $request->filter_mes);
+        }
+
+        // Filtro por año
+        if ($request->filled('filter_anio')) {
+            $query->whereYear('fecha', $request->filter_anio);
+        }
+
+        // Ordenamiento
+        $sortField = $request->get('sort_field', 'fecha');
+        $sortDirection = $request->get('sort_direction', 'desc');
+        
+        // Validar campos de ordenamiento
+        $allowedSortFields = ['fecha', 'lugar', 'created_at'];
+        if (!in_array($sortField, $allowedSortFields)) {
+            $sortField = 'fecha';
+        }
+        
+        $query->orderBy($sortField, $sortDirection);
+
+        $juntas = $query->get();
+        
         return view('admin.asamblea.Asamblea', compact('juntas'));
     }
 
