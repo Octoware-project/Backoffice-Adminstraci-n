@@ -426,10 +426,24 @@
                     </ul>
                 </div>
             </li>
-            <li><a href="{{ route('admin.asamblea.index') }}">
-                <i class="fas fa-gavel"></i>
-                Asamblea
-            </a></li>
+            <li class="has-submenu">
+                <a href="{{ route('admin.juntas_asamblea.index') }}">
+                    <i class="fas fa-gavel"></i>
+                    Asamblea
+                </a>
+                <div class="submenu">
+                    <ul>
+                        <li><a href="{{ route('admin.juntas_asamblea.index') }}">
+                            <i class="fas fa-list"></i>
+                            Ver Juntas
+                        </a></li>
+                        <li><a href="{{ route('admin.juntas_asamblea.create') }}">
+                            <i class="fas fa-plus"></i>
+                            Crear Junta
+                        </a></li>
+                    </ul>
+                </div>
+            </li>
         </ul>
     </div>
     <div class="user-menu">
