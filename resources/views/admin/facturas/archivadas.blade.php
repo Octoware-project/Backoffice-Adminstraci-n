@@ -57,7 +57,7 @@
 
     /* Header moderno estilo planTrabajo */
     .facturas-header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        background: linear-gradient(135deg, #6b46c1 0%, #9333ea 100%);
         border-radius: var(--radius);
         padding: 2rem 2.5rem;
         margin-bottom: 2rem;
@@ -168,11 +168,6 @@
         justify-content: center;
     }
 
-    .status-badge.pendiente {
-        background: #fff3cd;
-        color: #856404;
-    }
-
     .status-badge.aceptado {
         background: #d1fae5;
         color: #065f46;
@@ -202,31 +197,6 @@
         letter-spacing: 0.025em;
     }
 
-    .btn-success-modern {
-        background: #f0fdf4;
-        color: #15803d;
-        border: 1px solid #bbf7d0;
-    }
-
-    .btn-success-modern:hover {
-        background: #dcfce7;
-        color: #166534;
-        transform: translateY(-1px);
-        text-decoration: none;
-    }
-
-    .btn-danger-modern {
-        background: #fef2f2;
-        color: #dc2626;
-        border: 1px solid #fecaca;
-    }
-
-    .btn-danger-modern:hover {
-        background: #fee2e2;
-        color: #b91c1c;
-        transform: translateY(-1px);
-    }
-
     .btn-warning-modern {
         background: #fffbeb;
         color: #d97706;
@@ -239,6 +209,22 @@
         transform: translateY(-1px);
         text-decoration: none;
     }
+
+    .btn-secondary-modern {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+    }
+
+    .btn-secondary-modern:hover {
+        background: var(--bg-light);
+        border-color: var(--primary-color);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
     /* Filtros desplegables */
     .filters-container {
         background: var(--bg-primary);
@@ -398,6 +384,37 @@
         text-decoration: none;
     }
 
+    /* Back button container */
+    .back-button-container {
+        margin-top: 2rem;
+        text-align: left;
+    }
+
+    /* Estados vacíos */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.6;
+    }
+
+    .empty-state-text {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+
+    .empty-state-subtext {
+        font-size: 1rem;
+        opacity: 0.7;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .facturas-workspace {
@@ -406,7 +423,6 @@
         
         .facturas-header {
             padding: 1.5rem 2rem;
-
         }
         
         .header-title {
@@ -422,6 +438,12 @@
             padding: 0.375rem 0.75rem;
             font-size: 0.7rem;
         }
+
+        .header-content {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
     }
 
     @media (max-width: 1024px) {
@@ -431,90 +453,6 @@
             text-align: center;
         }
     }
-
-    /* Estado vacío */
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        color: var(--text-muted);
-    }
-
-    .empty-state-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
-    }
-
-    .empty-state-text {
-        font-size: 1.125rem;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state-subtext {
-        font-size: 0.875rem;
-        color: var(--text-muted);
-    }
-
-    /* Estilos para alerta de facturas sin aprobar */
-    .estado-pagos-card {
-        background: var(--bg-primary);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--border-color);
-        margin-bottom: 2rem;
-        padding: 2rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .estado-pagos-card.warning {
-        border-left: 4px solid #f59e0b;
-        background: linear-gradient(90deg, #fffbeb 0%, #fef3c7 100%);
-    }
-
-    .estado-info {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-    }
-
-    .estado-content {
-        flex: 1;
-    }
-
-    .estado-title {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 9999px;
-        font-size: 1rem;
-        font-weight: 600;
-        letter-spacing: 0.025em;
-        margin-bottom: 0.75rem;
-    }
-
-    .estado-title.warning {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .estado-descripcion {
-        color: var(--text-secondary);
-        font-size: 0.875rem;
-        margin: 0;
-        line-height: 1.5;
-    }
-
-    .estado-icon {
-        font-size: 2.5rem;
-        opacity: 0.8;
-    }
-
-    .estado-icon.warning { 
-        color: #f59e0b; 
-    }
 </style>
 
 <div class="facturas-workspace">
@@ -522,41 +460,16 @@
     <div class="facturas-header">
         <div class="header-content">
             <div>
-                <h1 class="header-title">Facturas Pendientes</h1>
-                <p class="header-subtitle">Facturas en espera de aprobación o rechazo</p>
+                <h1 class="header-title">Facturas Archivadas</h1>
+                <p class="header-subtitle">Facturas aceptadas y rechazadas</p>
             </div>
             <div class="btn-group">
-                <a href="{{ route('admin.facturas.archivadas') }}" class="btn-modern btn-primary-modern">
-                    <i class="fas fa-archive"></i> Ver Archivadas
+                <a href="{{ route('admin.facturas.index') }}" class="btn-modern btn-primary-modern">
+                    <i class="fas fa-clock"></i> Ver Pendientes
                 </a>
             </div>
         </div>
     </div>
-
-    <!-- Alerta de facturas sin aprobar -->
-    @if($totalFacturasPendientes > 0)
-    <div class="estado-pagos-card warning">
-        <div class="estado-info">
-            <div class="estado-content">
-                <div class="estado-title warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    {{ $totalFacturasPendientes }} {{ $totalFacturasPendientes == 1 ? 'factura sin aprobar' : 'facturas sin aprobar' }}
-                </div>
-                <p class="estado-descripcion">
-                    Hay {{ $totalFacturasPendientes }} {{ $totalFacturasPendientes == 1 ? 'factura pendiente' : 'facturas pendientes' }} que requieren revisión y aprobación.
-                </p>
-            </div>
-            <div class="estado-icon warning">
-                ⚠
-            </div>
-        </div>
-        <div style="margin-top: 1rem;">
-            <a href="{{ route('admin.facturas.index') }}" class="btn-modern btn-warning-modern">
-                <i class="fas fa-filter"></i> Ver facturas sin aprobar
-            </a>
-        </div>
-    </div>
-    @endif
 
     <!-- Filtros Desplegables -->
     <div class="filters-container">
@@ -567,7 +480,7 @@
             </div>
         </div>
         <div class="filters-content" id="filters-content">
-            <form method="GET" action="{{ route('admin.facturas.index') }}">
+            <form method="GET" action="{{ route('admin.facturas.archivadas') }}">
                 <div class="filters-grid">
                     <div class="filter-group">
                         <label class="filter-label">Año</label>
@@ -592,10 +505,17 @@
                             <option value="12" {{ request('mes') == '12' ? 'selected' : '' }}>Diciembre</option>
                         </select>
                     </div>
-
+                    <div class="filter-group">
+                        <label class="filter-label">Estado</label>
+                        <select name="estado" class="filter-select">
+                            <option value="">Todos los estados</option>
+                            <option value="Aceptado" {{ request('estado') == 'Aceptado' ? 'selected' : '' }}>Aceptado</option>
+                            <option value="Rechazado" {{ request('estado') == 'Rechazado' ? 'selected' : '' }}>Rechazado</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="filters-actions">
-                    <a href="{{ route('admin.facturas.index') }}" class="btn-modern btn-sm btn-outline-secondary">
+                    <a href="{{ route('admin.facturas.archivadas') }}" class="btn-modern btn-sm btn-outline-secondary">
                         <i class="fas fa-times"></i> Limpiar
                     </a>
                     <button type="submit" class="btn-modern btn-sm btn-outline-primary">
@@ -606,91 +526,83 @@
         </div>
     </div>
 
-    <!-- Tabla moderna de facturas -->
+    <!-- Tabla moderna de facturas archivadas -->
     <div class="table-container">
         @php \Carbon\Carbon::setLocale('es'); @endphp
         <table class="modern-table">
-        <thead>
-            <tr>
-                <th>Residente</th>
-                <th>Monto</th>
-                <th>Estado de Pago</th>
-                <th>Mes</th>
-                <th>Acciones</th>
-                <th>Comprobante</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($facturas as $factura)
-                <tr class="factura-row" data-email="{{ $factura->email }}">
-                    <td>
-                        @php
-                            $persona = optional(optional($factura->user)->persona);
-                            $nombreCompleto = trim(($persona->name ?? '') . ' ' . ($persona->apellido ?? ''));
-                        @endphp
-                        {{ $nombreCompleto !== '' ? $nombreCompleto : 'Sin residente' }}
-                    </td>
-                    <td>{{ $factura->Monto }}</td>
-                    <td>
-                        @php
-                            $estado = strtolower($factura->Estado_Pago);
-                        @endphp
-                        <span class="status-badge {{ $estado }}">
-                            {{ ucfirst($factura->Estado_Pago) }}
-                        </span>
-                    </td>
-                    <td>
-                        {{ $factura->fecha_pago ? \Carbon\Carbon::parse($factura->fecha_pago)->translatedFormat('F Y') : '-' }}
-                    </td>
-                    <!-- Botones de acción y comprobante solo una vez -->
-                    <td style="text-align:center;">
-                        @if($factura->Archivo_Comprobante)
-                            <a href="#" onclick="abrirComprobanteApi({{ $factura->id }}); return false;" title="Ver comprobante">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16" style="color:#007bff;vertical-align:middle;">
-                                    <path d="M4.5 9.5A.5.5 0 0 1 5 9h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 7h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
-                                    <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1-2-2h5.5L14 4.5zm-3-.5a.5.5 0 0 1-.5-.5V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5h-2a1 1 0 0 1-1-1V4z"/>
-                                </svg>
-                            </a>
-                        @else
-                            <span style="color:#bbb;">-</span>
-                        @endif
-                    </td>
-                    <td style="text-align:center;">
-                        @if($factura->Estado_Pago === 'Pendiente')
-                            <div style="display: flex; gap: 0.5rem; justify-content: center;">
-                                <form action="{{ route('admin.facturas.aceptar', $factura->id) }}" method="POST" style="display:inline-block;">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="btn-modern btn-success-modern">Aceptar</button>
-                                </form>
-                                <form action="{{ route('admin.facturas.rechazar', $factura->id) }}" method="POST" style="display:inline-block;">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="btn-modern btn-danger-modern">Rechazar</button>
-                                </form>
-                            </div>
-                        @endif
-                    </td>
-                </tr>
-            @empty
+            <thead>
                 <tr>
-                    <td colspan="6" class="empty-state">
-                        <div class="empty-state-icon">💳</div>
-                        <div class="empty-state-text">No hay facturas pendientes</div>
-                        <div class="empty-state-subtext">
-                            @if(request()->hasAny(['año', 'mes']))
-                                No se encontraron facturas con los filtros aplicados.
-                            @else
-                                Las facturas pendientes aparecerán aquí cuando sean creadas.
-                            @endif
-                        </div>
-                    </td>
+                    <th>Residente</th>
+                    <th>Monto</th>
+                    <th>Estado de Pago</th>
+                    <th>Mes</th>
+                    <th>Acciones</th>
+                    <th>Comprobante</th>
                 </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @forelse($facturas as $factura)
+                    <tr class="factura-row" data-email="{{ $factura->email }}">
+                        <td>
+                            @php
+                                $persona = optional(optional($factura->user)->persona);
+                                $nombreCompleto = trim(($persona->name ?? '') . ' ' . ($persona->apellido ?? ''));
+                            @endphp
+                            {{ $nombreCompleto !== '' ? $nombreCompleto : 'Sin residente' }}
+                        </td>
+                        <td>{{ $factura->Monto }}</td>
+                        <td>
+                            @php
+                                $estado = strtolower($factura->Estado_Pago);
+                            @endphp
+                            <span class="status-badge {{ $estado }}">
+                                {{ ucfirst($factura->Estado_Pago) }}
+                            </span>
+                        </td>
+                        <td>
+                            {{ $factura->fecha_pago ? \Carbon\Carbon::parse($factura->fecha_pago)->translatedFormat('F Y') : '-' }}
+                        </td>
+                        <td style="text-align:center;">
+                            <form action="{{ route('admin.facturas.cancelar', $factura->id) }}" method="POST" style="display:inline-block;">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="btn-modern btn-warning-modern">Restablecer</button>
+                            </form>
+                        </td>
+                        <td style="text-align:center;">
+                            @if($factura->Archivo_Comprobante)
+                                <a href="#" onclick="abrirComprobanteApi({{ $factura->id }}); return false;" title="Ver comprobante">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16" style="color:#007bff;vertical-align:middle;">
+                                        <path d="M4.5 9.5A.5.5 0 0 1 5 9h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 7h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
+                                        <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3-.5a.5.5 0 0 1-.5-.5V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5h-2a1 1 0 0 1-1-1V4z"/>
+                                    </svg>
+                                </a>
+                            @else
+                                <span style="color:#bbb;">-</span>
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-state-icon">📁</div>
+                            <div class="empty-state-text">No hay facturas archivadas</div>
+                            <div class="empty-state-subtext">
+                                @if(request()->hasAny(['año', 'mes', 'estado']))
+                                    No se encontraron facturas con los filtros aplicados.
+                                @else
+                                    Las facturas aceptadas y rechazadas aparecerán aquí.
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
 </div>
-</div>
+
 <script>
     // URL base correcta de la API Cooperativa
     const API_COOPERATIVA_BASE = 'http://localhost:8001/api';
@@ -701,6 +613,7 @@
         const url = `${API_COOPERATIVA_WEB}/comprobantes/${facturaId}`;
         window.open(url, '_blank');
     }
+    
     document.querySelectorAll('.factura-row').forEach(function(row) {
         let clickCount = 0;
         let timer = null;
@@ -741,7 +654,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         const hasFilters = Array.from(urlParams.keys()).some(key => 
-            ['año', 'mes'].includes(key) && urlParams.get(key)
+            ['año', 'mes', 'estado'].includes(key) && urlParams.get(key)
         );
         
         if (hasFilters) {

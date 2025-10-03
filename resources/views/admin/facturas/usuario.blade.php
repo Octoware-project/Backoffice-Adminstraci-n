@@ -2,227 +2,615 @@
 
 @section('content')
 <style>
-    .factura-table-container {
-        max-width: 900px;
-        margin: 40px auto;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 16px 0 rgba(0,0,0,0.07);
-        padding: 2rem 1rem;
+    /* Variables CSS del sistema planTrabajo */
+    :root {
+        --primary-color: #667eea;
+        --primary-light: #764ba2;
+        --secondary-color: #f093fb;
+        --success-color: #4ecdc4;
+        --warning-color: #ffecd2;
+        --danger-color: #fc466b;
+        --text-primary: #1a202c;
+        --text-secondary: #2d3748;
+        --text-muted: #4a5568;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f7fafc;
+        --bg-light: #edf2f7;
+        --border-color: #a0aec0;
+        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --radius: 12px;
+        --radius-sm: 8px;
     }
-    .factura-table {
+
+    /* Background moderno */
+    body {
+        background-color: #d2d2f1ff !important;
+        overflow-x: hidden;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* Internet Explorer and Edge */
+    }
+
+    /* Hide scrollbar completely */
+    body::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, and Opera */
+    }
+
+    html {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* Internet Explorer and Edge */
+    }
+
+    html::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, and Opera */
+    }
+
+    /* Container principal moderno */
+    .facturas-workspace {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        min-height: 100vh;
+        background-color: #d2d2f1ff;
+    }
+
+    /* Header moderno estilo planTrabajo */
+    .facturas-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        border-radius: var(--radius);
+        padding: 2rem 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-lg);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .facturas-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.15"/><circle cx="20" cy="80" r="0.5" fill="white" opacity="0.15"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
+        pointer-events: none;
+    }
+
+    .header-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-title {
+        margin: 0;
+        font-size: 2.25rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+
+    .header-subtitle {
+        margin: 0.5rem 0 0 0;
+        font-size: 1.1rem;
+        opacity: 0.9;
+        font-weight: 400;
+    }
+
+    /* Container de tabla moderno */
+    .table-container {
+        background: var(--bg-primary);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    /* Tabla moderna estilo planTrabajo */
+    .modern-table {
         width: 100%;
-        border-collapse: collapse;
-        font-size: 1rem;
-        background: transparent;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.875rem;
     }
-    .factura-table th, .factura-table td {
-        padding: 0.9rem 1rem;
+
+    .modern-table thead {
+        background: linear-gradient(90deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    .modern-table th {
+        padding: 1rem 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
         text-align: left;
+        border-bottom: 2px solid var(--border-color);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--bg-light);
     }
-    .factura-table th {
-        background: #f6f8fa;
-        color: #222;
-        font-weight: 600;
-        border-bottom: 2px solid #eaeaea;
-    }
-    .factura-table tr {
-        transition: background 0.2s;
-    }
-    .factura-table tbody tr:hover {
-        background: #f0f4f8;
-    }
-    .factura-table td {
-        border-bottom: 1px solid #f0f0f0;
-        color: #444;
-    }
-    .estado-pago {
-        display: inline-block;
-        padding: 0.35em 1em;
-        border-radius: 1em;
-        font-weight: 600;
-        font-size: 0.98em;
-        letter-spacing: 0.02em;
-        background: #f6f6f6;
-        color: #888;
-        border: none;
-        min-width: 90px;
-        text-align: center;
-    }
-    .estado-pago.pendiente {
-        background: #ffeecf;
-        color: #b88a2a;
-    }
-    .estado-pago.aceptado {
-        background: #d6f5e7;
-        color: #2e8b57;
-    }
-    .estado-pago.rechazado {
-        background: #ffe0e0;
-        color: #c0392b;
-    }
-    @media (max-width: 600px) {
-        .factura-table-container {
-            padding: 0.5rem 0.2rem;
-        }
-        .factura-table th, .factura-table td {
-            padding: 0.5rem 0.3rem;
-            font-size: 0.95rem;
-        }
-        h1 {
-            font-size: 1.2rem;
-        }
-    }
-    .btn {
-        border: none;
-        padding: 0.4rem 0.8rem;
-        border-radius: 4px;
-        font-size: 0.85rem;
+
+    .modern-table td {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+        color: var(--text-primary);
         font-weight: 500;
-        cursor: pointer;
+    }
+
+    .modern-table tbody tr {
         transition: all 0.2s ease;
+    }
+
+    .modern-table tbody tr:hover {
+        background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%);
+        transform: translateX(4px);
+        box-shadow: inset 4px 0 0 var(--primary-color);
+    }
+
+    /* Estados modernos */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        min-width: 90px;
+        justify-content: center;
+    }
+
+    .status-badge.pendiente {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-badge.aceptado {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-badge.rechazado {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    /* Botones modernos estilo planTrabajo */
+    .btn-modern {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 0.75rem;
         text-decoration: none;
-        display: inline-block;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
     }
-    .btn-success {
-        background-color: #28a745;
+
+    .btn-success-modern {
+        background: #f0fdf4;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
+
+    .btn-success-modern:hover {
+        background: #dcfce7;
+        color: #166534;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    .btn-danger-modern {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .btn-danger-modern:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+        transform: translateY(-1px);
+    }
+
+    .btn-warning-modern {
+        background: #fffbeb;
+        color: #d97706;
+        border: 1px solid #fcd34d;
+    }
+
+    .btn-warning-modern:hover {
+        background: #fef3c7;
+        color: #b45309;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    .btn-secondary-modern {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+    }
+
+    .btn-secondary-modern:hover {
+        background: var(--bg-light);
+        border-color: var(--primary-color);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+        color: var(--text-primary);
+        text-decoration: none;
+    }
+
+    .btn-delete-modern {
+        background: #fdf2f8;
+        color: #be185d;
+        border: 1px solid #f9a8d4;
+    }
+
+    .btn-delete-modern:hover {
+        background: #fce7f3;
+        color: #a21caf;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    .btn-resolve-modern {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .btn-resolve-modern:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    /* Botones en el header */
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .btn-header {
+        background: rgba(255, 255, 255, 0.15);
         color: white;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
     }
-    .btn-success:hover {
-        background-color: #218838;
-    }
-    .btn-danger {
-        background-color: #dc3545;
+
+    .btn-header:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         color: white;
+        text-decoration: none;
     }
-    .btn-danger:hover {
-        background-color: #c82333;
+
+    .btn-info-header {
+        background: rgba(52, 152, 219, 0.2);
+        border: 1px solid rgba(52, 152, 219, 0.4);
     }
-    .btn-warning {
-        background-color: #ffc107;
-        color: #212529;
+
+    .btn-info-header:hover {
+        background: rgba(52, 152, 219, 0.3);
+        border: 1px solid rgba(52, 152, 219, 0.6);
     }
-    .btn-warning:hover {
-        background-color: #e0a800;
+    /* Card de estado de pagos moderno */
+    .estado-pagos-card {
+        background: var(--bg-primary);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
     }
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
+
+    .estado-pagos-card.success {
+        border-left: 4px solid var(--success-color);
+        background: linear-gradient(90deg, #f0fff4 0%, #e6fffa 100%);
     }
-    .btn-secondary:hover {
-        background-color: #5a6268;
+
+    .estado-pagos-card.warning {
+        border-left: 4px solid #f59e0b;
+        background: linear-gradient(90deg, #fffbeb 0%, #fef3c7 100%);
     }
-    .btn-sm {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.8rem;
+
+    .estado-pagos-card.danger {
+        border-left: 4px solid var(--danger-color);
+        background: linear-gradient(90div, #fef2f2 0%, #fee2e2 100%);
     }
+
+    .estado-info {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .estado-content {
+        flex: 1;
+    }
+
+    .estado-title {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        margin-bottom: 0.75rem;
+    }
+
+    .estado-title.success {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .estado-title.warning {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .estado-title.danger {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .estado-descripcion {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .estado-icon {
+        font-size: 2.5rem;
+        opacity: 0.8;
+    }
+
+    .estado-icon.success { color: var(--success-color); }
+    .estado-icon.warning { color: #f59e0b; }
+    .estado-icon.danger { color: var(--danger-color); }
+
+    /* Action buttons container */
     .action-buttons {
         display: flex;
         justify-content: center;
-        gap: 5px;
+        gap: 0.5rem;
         flex-wrap: wrap;
     }
+
     .action-buttons form {
         display: inline-block;
         margin: 0;
     }
-    @media (max-width: 480px) {
-        .action-buttons {
-            gap: 3px;
-        }
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-        }
-    }
-    .estado-pagos-container {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        border-left: 4px solid #6c757d;
-    }
-    .estado-pagos-container.success {
-        border-left-color: #28a745;
-        background: #f8fff8;
-    }
-    .estado-pagos-container.warning {
-        border-left-color: #ffc107;
-        background: #fffef8;
-    }
-    .estado-pagos-container.danger {
-        border-left-color: #dc3545;
-        background: #fff8f8;
-    }
-    .estado-badge {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-    }
-    .estado-badge.success {
-        background: #d4edda;
-        color: #155724;
-    }
-    .estado-badge.warning {
-        background: #fff3cd;
-        color: #856404;
-    }
-    .estado-badge.danger {
-        background: #f8d7da;
-        color: #721c24;
-    }
-    .estado-detalle {
-        color: #6c757d;
-        font-size: 0.9rem;
-        margin: 0;
-    }
+
+
+
+    /* Responsive */
     @media (max-width: 768px) {
-        .estado-pagos-container {
-            padding: 1rem;
+        .facturas-workspace {
+            padding: 0 1rem;
         }
-        .estado-pagos-container > div {
+        
+        .facturas-header {
+            padding: 1.5rem 2rem;
+        }
+        
+        .header-title {
+            font-size: 1.875rem;
+        }
+        
+        .modern-table th,
+        .modern-table td {
+            padding: 0.75rem 1rem;
+        }
+        
+        .btn-modern {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.7rem;
+        }
+
+        .estado-info {
             flex-direction: column;
             text-align: center;
-            gap: 0.5rem !important;
+            gap: 1rem;
         }
-        .estado-badge {
-            font-size: 0.9rem;
+
+        .estado-icon {
+            font-size: 2rem;
         }
     }
+
+    @media (max-width: 1024px) {
+        .header-content {
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: center;
+        }
+        
+        .action-buttons {
+            gap: 0.25rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-modern {
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .btn-group {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: stretch;
+        }
+
+        .btn-header {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+        }
+    }
+
+    /* Alertas */
+    .alert {
+        border-radius: var(--radius-sm);
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .alert-success {
+        background: #d1fae5;
+        border: 1px solid #6ee7b7;
+        color: #065f46;
+    }
+
+    .alert-info {
+        background: #dbeafe;
+        border: 1px solid #93c5fd;
+        color: #1e40af;
+    }
+
+    .alert i {
+        font-size: 1.25rem;
+    }
 </style>
-<div class="factura-table-container">
-    @php \Carbon\Carbon::setLocale('es'); @endphp
-    <h1 style="text-align:center; font-weight:700; margin-bottom:1.5rem;">
-        @php
-            $persona = $usuario && $usuario->persona ? $usuario->persona : null;
-            $nombreCompleto = $persona ? trim(($persona->name ?? '') . ' ' . ($persona->apellido ?? '')) : ($usuario->name ?? null);
-        @endphp
-        Facturas de {{ $nombreCompleto ? $nombreCompleto : 'Usuario desconocido' }}
-    </h1>
-    
-    <!-- Estado de Pagos -->
-    <div class="estado-pagos-container {{ $estadoPagos['color'] }}">
-        <div style="display: flex; align-items: center; gap: 1rem;">
+
+{{-- FontAwesome para iconos --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="facturas-workspace">
+    <!-- Header moderno -->
+    <div class="facturas-header">
+        <div class="header-content">
             <div>
-                <span class="estado-badge {{ $estadoPagos['color'] }}">
-                    {{ $estadoPagos['estado'] }}
-                </span>
-                <p class="estado-detalle">{{ $estadoPagos['detalle'] }}</p>
+                @php
+                    $persona = $usuario && $usuario->persona ? $usuario->persona : null;
+                    $nombreCompleto = $persona ? trim(($persona->name ?? '') . ' ' . ($persona->apellido ?? '')) : ($usuario->name ?? null);
+                @endphp
+                <h1 class="header-title">Facturas de {{ $nombreCompleto ? $nombreCompleto : 'Usuario desconocido' }}</h1>
+                <p class="header-subtitle">Detalle de pagos y estado de cuenta del residente</p>
             </div>
-            @if($estadoPagos['color'] == 'success')
-                <div style="color: #28a745; font-size: 2rem;">✓</div>
-            @elseif($estadoPagos['color'] == 'warning')
-                <div style="color: #ffc107; font-size: 2rem;">⚠</div>
-            @else
-                <div style="color: #dc3545; font-size: 2rem;">⚠</div>
-            @endif
+            <div class="btn-group">
+                <a href="{{ route('admin.facturas.index') }}" class="btn-header">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+                @if($usuario)
+                    <a href="{{ route('usuarios.show', $usuario->id) }}" class="btn-header btn-info-header">
+                        <i class="fas fa-user"></i> Ver Datos del Usuario
+                    </a>
+                @endif
+            </div>
         </div>
     </div>
-    
-    <table class="factura-table">
+
+    @php \Carbon\Carbon::setLocale('es'); @endphp
+
+    <!-- Mostrar mensajes de información -->
+    @if(session('info'))
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            {{ session('info') }}
+        </div>
+    @endif
+
+    @if(session('success'))
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Estado de Pagos Card Moderno -->
+    <div class="estado-pagos-card {{ $estadoPagos['color'] }}">
+        <div class="estado-info">
+            <div class="estado-content">
+                <div class="estado-title {{ $estadoPagos['color'] }}">
+                    {{ $estadoPagos['estado'] }}
+                </div>
+                <p class="estado-descripcion">{{ $estadoPagos['detalle'] }}</p>
+            </div>
+            <div class="estado-icon {{ $estadoPagos['color'] }}">
+                @if($estadoPagos['color'] == 'success')
+                    ✓
+                @elseif($estadoPagos['color'] == 'warning')
+                    ⚠
+                @else
+                    ⚠
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón Resolver Rechazados -->
+    @if($facturasRechazadas > 0)
+        <div style="margin-bottom: 2rem; text-align: left;">
+            @if(!$mostrarRechazadas)
+                <a href="{{ route('admin.facturas.usuario', ['email' => $usuario->email ?? request()->route('email'), 'rechazadas' => '1']) }}" 
+                   class="btn-modern btn-resolve-modern">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    Resolver Rechazados ({{ $facturasRechazadas }})
+                </a>
+            @else
+                <a href="{{ route('admin.facturas.usuario', $usuario->email ?? request()->route('email')) }}" 
+                   class="btn-modern btn-secondary-modern">
+                    <i class="fas fa-list"></i> 
+                    Ver Todas las Facturas
+                </a>
+            @endif
+        </div>
+    @endif
+
+    <!-- Tabla moderna de facturas -->
+    <div class="table-container">
+        @if($mostrarRechazadas)
+            <div style="padding: 1rem 2rem; background: linear-gradient(90deg, #fef3c7 0%, #fed7aa 100%); border-bottom: 1px solid #f59e0b;">
+                <h3 style="margin: 0; color: #92400e; font-size: 1.1rem; font-weight: 600;">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    Facturas Rechazadas ({{ $facturas->count() }})
+                </h3>
+                <p style="margin: 0.5rem 0 0 0; color: #b45309; font-size: 0.875rem;">
+                    Estas facturas han sido rechazadas y pueden ser eliminadas del sistema
+                </p>
+            </div>
+        @endif
+        <table class="modern-table">
         <thead>
             <tr>
                 <th>Residente</th>
@@ -235,7 +623,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($facturas as $factura)
+            @forelse($facturas as $factura)
                 <tr>
                     <td>
                         @php
@@ -249,7 +637,7 @@
                         @php
                             $estado = strtolower($factura->Estado_Pago);
                         @endphp
-                        <span class="estado-pago {{ $estado }}">
+                        <span class="status-badge {{ $estado }}">
                             {{ ucfirst($factura->Estado_Pago) }}
                         </span>
                     </td>
@@ -270,39 +658,75 @@
                         @endif
                     </td>
                     <td style="text-align:center;">
-                        @if($factura->Estado_Pago === 'Pendiente')
-                            <div class="action-buttons">
-                                <form action="{{ route('admin.facturas.aceptar', $factura->id) }}" method="POST">
+                        <div class="action-buttons">
+                            @if($mostrarRechazadas)
+                                {{-- En modo resolver rechazados, solo mostrar botón eliminar --}}
+                                <form action="{{ route('admin.facturas.eliminar', $factura->id) }}" method="POST" 
+                                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta factura? Esta acción no se puede deshacer.')" 
+                                      style="display:inline-block;">
                                     @csrf
-                                    @method('PUT')
+                                    @method('DELETE')
                                     <input type="hidden" name="from_user" value="1">
-                                    <button type="submit" class="btn btn-success btn-sm" title="Aceptar factura">Aceptar</button>
+                                    <input type="hidden" name="rechazadas" value="1">
+                                    <button type="submit" class="btn-modern btn-delete-modern" title="Eliminar factura">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
                                 </form>
-                                <form action="{{ route('admin.facturas.rechazar', $factura->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="from_user" value="1">
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Rechazar factura">Rechazar</button>
-                                </form>
+                            @else
+                                {{-- Modo normal con todas las acciones --}}
+                                @if($factura->Estado_Pago === 'Pendiente')
+                                    <form action="{{ route('admin.facturas.aceptar', $factura->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="from_user" value="1">
+                                        <button type="submit" class="btn-modern btn-success-modern" title="Aceptar factura">Aceptar</button>
+                                    </form>
+                                    <form action="{{ route('admin.facturas.rechazar', $factura->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="from_user" value="1">
+                                        <button type="submit" class="btn-modern btn-danger-modern" title="Rechazar factura">Rechazar</button>
+                                    </form>
+                                @elseif($factura->Estado_Pago === 'Aceptado' || $factura->Estado_Pago === 'Rechazado')
+                                    <form action="{{ route('admin.facturas.cancelar', $factura->id) }}" method="POST" style="display:inline-block;">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="from_user" value="1">
+                                        <button type="submit" class="btn-modern btn-warning-modern" title="Restablecer a pendiente">Restablecer</button>
+                                    </form>
+                                @else
+                                    <span style="color:var(--text-muted);font-size:0.875rem;">Sin acciones</span>
+                                @endif
+                            @endif
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                        @if($mostrarRechazadas)
+                            <div>
+                                <i class="fas fa-check-circle" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;"></i>
+                                <h3 style="margin: 0; font-size: 1.25rem;">No hay facturas rechazadas</h3>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem;">
+                                    Todas las facturas de este usuario han sido procesadas correctamente
+                                </p>
                             </div>
-                        @elseif($factura->Estado_Pago === 'Aceptado' || $factura->Estado_Pago === 'Rechazado')
-                            <form action="{{ route('admin.facturas.cancelar', $factura->id) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="from_user" value="1">
-                                <button type="submit" class="btn btn-warning btn-sm" title="Restablecer a pendiente">Restablecer</button>
-                            </form>
                         @else
-                            <span style="color:#888;font-size:0.9em;">Sin acciones</span>
+                            <div>
+                                <i class="fas fa-receipt" style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;"></i>
+                                <h3 style="margin: 0; font-size: 1.25rem;">No hay facturas registradas</h3>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem;">
+                                    Este usuario no tiene facturas en el sistema
+                                </p>
+                            </div>
                         @endif
                     </td>
                 </tr>
-            @endforeach
+            @endforelse
         </tbody>
     </table>
 </div>
-<div style="margin-top:2.2rem; text-align:left;">
-    <a href="{{ route('admin.facturas.index') }}" class="btn btn-secondary">Volver</a>
-</div>
+
 </div>
 @endsection

@@ -173,6 +173,50 @@
             color: white;
         }
 
+        /* Estilos específicos para facturas */
+        .facturas-section-header {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+        }
+
+        /* Badge con mejor espaciado */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            white-space: nowrap;
+        }
+
+        /* Contenedor de información de facturas */
+        .facturas-info-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 1rem;
+        }
+
+        .facturas-status-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .facturas-info-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            
+            .facturas-status-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
         /* Códigos */
         code {
             background: var(--bg-light);
@@ -488,6 +532,57 @@
                                 <i class="fas fa-times-circle"></i>
                                 Sin unidad asignada
                             </span>
+                        </td></tr>
+                    @endif
+
+                    {{-- Información de Facturas --}}
+                    <tr><th colspan="2" class="facturas-section-header"><i class="fas fa-credit-card"></i> Estado de Facturas</th></tr>
+                    @if($usuario->user && $usuario->user->email)
+                        @if($totalFacturas > 0 && $estadoFacturas)
+                            <tr><th><i class="fas fa-chart-line"></i> Estado de Pagos</th><td>
+                                <div class="facturas-info-container">
+                                    <div class="facturas-status-group">
+                                        <span class="badge badge-{{ $estadoFacturas['color'] }}">
+                                            <i class="{{ $estadoFacturas['icono'] }}"></i>
+                                            {{ $estadoFacturas['estado'] }}
+                                        </span>
+                                        <small class="text-muted">{{ $estadoFacturas['detalle'] }}</small>
+                                    </div>
+                                    <a href="{{ route('admin.facturas.usuario', $usuario->user->email) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> Ver Facturas
+                                    </a>
+                                </div>
+                            </td></tr>
+                            <tr><th><i class="fas fa-receipt"></i> Total de Facturas</th><td>
+                                <span class="badge badge-info">
+                                    <i class="fas fa-hashtag"></i>
+                                    {{ $totalFacturas }} {{ $totalFacturas == 1 ? 'factura' : 'facturas' }}
+                                </span>
+                            </td></tr>
+                        @else
+                            <tr><th><i class="fas fa-credit-card"></i> Estado de Facturas</th><td>
+                                <div class="facturas-info-container">
+                                    <span class="badge badge-secondary">
+                                        <i class="fas fa-info-circle"></i>
+                                        Sin facturas registradas
+                                    </span>
+                                    <a href="{{ route('admin.facturas.usuario', $usuario->user->email) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fas fa-plus"></i> Gestionar Facturas
+                                    </a>
+                                </div>
+                            </td></tr>
+                        @endif
+                    @else
+                        <tr><th><i class="fas fa-credit-card"></i> Estado de Facturas</th><td>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <span class="badge badge-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Usuario sin email registrado
+                                </span>
+                                <small class="text-muted">No se pueden gestionar facturas sin email asociado</small>
+                            </div>
                         </td></tr>
                     @endif
                 </table>

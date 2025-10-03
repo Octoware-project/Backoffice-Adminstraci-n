@@ -34,9 +34,11 @@ Route::get('/octoware', function () {
 
 // Vista de facturas (admin)
 Route::get('/facturas', [FacturaController::class, 'index'])->name('admin.facturas.index');
+Route::get('/facturas/archivadas', [FacturaController::class, 'archivadas'])->name('admin.facturas.archivadas');
 Route::put('/facturas/{id}/aceptar', [FacturaController::class, 'aceptar'])->name('admin.facturas.aceptar');
 Route::put('/facturas/{id}/rechazar', [FacturaController::class, 'rechazar'])->name('admin.facturas.rechazar');
 Route::put('/facturas/{id}/cancelar', [FacturaController::class, 'cancelar'])->name('admin.facturas.cancelar');
+Route::delete('/facturas/{id}/eliminar', [FacturaController::class, 'eliminar'])->name('admin.facturas.eliminar');
 Route::get('/facturas/usuario/{email}', [FacturaController::class, 'porUsuario'])->where('email', '.*')->name('admin.facturas.usuario');
 
 // Página Administradores

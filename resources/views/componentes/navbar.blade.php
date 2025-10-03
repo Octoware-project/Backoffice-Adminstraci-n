@@ -107,7 +107,7 @@
         transition: transform 0.3s ease;
     }
     
-    .sidebar ul li.has-submenu:hover > a::after,
+    .sidebar ul li.has-submenu.open > a::after,
     .sidebar ul li.has-submenu.active > a::after {
         transform: rotate(180deg);
     }
@@ -128,7 +128,7 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
     }
     
-    .sidebar ul li.has-submenu:hover .submenu {
+    .sidebar ul li.has-submenu.open .submenu {
         opacity: 1;
         visibility: visible;
         transform: translateX(0);
@@ -184,7 +184,7 @@
         background: rgba(0, 0, 0, 0.2);
     }
     
-    .user-menu:hover .dropdown-menu {
+    .user-menu.open .dropdown-menu {
         opacity: 1;
         visibility: visible;
         transform: translateX(0);
@@ -289,7 +289,7 @@
             margin-right: 10px;
         }
         
-        .user-menu:hover .dropdown-menu {
+        .user-menu.open .dropdown-menu {
             transform: translateX(0);
         }
         
@@ -299,7 +299,7 @@
             transform: translateX(10px);
         }
         
-        .sidebar ul li.has-submenu:hover .submenu {
+        .sidebar ul li.has-submenu.open .submenu {
             transform: translateX(0);
         }
     }
@@ -382,10 +382,24 @@
                     </ul>
                 </div>
             </li>
-            <li><a href="/facturas">
-                <i class="fas fa-credit-card"></i>
-                Pagos
-            </a></li>
+            <li class="has-submenu">
+                <a href="{{ route('admin.facturas.index') }}">
+                    <i class="fas fa-credit-card"></i>
+                    Pagos
+                </a>
+                <div class="submenu">
+                    <ul>
+                        <li><a href="{{ route('admin.facturas.index') }}">
+                            <i class="fas fa-clock"></i>
+                            Pendientes
+                        </a></li>
+                        <li><a href="{{ route('admin.facturas.archivadas') }}">
+                            <i class="fas fa-archive"></i>
+                            Archivados
+                        </a></li>
+                    </ul>
+                </div>
+            </li>
             <li class="has-submenu">
                 <a href="{{ route('plan-trabajos.index') }}">
                     <i class="fas fa-tasks"></i>
@@ -473,51 +487,67 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Handle user menu dropdown similar to submenu
+        // Handle user menu dropdown with click
         const userMenu = document.querySelector('.user-menu');
+        const userBtn = document.getElementById('userMenuBtn');
         const userDropdown = document.getElementById('userDropdown');
-        let userHoverTimeout;
         
-        userMenu.addEventListener('mouseenter', function() {
-            clearTimeout(userHoverTimeout);
-            userDropdown.classList.add('show');
-        });
-        
-        userMenu.addEventListener('mouseleave', function() {
-            userHoverTimeout = setTimeout(() => {
-                userDropdown.classList.remove('show');
-            }, 100);
-        });
-        
-        // Keep dropdown open when hovering over it
-        userDropdown.addEventListener('mouseenter', function() {
-            clearTimeout(userHoverTimeout);
-            userDropdown.classList.add('show');
-        });
-        
-        userDropdown.addEventListener('mouseleave', function() {
-            userHoverTimeout = setTimeout(() => {
-                userDropdown.classList.remove('show');
-            }, 100);
-        });
-        
-        // Still support click functionality
-        const btn = document.getElementById('userMenuBtn');
-        btn.addEventListener('click', function(e) {
+        userBtn.addEventListener('click', function(e) {
             e.stopPropagation();
+            // Cerrar otros menús abiertos
+            document.querySelectorAll('.has-submenu.open').forEach(item => {
+                item.classList.remove('open');
+            });
+            // Toggle del menú de usuario
+            userMenu.classList.toggle('open');
             userDropdown.classList.toggle('show');
         });
         
-        // Close dropdown when clicking outside
+        // Handle submenu interactions with click
+        const hasSubmenuItems = document.querySelectorAll('.has-submenu');
+        
+        hasSubmenuItems.forEach(item => {
+            const mainLink = item.querySelector('a');
+            
+            mainLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Cerrar el menú de usuario si está abierto
+                userMenu.classList.remove('open');
+                userDropdown.classList.remove('show');
+                
+                // Cerrar otros submenús
+                hasSubmenuItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('open');
+                    }
+                });
+                
+                // Toggle del submenú actual
+                item.classList.toggle('open');
+            });
+        });
+        
+        // Close all dropdowns when clicking outside
         document.addEventListener('click', function(e) {
-            if (!btn.contains(e.target) && !userDropdown.contains(e.target)) {
+            if (!e.target.closest('.sidebar')) {
+                // Cerrar todos los menús
+                hasSubmenuItems.forEach(item => {
+                    item.classList.remove('open');
+                });
+                userMenu.classList.remove('open');
                 userDropdown.classList.remove('show');
             }
         });
         
-        // Close dropdown on escape key
+        // Close dropdowns on escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
+                hasSubmenuItems.forEach(item => {
+                    item.classList.remove('open');
+                });
+                userMenu.classList.remove('open');
                 userDropdown.classList.remove('show');
             }
         });
@@ -550,6 +580,29 @@
                     if (pendientesLink) pendientesLink.classList.add('active');
                 }
             }
+            // Manejar específicamente las rutas de facturas
+            else if (currentPath === '/facturas' || currentPath === '/facturas/archivadas') {
+                // Marcar el menú principal de facturas como activo
+                const facturasMainLink = document.querySelector('a[href*="admin.facturas.index"]');
+                if (facturasMainLink) {
+                    facturasMainLink.classList.add('active');
+                    const parentLi = facturasMainLink.parentElement;
+                    if (parentLi) {
+                        parentLi.classList.add('active');
+                    }
+                }
+                
+                // Marcar el submenu específico como activo
+                if (currentPath === '/facturas') {
+                    const pendientesLink = document.querySelector('a[href*="admin.facturas.index"]:not([href*="archivadas"])');
+                    if (pendientesLink && pendientesLink.textContent.trim().includes('Pendientes')) {
+                        pendientesLink.classList.add('active');
+                    }
+                } else if (currentPath === '/facturas/archivadas') {
+                    const archivadasLink = document.querySelector('a[href*="admin.facturas.archivadas"]');
+                    if (archivadasLink) archivadasLink.classList.add('active');
+                }
+            }
             // Manejar otras rutas normalmente
             else if (currentPath === linkPath || 
                 (currentPath.startsWith(linkPath) && linkPath !== '/' && linkPath.length > 1)) {
@@ -561,39 +614,6 @@
                     parentLi.classList.add('active');
                     parentLi.querySelector('a').classList.add('active');
                 }
-            }
-        });
-        
-        // Handle submenu interactions
-        const hasSubmenuItems = document.querySelectorAll('.has-submenu');
-        
-        hasSubmenuItems.forEach(item => {
-            const submenu = item.querySelector('.submenu');
-            let hoverTimeout;
-            
-            item.addEventListener('mouseenter', function() {
-                clearTimeout(hoverTimeout);
-                item.classList.add('active');
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                hoverTimeout = setTimeout(() => {
-                    item.classList.remove('active');
-                }, 100);
-            });
-            
-            // Keep submenu open when hovering over it
-            if (submenu) {
-                submenu.addEventListener('mouseenter', function() {
-                    clearTimeout(hoverTimeout);
-                    item.classList.add('active');
-                });
-                
-                submenu.addEventListener('mouseleave', function() {
-                    hoverTimeout = setTimeout(() => {
-                        item.classList.remove('active');
-                    }, 100);
-                });
             }
         });
     });

@@ -17,14 +17,17 @@
             overflow-x: hidden; /* Prevenir scroll horizontal */
         }
         
+        /* Asegurar que el main-content respete el sidebar */
         .main-content {
-            margin-left: 240px;
+            margin-left: 240px !important;
             padding: 20px 30px;
             min-height: 100vh;
             transition: margin-left 0.3s ease;
             width: calc(100% - 240px); /* Ancho específico para evitar overflow */
             max-width: calc(100% - 240px);
             overflow-x: hidden; /* Prevenir scroll horizontal en el contenido */
+            position: relative;
+            z-index: 1;
         }
         
         h1 {

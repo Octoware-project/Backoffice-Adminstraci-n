@@ -204,7 +204,81 @@ class UsuarioController extends Controller
     {
         $usuario = Persona::with(['user', 'unidadHabitacional'])->findOrFail($id);
         $password = request()->query('password'); // Recibe la contraseña si viene de aceptar
-        return view('admin.usuarios.show', compact('usuario', 'password'));
+        
+        // Obtener información de facturas si el usuario tiene email
+        $estadoFacturas = null;
+        $totalFacturas = 0;
+        if ($usuario->user && $usuario->user->email) {
+            $facturas = \App\Models\Factura::where('email', $usuario->user->email)->get();
+            $totalFacturas = $facturas->count();
+            
+            if ($totalFacturas > 0) {
+                // Usar el mismo método que en FacturaController para calcular estado
+                $estadoFacturas = $this->calcularEstadoFacturas($facturas);
+            }
+        }
+        
+        return view('admin.usuarios.show', compact('usuario', 'password', 'estadoFacturas', 'totalFacturas'));
+    }
+
+    /**
+     * Calcula el estado de las facturas del usuario
+     */
+    private function calcularEstadoFacturas($facturas)
+    {
+        if ($facturas->isEmpty()) {
+            return [
+                'estado' => 'Sin facturas',
+                'color' => 'secondary',
+                'detalle' => 'No hay facturas registradas',
+                'icono' => 'fas fa-receipt'
+            ];
+        }
+
+        // Obtener facturas por estado
+        $facturasAceptadas = $facturas->where('Estado_Pago', 'Aceptado');
+        $facturasPendientes = $facturas->where('Estado_Pago', 'Pendiente');
+        $facturasRechazadas = $facturas->where('Estado_Pago', 'Rechazado');
+        
+        $totalFacturas = $facturas->count();
+        $facturasAceptadasCount = $facturasAceptadas->count();
+        $facturasPendientesCount = $facturasPendientes->count();
+        $facturasRechazadasCount = $facturasRechazadas->count();
+        
+        // Calcular facturas no pagadas (pendientes + rechazadas)
+        $facturasNoPagadas = $facturasPendientesCount + $facturasRechazadasCount;
+        
+        // Determinar estado y color basado en las facturas registradas
+        if ($facturasNoPagadas == 0) {
+            return [
+                'estado' => 'Al día',
+                'color' => 'success',
+                'detalle' => "Todas las facturas están aceptadas ({$facturasAceptadasCount}/{$totalFacturas})",
+                'icono' => 'fas fa-check-circle'
+            ];
+        } elseif ($facturasNoPagadas == 1) {
+            $detalle = $facturasPendientesCount > 0 ? 
+                '1 factura pendiente de aprobación' : 
+                '1 factura rechazada';
+            return [
+                'estado' => 'Pendiente',
+                'color' => 'warning',
+                'detalle' => $detalle,
+                'icono' => 'fas fa-exclamation-triangle'
+            ];
+        } else {
+            $pendientesText = $facturasPendientesCount > 0 ? "{$facturasPendientesCount} pendientes" : '';
+            $rechazadasText = $facturasRechazadasCount > 0 ? "{$facturasRechazadasCount} rechazadas" : '';
+            
+            $detalle = trim($pendientesText . ($pendientesText && $rechazadasText ? ', ' : '') . $rechazadasText);
+            
+            return [
+                'estado' => "{$facturasNoPagadas} facturas sin aprobar",
+                'color' => 'danger',
+                'detalle' => $detalle,
+                'icono' => 'fas fa-times-circle'
+            ];
+        }
     }
 
     public function edit($id)

@@ -11,13 +11,44 @@ class FacturaController extends Controller
 {
     public function index(Request $request)
     {
-        $estado = $request->input('estado');
-        $query = Factura::query();
-        if ($estado && in_array($estado, ['Pendiente', 'Aceptado', 'Rechazado'])) {
-            $query->where('Estado_Pago', $estado);
+        $query = Factura::where('Estado_Pago', 'Pendiente');
+        
+        // Aplicar filtros de año y mes
+        if ($request->filled('año')) {
+            $query->whereYear('fecha_pago', $request->año);
         }
+        
+        if ($request->filled('mes')) {
+            $query->whereMonth('fecha_pago', $request->mes);
+        }
+        
         $facturas = $query->get();
-        return view('admin.facturas.index', compact('facturas', 'estado'));
+        
+        // Obtener el total de facturas pendientes (sin filtros) para la alerta
+        $totalFacturasPendientes = Factura::where('Estado_Pago', 'Pendiente')->count();
+        
+        return view('admin.facturas.index', compact('facturas', 'totalFacturasPendientes'));
+    }
+
+    public function archivadas(Request $request)
+    {
+        $query = Factura::whereIn('Estado_Pago', ['Aceptado', 'Rechazado']);
+        
+        // Aplicar filtros
+        if ($request->filled('año')) {
+            $query->whereYear('fecha_pago', $request->año);
+        }
+        
+        if ($request->filled('mes')) {
+            $query->whereMonth('fecha_pago', $request->mes);
+        }
+        
+        if ($request->filled('estado')) {
+            $query->where('Estado_Pago', $request->estado);
+        }
+        
+        $facturas = $query->get();
+        return view('admin.facturas.archivadas', compact('facturas'));
     }
 
 
@@ -35,15 +66,34 @@ class FacturaController extends Controller
         return redirect()->route('admin.facturas.index')->with('success', 'Estado de la factura restablecido a pendiente.');
     }
 
-    public function porUsuario($email)
+    public function porUsuario(Request $request, $email)
     {
-        $facturas = Factura::where('email', $email)->get();
+        $query = Factura::where('email', $email);
+        
+        // Filtrar por rechazadas si se especifica
+        $mostrarRechazadas = $request->has('rechazadas') && $request->get('rechazadas') == '1';
+        
+        // Contar facturas rechazadas antes de aplicar filtros
+        $facturasRechazadas = Factura::where('email', $email)->where('Estado_Pago', 'Rechazado')->count();
+        
+        // Si se solicita mostrar rechazadas pero no hay ninguna, redirigir a la vista normal
+        if ($mostrarRechazadas && $facturasRechazadas == 0) {
+            return redirect()->route('admin.facturas.usuario', $email)
+                ->with('info', 'No hay facturas rechazadas para este usuario.');
+        }
+        
+        if ($mostrarRechazadas) {
+            $query->where('Estado_Pago', 'Rechazado');
+        }
+        
+        $facturas = $query->get();
         $usuario = \App\Models\User::where('email', $email)->first();
         
-        // Calcular estado de pagos
-        $estadoPagos = $this->calcularEstadoPagos($facturas);
+        // Calcular estado de pagos (siempre con todas las facturas)
+        $todasLasFacturas = Factura::where('email', $email)->get();
+        $estadoPagos = $this->calcularEstadoPagos($todasLasFacturas);
         
-        return view('admin.facturas.usuario', compact('facturas', 'usuario', 'estadoPagos'));
+        return view('admin.facturas.usuario', compact('facturas', 'usuario', 'estadoPagos', 'mostrarRechazadas', 'facturasRechazadas'));
     }
 
     /**
@@ -128,5 +178,28 @@ class FacturaController extends Controller
         }
         
         return redirect()->route('admin.facturas.index')->with('success', 'Factura rechazada correctamente.');
+    }
+
+    public function eliminar(Request $request, $id)
+    {
+        $factura = Factura::findOrFail($id);
+        $email = $factura->email; // Guardar email antes de eliminar
+        
+        // Usar soft delete
+        $factura->delete();
+        
+        // Verificar si viene desde la vista de usuario específico
+        if ($request->has('from_user') && $request->get('from_user')) {
+            // Si está filtrando rechazadas, mantener el filtro
+            $params = [];
+            if ($request->has('rechazadas')) {
+                $params['rechazadas'] = $request->get('rechazadas');
+            }
+            
+            return redirect()->route('admin.facturas.usuario', array_merge(['email' => $email], $params))
+                ->with('success', 'Factura eliminada correctamente.');
+        }
+        
+        return redirect()->route('admin.facturas.index')->with('success', 'Factura eliminada correctamente.');
     }
 }
