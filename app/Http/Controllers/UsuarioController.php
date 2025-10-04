@@ -142,6 +142,7 @@ class UsuarioController extends Controller
         
         if ($usuario->estadoRegistro === 'Pendiente') {
             $usuario->estadoRegistro = 'Inactivo';
+            $usuario->fecha_aceptacion = now(); // Registrar fecha y hora de aceptación
             $usuario->save();
             
             // Si es una petición AJAX

@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('ocupacion')->nullable();
             $table->string('nacionalidad')->nullable();
             $table->string('estadoRegistro');
+            $table->timestamp('fecha_aceptacion')->nullable(); // Fecha cuando el usuario fue aceptado
             $table->timestamps();
             $table->softDeletes();
 
