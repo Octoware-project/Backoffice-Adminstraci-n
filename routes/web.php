@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\JuntasAsambleaController;
 use App\Http\Controllers\Admin\FacturaController;
@@ -24,7 +25,10 @@ Route::get('/admin/usuarios/{id}', [UsuarioController::class, 'show'])->name('us
 Route::get('/admin/usuarios/{id}/edit', [UsuarioController::class, 'edit'])->name('usuarios.edit');
 Route::put('/admin/usuarios/{id}', [UsuarioController::class, 'update'])->name('usuarios.update');
 
-Route::get('/dashboard', [AuthController::class, 'dashboard'])->middleware('auth')->name('dashboard');
+// Dashboard principal
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+Route::get('/dashboard/metrics', [DashboardController::class, 'getMetricsApi'])->middleware('auth')->name('dashboard.metrics');
+Route::get('/dashboard/alerts', [DashboardController::class, 'getAlerts'])->middleware('auth')->name('dashboard.alerts');
 
 
 // Página Octoware

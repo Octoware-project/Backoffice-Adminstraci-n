@@ -25,12 +25,14 @@ class Persona extends Model
         'ocupacion',
         'nacionalidad',
         'estadoRegistro',
+        'fecha_aceptacion',
         'unidad_habitacional_id',
         'fecha_asignacion_unidad',
     ];
 
     protected $casts = [
         'fechaNacimiento' => 'date',
+        'fecha_aceptacion' => 'datetime',
         'fecha_asignacion_unidad' => 'datetime',
     ];
 
