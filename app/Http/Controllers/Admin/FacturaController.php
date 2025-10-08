@@ -86,7 +86,8 @@ class FacturaController extends Controller
             $query->where('Estado_Pago', 'Rechazado');
         }
         
-        $facturas = $query->get();
+        // Ordenar por fecha de creación descendente (más nuevas primero)
+        $facturas = $query->orderBy('created_at', 'desc')->get();
         $usuario = \App\Models\User::where('email', $email)->first();
         
         // Calcular estado de pagos (siempre con todas las facturas)

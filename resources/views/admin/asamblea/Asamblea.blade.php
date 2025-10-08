@@ -236,16 +236,16 @@
 
     .modern-table th:nth-child(3), /* Detalle */
     .modern-table td:nth-child(3) {
-        width: 50%;
-        min-width: 200px;
+        width: 40%;
+        min-width: 180px;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
 
     .modern-table th:nth-child(4), /* Acciones */
     .modern-table td:nth-child(4) {
-        width: 15%;
-        min-width: 160px;
+        width: 25%;
+        min-width: 260px;
     }
 
     .modern-table tbody tr {
@@ -279,62 +279,81 @@
 
     /* Columna de acciones */
     .actions-cell {
-        width: 160px;
         text-align: center;
-        padding: 1rem 0.75rem !important;
+        padding: 0.75rem 0.5rem !important;
+        vertical-align: middle;
+        width: auto;
     }
 
-    /* Botones de acción - Responsive horizontal/vertical */
+    /* Botones de acción - Estilo igual a unidades habitacionales */
     .action-buttons {
         display: flex;
+        flex-direction: row;
         gap: 0.25rem;
         justify-content: center;
         flex-wrap: wrap;
+        align-items: center;
+        width: 100%;
+        padding: 0;
+        margin: 0;
     }
 
-    .action-btn {
-        display: inline-flex !important;
+    .btn-view, .btn-edit, .btn-delete {
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 0.375rem;
-        padding: 0.5rem 1rem;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 8px;
         font-size: 0.7rem;
         font-weight: 600;
-        border: none;
-        cursor: pointer;
+        text-decoration: none;
         transition: all 0.2s ease;
+        border: 1px solid;
+        cursor: pointer;
         text-transform: uppercase;
         letter-spacing: 0.025em;
-        text-decoration: none;
         white-space: nowrap;
         flex: 1;
-        min-width: 80px;
-        max-width: calc(50% - 0.125rem);
+        max-width: 80px;
+        min-width: 60px;
     }
 
-    .btn-edit-modern {
-        background: #fef3c7 !important;
-        color: #d97706 !important;
-        border: 1px solid #fde68a !important;
+    .btn-view {
+        background: #e0f2fe;
+        color: #0369a1;
+        border-color: #7dd3fc;
     }
 
-    .btn-edit-modern:hover {
-        background: #fde68a !important;
-        color: #b45309 !important;
+    .btn-view:hover {
+        background: #bae6fd;
+        color: #0c4a6e;
         transform: translateY(-1px);
-        text-decoration: none !important;
+        text-decoration: none;
     }
 
-    .btn-danger-modern {
-        background: #fef2f2 !important;
-        color: #dc2626 !important;
-        border: 1px solid #fecaca !important;
+    .btn-edit {
+        background: #fef3c7;
+        color: #d97706;
+        border-color: #fde68a;
     }
 
-    .btn-danger-modern:hover {
-        background: #fee2e2 !important;
-        color: #b91c1c !important;
+    .btn-edit:hover {
+        background: #fde68a;
+        color: #b45309;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    .btn-delete {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #fecaca;
+    }
+
+    .btn-delete:hover {
+        background: #fee2e2;
+        color: #b91c1c;
         transform: translateY(-1px);
     }
 
@@ -395,20 +414,20 @@
 
         .modern-table th:nth-child(2), 
         .modern-table td:nth-child(2) {
-            width: 20%;
+            width: 18%;
             min-width: 70px;
         }
 
         .modern-table th:nth-child(3), 
         .modern-table td:nth-child(3) {
-            width: 40%;
+            width: 32%;
             min-width: 120px;
         }
 
         .modern-table th:nth-child(4), 
         .modern-table td:nth-child(4) {
-            width: 38% !important;
-            min-width: 260px !important;
+            width: 45% !important;
+            min-width: 320px !important;
         }
     }
 
@@ -416,35 +435,45 @@
         /* Cuando no hay espacio suficiente - Media query intermedio */
         .modern-table th:nth-child(4), 
         .modern-table td:nth-child(4) {
-            width: 42%;
-            min-width: 220px;
+            width: 45%;
+            min-width: 250px;
         }
         
-        .action-btn {
+        .action-buttons {
+            gap: 0.2rem;
+        }
+        
+        .btn-view, .btn-edit, .btn-delete {
             font-size: 0.6rem;
-            padding: 0.375rem 0.75rem;
+            padding: 0.4rem 0.6rem;
+            flex: 1;
+            max-width: 70px;
+            min-width: 50px;
         }
     }
 
     @media (max-width: 640px) {
-        /* Botones en columna solo en pantallas muy pequeñas */
+        /* Mantener botones horizontales incluso en pantallas pequeñas */
         .action-buttons {
-            flex-direction: column;
-            gap: 0.125rem;
+            flex-direction: row;
+            gap: 0.15rem;
+            flex-wrap: nowrap;
+            justify-content: space-between;
         }
         
-        .action-btn {
-            width: 100%;
+        .btn-view, .btn-edit, .btn-delete {
+            flex: 1;
+            min-width: 45px;
+            max-width: 65px;
             font-size: 0.55rem;
-            padding: 0.375rem 0.75rem;
-            gap: 0.25rem;
-            flex: none;
+            padding: 0.3rem 0.4rem;
+            gap: 0.2rem;
         }
 
         .modern-table th:nth-child(4), 
         .modern-table td:nth-child(4) {
-            width: 45%;
-            min-width: 150px;
+            width: 50%;
+            min-width: 200px;
         }
 
         .modern-table {
@@ -454,6 +483,10 @@
         .modern-table thead th {
             font-size: 0.65rem;
             padding: 0.75rem 0.5rem;
+        }
+
+        .actions-cell {
+            padding: 0.5rem 0.25rem !important;
         }
     }
 
@@ -908,13 +941,19 @@
                         </td>
                         <td class="actions-cell" onclick="event.stopPropagation();">
                             <div class="action-buttons">
+                                <a href="{{ route('admin.juntas_asamblea.show', $junta->id) }}" 
+                                   class="btn-view" 
+                                   title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                    Ver
+                                </a>
                                 <a href="{{ route('admin.juntas_asamblea.edit', $junta->id) }}" 
-                                   class="action-btn btn-edit-modern" 
+                                   class="btn-edit" 
                                    title="Editar junta">
                                     <i class="fas fa-edit"></i>
                                     Editar
                                 </a>
-                                <button class="action-btn btn-danger-modern" onclick="confirmDelete({{ $junta->id }}, '{{ $junta->lugar }}')" title="Eliminar junta">
+                                <button class="btn-delete" onclick="confirmDelete({{ $junta->id }}, '{{ $junta->lugar }}')" title="Eliminar junta">
                                     <i class="fas fa-trash-alt"></i>
                                     Eliminar
                                 </button>

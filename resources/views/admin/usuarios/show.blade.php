@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+    \Carbon\Carbon::setLocale('es');
+@endphp
+
 @push('styles')
     {{-- CSS específicos para usuarios - misma estructura que index --}}
     <style>
@@ -434,55 +438,11 @@
                     <tr><th colspan="2" style="background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; text-align: center; font-size: 1.1rem;"><i class="fas fa-address-book"></i> Información de Contacto</th></tr>
                     <tr><th><i class="fas fa-envelope"></i> Email</th><td>
                         {{ $usuario->user ? $usuario->user->email : 'Sin email registrado' }}
-                        @if($usuario->user && $usuario->user->email_verified_at)
-                            <span class="badge badge-success"><i class="fas fa-check-circle"></i> Verificado</span>
-                        @elseif($usuario->user)
-                            <span class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i> Sin verificar</span>
-                        @endif
                     </td></tr>
                     <tr><th><i class="fas fa-phone"></i> Teléfono</th><td>{{ $usuario->telefono ?? 'No registrado' }}</td></tr>
                     <tr><th><i class="fas fa-home"></i> Dirección</th><td>{{ $usuario->direccion ?? 'No registrada' }}</td></tr>
                     
-                    {{-- Información del Sistema --}}
-                    <tr><th colspan="2" style="background: linear-gradient(135deg, #a8edea, #fed6e3); color: #2c3e50; text-align: center; font-size: 1.1rem;"><i class="fas fa-cogs"></i> Información del Sistema</th></tr>
-                    <tr><th><i class="fas fa-user-check"></i> Estado de Registro</th><td>
-                        @php
-                            $badgeClass = match($usuario->estadoRegistro) {
-                                'Pendiente' => 'badge-warning',
-                                'Aceptado' => 'badge-success',
-                                'Rechazado' => 'badge-danger',
-                                'Inactivo' => 'badge-secondary',
-                                default => 'badge-secondary'
-                            };
-                        @endphp
-                        <span class="badge {{ $badgeClass }}">
-                            {{ $usuario->estadoRegistro }}
-                        </span>
-                    </td></tr>
-                    <tr><th><i class="fas fa-calendar-plus"></i> Fecha de Registro</th><td>
-                        @if($usuario->created_at)
-                            {{ $usuario->created_at->format('d/m/Y H:i') }}
-                            <small class="text-muted">({{ $usuario->created_at->diffForHumans() }})</small>
-                        @else
-                            No disponible
-                        @endif
-                    </td></tr>
-                    <tr><th><i class="fas fa-clock"></i> Última Actualización</th><td>
-                        @if($usuario->updated_at && $usuario->updated_at != $usuario->created_at)
-                            {{ $usuario->updated_at->format('d/m/Y H:i') }}
-                            <small class="text-muted">({{ $usuario->updated_at->diffForHumans() }})</small>
-                        @else
-                            No actualizado
-                        @endif
-                    </td></tr>
-                    @if($usuario->user)
-                    <tr><th><i class="fas fa-hashtag"></i> ID de Usuario</th><td>
-                        <code>#{{ $usuario->user->id }}</code>
-                        / 
-                        <code>#{{ $usuario->id }}</code>
-                        <small class="text-muted">(User ID / Persona ID)</small>
-                    </td></tr>
-                    @endif
+
                     
                     {{-- Información de Unidad Habitacional --}}
                     <tr><th colspan="2" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; font-size: 1.1rem;"><i class="fas fa-home"></i> Unidad Habitacional</th></tr>
@@ -523,15 +483,22 @@
                         @if($usuario->fecha_asignacion_unidad)
                         <tr><th><i class="fas fa-calendar-check"></i> Fecha de Asignación</th><td>
                             {{ \Carbon\Carbon::parse($usuario->fecha_asignacion_unidad)->format('d/m/Y H:i') }}
-                            <small class="text-muted">({{ \Carbon\Carbon::parse($usuario->fecha_asignacion_unidad)->diffForHumans() }})</small>
+                            <small class="text-muted">({{ \Carbon\Carbon::parse($usuario->fecha_asignacion_unidad)->locale('es')->diffForHumans() }})</small>
                         </td></tr>
                         @endif
                     @else
                         <tr><th><i class="fas fa-home"></i> Unidad Asignada</th><td>
-                            <span class="badge badge-secondary">
-                                <i class="fas fa-times-circle"></i>
-                                Sin unidad asignada
-                            </span>
+                            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                <span class="badge badge-secondary">
+                                    <i class="fas fa-times-circle"></i>
+                                    Sin unidad asignada
+                                </span>
+                                <a href="{{ route('unidades.index') }}" 
+                                   class="btn btn-sm btn-primary" 
+                                   style="padding: 0.375rem 0.75rem; border-radius: 0.375rem; text-decoration: none; font-size: 0.875rem;">
+                                    <i class="fas fa-plus"></i> Asignar Unidad
+                                </a>
+                            </div>
                         </td></tr>
                     @endif
 
@@ -585,6 +552,39 @@
                             </div>
                         </td></tr>
                     @endif
+
+                    {{-- Información del Sistema --}}
+                    <tr><th colspan="2" style="background: linear-gradient(135deg, #a8edea, #fed6e3); color: #2c3e50; text-align: center; font-size: 1.1rem;"><i class="fas fa-cogs"></i> Información del Sistema</th></tr>
+                    <tr><th><i class="fas fa-user-check"></i> Estado de Registro</th><td>
+                        @php
+                            $badgeClass = match($usuario->estadoRegistro) {
+                                'Pendiente' => 'badge-warning',
+                                'Aceptado' => 'badge-success',
+                                'Rechazado' => 'badge-danger',
+                                'Inactivo' => 'badge-secondary',
+                                default => 'badge-secondary'
+                            };
+                        @endphp
+                        <span class="badge {{ $badgeClass }}">
+                            {{ $usuario->estadoRegistro }}
+                        </span>
+                    </td></tr>
+                    <tr><th><i class="fas fa-calendar-plus"></i> Fecha de Registro</th><td>
+                        @if($usuario->created_at)
+                            {{ $usuario->created_at->format('d/m/Y H:i') }}
+                            <small class="text-muted">({{ $usuario->created_at->locale('es')->diffForHumans() }})</small>
+                        @else
+                            No disponible
+                        @endif
+                    </td></tr>
+                    <tr><th><i class="fas fa-clock"></i> Última Actualización</th><td>
+                        @if($usuario->updated_at && $usuario->updated_at != $usuario->created_at)
+                            {{ $usuario->updated_at->format('d/m/Y H:i') }}
+                            <small class="text-muted">({{ $usuario->updated_at->locale('es')->diffForHumans() }})</small>
+                        @else
+                            No actualizado
+                        @endif
+                    </td></tr>
                 </table>
             </div>
         </div>

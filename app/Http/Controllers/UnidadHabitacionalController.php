@@ -16,19 +16,22 @@ class UnidadHabitacionalController extends Controller
     {
         $query = UnidadHabitacional::with(['personas.user']);
 
+        // Debug: Mostrar qué parámetros está recibiendo
+        \Log::info('Parámetros de filtro recibidos:', $request->all());
+
         // Filtro por número de departamento
-        if ($request->filled('filter_numero')) {
-            $query->where('numero_departamento', 'LIKE', "%{$request->filter_numero}%");
+        if ($request->filled('numero_departamento')) {
+            $query->where('numero_departamento', 'LIKE', "%{$request->numero_departamento}%");
         }
 
         // Filtro por piso
-        if ($request->filled('filter_piso')) {
-            $query->where('piso', $request->filter_piso);
+        if ($request->filled('piso')) {
+            $query->where('piso', $request->piso);
         }
 
         // Filtro por estado
-        if ($request->filled('filter_estado')) {
-            $query->where('estado', $request->filter_estado);
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
         }
 
         // Filtro por ocupación
@@ -41,8 +44,8 @@ class UnidadHabitacionalController extends Controller
         }
 
         // Ordenamiento
-        $sortField = $request->get('sort_field', 'numero_departamento');
-        $sortDirection = $request->get('sort_direction', 'asc');
+        $sortField = $request->get('sort', 'numero_departamento');
+        $sortDirection = 'asc'; // Por defecto ascendente
         
         $allowedSortFields = ['numero_departamento', 'piso', 'estado', 'created_at'];
         if (!in_array($sortField, $allowedSortFields)) {

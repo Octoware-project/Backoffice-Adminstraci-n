@@ -1,13 +1,25 @@
 /**
- * FILTROS JavaScript - Sistema de filtros para usuarios
+ * FILTROS JavaScript - Sistema moderno de filtros para usuarios (Estilo Facturas)
  */
+
+// Función global para toggle de filtros (llamada desde HTML)
+function toggleFilters() {
+    const content = document.getElementById('filters-content');
+    const chevron = document.getElementById('filter-icon');
+    
+    if (content.classList.contains('show')) {
+        content.classList.remove('show');
+        chevron.style.transform = 'rotate(0deg)';
+    } else {
+        content.classList.add('show');
+        chevron.style.transform = 'rotate(180deg)';
+    }
+}
 
 const FiltersManager = {
     elements: {
-        filtersToggle: null,
         filtersContent: null,
         filterIcon: null,
-        filterText: null,
         filterForm: null,
         filterInputs: null,
         clearBtn: null,
@@ -23,10 +35,8 @@ const FiltersManager = {
     },
 
     bindElements() {
-        this.elements.filtersToggle = document.getElementById('filters-toggle');
         this.elements.filtersContent = document.getElementById('filters-content');
         this.elements.filterIcon = document.getElementById('filter-icon');
-        this.elements.filterText = document.getElementById('filter-text');
         this.elements.filterForm = document.getElementById('filters-form');
         this.elements.filterInputs = document.querySelectorAll('.filter-input, .filter-select');
         this.elements.clearBtn = document.getElementById('clear-filters');
@@ -34,16 +44,8 @@ const FiltersManager = {
     },
 
     bindEvents() {
-        // Toggle de mostrar/ocultar filtros
-        if (this.elements.filtersToggle) {
-            this.elements.filtersToggle.addEventListener('click', () => this.toggleFilters());
-        }
-
-        // Limpiar filtros
-        if (this.elements.clearBtn) {
-            this.elements.clearBtn.addEventListener('click', () => this.clearFilters());
-        }
-
+        // Limpiar filtros - ya no necesitamos evento del botón aquí
+        
         // Aplicar filtros
         if (this.elements.applyBtn) {
             this.elements.applyBtn.addEventListener('click', () => this.applyFilters());
@@ -56,30 +58,14 @@ const FiltersManager = {
         });
     },
 
-    toggleFilters() {
-        const isShown = this.elements.filtersContent.classList.contains('show');
-        
-        if (isShown) {
-            this.elements.filtersContent.classList.remove('show');
-            this.elements.filterIcon.className = 'fas fa-chevron-down';
-            this.elements.filterText.textContent = 'Mostrar Filtros';
-        } else {
-            this.elements.filtersContent.classList.add('show');
-            this.elements.filterIcon.className = 'fas fa-chevron-up';
-            this.elements.filterText.textContent = 'Ocultar Filtros';
-        }
-    },
-
     clearFilters() {
         this.elements.filterInputs.forEach(input => {
             input.value = '';
             input.classList.remove('active');
         });
         
-        // Enviar formulario para aplicar el reset
-        if (this.elements.filterForm) {
-            this.elements.filterForm.submit();
-        }
+        // Redirigir a la URL sin parámetros
+        window.location.href = window.location.pathname;
     },
 
     applyFilters() {
@@ -99,16 +85,18 @@ const FiltersManager = {
     },
 
     showFiltersIfActive() {
+        // Mostrar filtros automáticamente si hay parámetros de búsqueda
         const urlParams = new URLSearchParams(window.location.search);
-        const hasFilters = urlParams.has('filter_estado') ||
-                          urlParams.has('filter_nombre') ||
-                          urlParams.has('filter_email') || 
-                          urlParams.has('sort_fecha');
+        const hasActiveFilters = Array.from(urlParams.keys()).some(key => 
+            ['filter_nombre', 'filter_email', 'sort_field', 'sort_direction'].includes(key) && urlParams.get(key)
+        );
         
-        if (hasFilters && this.elements.filtersContent && this.elements.filterIcon && this.elements.filterText) {
-            this.elements.filtersContent.classList.add('show');
-            this.elements.filterIcon.className = 'fas fa-chevron-up';
-            this.elements.filterText.textContent = 'Ocultar Filtros';
+        if (hasActiveFilters) {
+            // Usar la función global toggleFilters si los filtros están cerrados
+            const content = document.getElementById('filters-content');
+            if (content && !content.classList.contains('show')) {
+                toggleFilters();
+            }
         }
     },
 
@@ -167,3 +155,18 @@ const FiltersManager = {
 
 // Exportar para uso global
 window.FiltersManager = FiltersManager;
+
+// Mostrar filtros si hay parámetros de búsqueda (similar a facturas)
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasFilters = Array.from(urlParams.keys()).some(key => 
+        ['filter_nombre', 'filter_email', 'sort_field', 'sort_direction'].includes(key) && urlParams.get(key)
+    );
+    
+    if (hasFilters) {
+        const content = document.getElementById('filters-content');
+        if (content && !content.classList.contains('show')) {
+            toggleFilters();
+        }
+    }
+});

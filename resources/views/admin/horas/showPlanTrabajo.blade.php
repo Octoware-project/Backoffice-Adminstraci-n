@@ -112,10 +112,41 @@
         text-decoration: none;
     }
 
+    .delete-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.1rem 2.2rem;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 1.125rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        background: var(--danger-color);
+        color: white;
+        border: 1px solid var(--danger-color);
+        cursor: pointer;
+    }
+
+    .delete-btn:hover {
+        background: #e73463;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(252, 70, 107, 0.3);
+        color: white;
+        text-decoration: none;
+        border-color: #e73463;
+    }
+
+    .header-buttons {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
     /* Cards de Información */
     .info-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
@@ -356,7 +387,13 @@
         opacity: 0.5;
     }
 
-    /* Responsive */
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .info-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
     @media (max-width: 768px) {
         .detail-workspace {
             padding: 0 1rem;
@@ -370,6 +407,18 @@
             flex-direction: column;
             gap: 1rem;
             text-align: center;
+        }
+
+        .header-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .back-btn, .delete-btn {
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            width: 100%;
+            justify-content: center;
         }
         
         .info-grid {
@@ -412,10 +461,21 @@
                     {{ $meses[$plan->mes] ?? $plan->mes }} {{ $plan->anio }}
                 </p>
             </div>
-            <a href="{{ route('plan-trabajos.index') }}" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-                Volver
-            </a>
+            <div class="header-buttons">
+                <form action="{{ route('plan-trabajos.destroy', $plan->id) }}" method="POST" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="delete-btn" 
+                            onclick="return confirm('¿Estás seguro de eliminar este plan de trabajo? Esta acción se puede revertir.')">
+                        <i class="fas fa-trash-alt"></i>
+                        Eliminar
+                    </button>
+                </form>
+                <a href="{{ route('plan-trabajos.index') }}" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver
+                </a>
+            </div>
         </div>
     </div>
 

@@ -241,6 +241,13 @@
     }
 
     /* Acciones */
+    .actions-group {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
     .action-btn {
         padding: 0.5rem 1rem;
         border-radius: var(--radius-sm);
@@ -251,6 +258,24 @@
         transition: all 0.2s ease;
         text-transform: uppercase;
         letter-spacing: 0.025em;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+    }
+
+    .btn-view {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #7dd3fc;
+    }
+
+    .btn-view:hover {
+        background: #bae6fd;
+        color: #0c4a6e;
+        transform: translateY(-1px);
+        text-decoration: none;
     }
 
     .btn-danger-modern {
@@ -336,6 +361,16 @@
             padding: 0.625rem 1.25rem;
             font-size: 0.8rem;
         }
+
+        .actions-group {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .action-btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.625rem;
+        }
     }
 
     /* Estados vacíos */
@@ -351,60 +386,65 @@
         opacity: 0.5;
     }
 
-    /* Sección de Filtros */
+    /* Sección de Filtros - Estilo moderno como unidades habitacionales */
     .filters-section {
         background: var(--bg-primary);
         border-radius: var(--radius);
-        padding: 1rem 2rem;
-        margin-bottom: 2rem;
         box-shadow: var(--shadow-md);
-        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+        overflow: hidden;
     }
 
     .filters-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 0.75rem;
+        background: linear-gradient(90deg, var(--bg-light) 0%, var(--bg-secondary) 100%);
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.2s ease;
     }
 
-    .filters-title {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+    .filters-header:hover {
+        background: linear-gradient(90deg, var(--bg-secondary) 0%, #e2e8f0 100%);
     }
 
     .filters-toggle {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        padding: 0.5rem 1rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-size: 0.875rem;
-        color: var(--text-secondary);
-    }
-
-    .filters-toggle:hover {
-        background: var(--bg-light);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
         color: var(--text-primary);
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 100%;
     }
 
     .filters-content {
+        padding: 1.5rem;
         display: none;
     }
 
     .filters-content.show {
         display: block;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .filters-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
         margin-bottom: 1rem;
     }
 
@@ -415,22 +455,28 @@
     }
 
     .filter-label {
-        font-size: 0.875rem;
         font-weight: 600;
         color: var(--text-primary);
+        font-size: 0.875rem;
         display: flex;
         align-items: center;
-        gap: 0.25rem;
+        gap: 0.5rem;
     }
 
-    .filter-select {
-        padding: 0.75rem 1rem;
-        border: 1px solid var(--border-color);
+    .filter-input, .filter-select {
+        padding: 0.75rem;
+        border: 2px solid var(--border-color);
         border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        transition: border-color 0.2s;
         background: var(--bg-primary);
         color: var(--text-primary);
-        font-size: 0.875rem;
-        transition: all 0.2s ease;
+    }
+
+    .filter-input:focus, .filter-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
     .filter-select.active {
@@ -439,52 +485,62 @@
         color: #15803d;
     }
 
-    .filter-select:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
     .filters-actions {
         display: flex;
         gap: 1rem;
         justify-content: flex-end;
-        padding-top: 1rem;
-        border-top: 1px solid var(--border-color);
     }
 
-    .filter-btn {
-        padding: 0.75rem 1.5rem;
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
         border-radius: var(--radius-sm);
         font-weight: 600;
-        font-size: 0.875rem;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
+        text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
     }
 
-    .filter-btn-primary {
+    .btn-outline-primary {
+        background: transparent;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+
+    .btn-outline-primary:hover {
         background: var(--primary-color);
         color: white;
-    }
-
-    .filter-btn-primary:hover {
-        background: var(--primary-light);
         transform: translateY(-1px);
+        text-decoration: none;
     }
 
-    .filter-btn-secondary {
-        background: var(--bg-secondary);
-        color: var(--text-primary);
-        border: 1px solid var(--border-color);
+    .btn-outline-secondary {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 2px solid var(--border-color);
     }
 
-    .filter-btn-secondary:hover {
+    .btn-outline-secondary:hover {
         background: var(--bg-light);
+        border-color: var(--primary-color);
+        color: var(--text-primary);
         transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    /* Responsive design para filtros */
+    @media (max-width: 768px) {
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .filters-actions {
+            justify-content: center;
+        }
     }
 </style>
 
@@ -521,15 +577,11 @@
 
     <!-- Sección de Filtros -->
     <div class="filters-section">
-        <div class="filters-header">
-            <h3 class="filters-title">
-                <i class="fas fa-filter"></i>
-                Filtros de Búsqueda
-            </h3>
-            <button class="filters-toggle" onclick="toggleFilters()">
-                <i class="fas fa-chevron-down" id="filter-icon"></i>
-                <span id="filter-text">Mostrar Filtros</span>
-            </button>
+        <div class="filters-header" onclick="toggleFilters()">
+            <div class="filters-toggle">
+                <span><i class="fas fa-filter"></i> Filtros de búsqueda</span>
+                <i class="fas fa-chevron-down" id="filters-chevron"></i>
+            </div>
         </div>
         
         <div class="filters-content" id="filters-content">
@@ -630,13 +682,11 @@
                 </div>
 
                 <div class="filters-actions">
-                    <button type="button" class="filter-btn filter-btn-secondary" onclick="clearFilters()">
-                        <i class="fas fa-times"></i>
-                        Limpiar Filtros
-                    </button>
-                    <button type="submit" class="filter-btn filter-btn-primary">
-                        <i class="fas fa-search"></i>
-                        Aplicar Filtros
+                    <a href="{{ route('plan-trabajos.index') }}" class="btn-modern btn-sm btn-outline-secondary">
+                        <i class="fas fa-times"></i> Limpiar
+                    </a>
+                    <button type="submit" class="btn-modern btn-sm btn-outline-primary">
+                        <i class="fas fa-search"></i> Aplicar Filtros
                     </button>
                 </div>
             </form>
@@ -786,15 +836,21 @@
 
                         <!-- Acciones -->
                         <td onclick="event.stopPropagation();">
-                            <form action="{{ route('plan-trabajos.destroy', $plan->id) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="action-btn btn-danger-modern" 
-                                        onclick="return confirm('¿Estás seguro de eliminar este plan de trabajo? Esta acción se puede revertir.')">
-                                    <i class="fas fa-trash-alt"></i>
-                                    Eliminar
-                                </button>
-                            </form>
+                            <div class="actions-group">
+                                <a href="{{ route('plan-trabajos.show', $plan->id) }}" class="action-btn btn-view">
+                                    <i class="fas fa-eye"></i>
+                                    Ver
+                                </a>
+                                <form action="{{ route('plan-trabajos.destroy', $plan->id) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="action-btn btn-danger-modern" 
+                                            onclick="return confirm('¿Estás seguro de eliminar este plan de trabajo? Esta acción se puede revertir.')">
+                                        <i class="fas fa-trash-alt"></i>
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @endforeach
@@ -820,17 +876,14 @@
     // Función para mostrar/ocultar filtros
     function toggleFilters() {
         const content = document.getElementById('filters-content');
-        const icon = document.getElementById('filter-icon');
-        const text = document.getElementById('filter-text');
+        const chevron = document.getElementById('filters-chevron');
         
         if (content.classList.contains('show')) {
             content.classList.remove('show');
-            icon.className = 'fas fa-chevron-down';
-            text.textContent = 'Mostrar Filtros';
+            chevron.className = 'fas fa-chevron-down';
         } else {
             content.classList.add('show');
-            icon.className = 'fas fa-chevron-up';
-            text.textContent = 'Ocultar Filtros';
+            chevron.className = 'fas fa-chevron-up';
         }
     }
 

@@ -239,6 +239,46 @@
         transform: translateY(-1px);
         text-decoration: none;
     }
+
+    /* Botón Ver estilo usuarios */
+    .action-btn {
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+    }
+
+    .btn-view {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #7dd3fc;
+    }
+
+    .btn-view:hover {
+        background: #bae6fd;
+        color: #0c4a6e;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    .actions-group {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
     /* Filtros desplegables */
     .filters-container {
         background: var(--bg-primary);
@@ -456,65 +496,7 @@
         color: var(--text-muted);
     }
 
-    /* Estilos para alerta de facturas sin aprobar */
-    .estado-pagos-card {
-        background: var(--bg-primary);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--border-color);
-        margin-bottom: 2rem;
-        padding: 2rem;
-        position: relative;
-        overflow: hidden;
-    }
 
-    .estado-pagos-card.warning {
-        border-left: 4px solid #f59e0b;
-        background: linear-gradient(90deg, #fffbeb 0%, #fef3c7 100%);
-    }
-
-    .estado-info {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-    }
-
-    .estado-content {
-        flex: 1;
-    }
-
-    .estado-title {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 9999px;
-        font-size: 1rem;
-        font-weight: 600;
-        letter-spacing: 0.025em;
-        margin-bottom: 0.75rem;
-    }
-
-    .estado-title.warning {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .estado-descripcion {
-        color: var(--text-secondary);
-        font-size: 0.875rem;
-        margin: 0;
-        line-height: 1.5;
-    }
-
-    .estado-icon {
-        font-size: 2.5rem;
-        opacity: 0.8;
-    }
-
-    .estado-icon.warning { 
-        color: #f59e0b; 
-    }
 </style>
 
 <div class="facturas-workspace">
@@ -533,31 +515,6 @@
         </div>
     </div>
 
-    <!-- Alerta de facturas sin aprobar -->
-    @if($totalFacturasPendientes > 0)
-    <div class="estado-pagos-card warning">
-        <div class="estado-info">
-            <div class="estado-content">
-                <div class="estado-title warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    {{ $totalFacturasPendientes }} {{ $totalFacturasPendientes == 1 ? 'factura sin aprobar' : 'facturas sin aprobar' }}
-                </div>
-                <p class="estado-descripcion">
-                    Hay {{ $totalFacturasPendientes }} {{ $totalFacturasPendientes == 1 ? 'factura pendiente' : 'facturas pendientes' }} que requieren revisión y aprobación.
-                </p>
-            </div>
-            <div class="estado-icon warning">
-                ⚠
-            </div>
-        </div>
-        <div style="margin-top: 1rem;">
-            <a href="{{ route('admin.facturas.index') }}" class="btn-modern btn-warning-modern">
-                <i class="fas fa-filter"></i> Ver facturas sin aprobar
-            </a>
-        </div>
-    </div>
-    @endif
-
     <!-- Filtros Desplegables -->
     <div class="filters-container">
         <div class="filters-header" onclick="toggleFilters()">
@@ -572,7 +529,7 @@
                     <div class="filter-group">
                         <label class="filter-label">Año</label>
                         <input type="number" name="año" class="filter-input" 
-                               value="{{ request('año') }}" placeholder="Ej: 2024" min="2020" max="{{ date('Y') + 1 }}">
+                               value="{{ request('año') }}" placeholder="Año" min="2020" max="{{ date('Y') + 1 }}">
                     </div>
                     <div class="filter-group">
                         <label class="filter-label">Mes</label>
@@ -616,8 +573,8 @@
                 <th>Monto</th>
                 <th>Estado de Pago</th>
                 <th>Mes</th>
-                <th>Acciones</th>
                 <th>Comprobante</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -642,7 +599,7 @@
                     <td>
                         {{ $factura->fecha_pago ? \Carbon\Carbon::parse($factura->fecha_pago)->translatedFormat('F Y') : '-' }}
                     </td>
-                    <!-- Botones de acción y comprobante solo una vez -->
+                    <!-- Botones de comprobante y acción intercambiados -->
                     <td style="text-align:center;">
                         @if($factura->Archivo_Comprobante)
                             <a href="#" onclick="abrirComprobanteApi({{ $factura->id }}); return false;" title="Ver comprobante">
@@ -655,9 +612,13 @@
                             <span style="color:#bbb;">-</span>
                         @endif
                     </td>
-                    <td style="text-align:center;">
-                        @if($factura->Estado_Pago === 'Pendiente')
-                            <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                    <td onclick="event.stopPropagation();" style="text-align:center;">
+                        <div class="actions-group">
+                            <a href="{{ route('admin.facturas.usuario', $factura->email) }}" class="action-btn btn-view">
+                                <i class="fas fa-eye"></i>
+                                Ver
+                            </a>
+                            @if($factura->Estado_Pago === 'Pendiente')
                                 <form action="{{ route('admin.facturas.aceptar', $factura->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('PUT')
@@ -668,8 +629,8 @@
                                     @method('PUT')
                                     <button type="submit" class="btn-modern btn-danger-modern">Rechazar</button>
                                 </form>
-                            </div>
-                        @endif
+                            @endif
+                        </div>
                     </td>
                 </tr>
             @empty
@@ -702,23 +663,17 @@
         window.open(url, '_blank');
     }
     document.querySelectorAll('.factura-row').forEach(function(row) {
-        let clickCount = 0;
-        let timer = null;
-        row.addEventListener('click', function() {
-            clickCount++;
-            if (clickCount === 2) {
-                clearTimeout(timer);
-                const email = row.getAttribute('data-email');
-                if(email) {
-                    let base = "{{ url('/facturas/usuario') }}";
-                    if (base.endsWith('/')) base = base.slice(0, -1);
-                    window.location.href = base + '/' + encodeURIComponent(email);
-                }
-                clickCount = 0;
-            } else {
-                timer = setTimeout(function() {
-                    clickCount = 0;
-                }, 350);
+        row.addEventListener('click', function(event) {
+            // Verificar si el clic fue en un botón, enlace o formulario
+            if (event.target.closest('button, a, form')) {
+                return; // No redirigir si se hizo clic en un elemento interactivo
+            }
+            
+            const email = row.getAttribute('data-email');
+            if(email) {
+                let base = "{{ url('/facturas/usuario') }}";
+                if (base.endsWith('/')) base = base.slice(0, -1);
+                window.location.href = base + '/' + encodeURIComponent(email);
             }
         });
     });

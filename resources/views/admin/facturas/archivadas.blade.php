@@ -384,6 +384,69 @@
         text-decoration: none;
     }
 
+    /* Botón Ver estilo usuarios */
+    .action-btn {
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+    }
+
+    .btn-view {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #7dd3fc;
+    }
+
+    .btn-view:hover {
+        background: #bae6fd;
+        color: #0c4a6e;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    .actions-group {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-warning-modern {
+        background: #fffbeb;
+        color: #d97706;
+        border: 1px solid #fcd34d;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .btn-warning-modern:hover {
+        background: #fef3c7;
+        color: #b45309;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
     /* Back button container */
     .back-button-container {
         margin-top: 2rem;
@@ -485,7 +548,7 @@
                     <div class="filter-group">
                         <label class="filter-label">Año</label>
                         <input type="number" name="año" class="filter-input" 
-                               value="{{ request('año') }}" placeholder="Ej: 2024" min="2020" max="{{ date('Y') + 1 }}">
+                               value="{{ request('año') }}" placeholder="Año" min="2020" max="{{ date('Y') + 1 }}">
                     </div>
                     <div class="filter-group">
                         <label class="filter-label">Mes</label>
@@ -536,8 +599,8 @@
                     <th>Monto</th>
                     <th>Estado de Pago</th>
                     <th>Mes</th>
-                    <th>Acciones</th>
                     <th>Comprobante</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -562,13 +625,7 @@
                         <td>
                             {{ $factura->fecha_pago ? \Carbon\Carbon::parse($factura->fecha_pago)->translatedFormat('F Y') : '-' }}
                         </td>
-                        <td style="text-align:center;">
-                            <form action="{{ route('admin.facturas.cancelar', $factura->id) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('PUT')
-                                <button type="submit" class="btn-modern btn-warning-modern">Restablecer</button>
-                            </form>
-                        </td>
+                        <!-- Columna Comprobante -->
                         <td style="text-align:center;">
                             @if($factura->Archivo_Comprobante)
                                 <a href="#" onclick="abrirComprobanteApi({{ $factura->id }}); return false;" title="Ver comprobante">
@@ -580,6 +637,20 @@
                             @else
                                 <span style="color:#bbb;">-</span>
                             @endif
+                        </td>
+                        <!-- Columna Acciones -->
+                        <td onclick="event.stopPropagation();" style="text-align:center;">
+                            <div class="actions-group">
+                                <a href="{{ route('admin.facturas.usuario', $factura->email) }}" class="action-btn btn-view">
+                                    <i class="fas fa-eye"></i>
+                                    Ver
+                                </a>
+                                <form action="{{ route('admin.facturas.cancelar', $factura->id) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn-warning-modern">Restablecer</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
@@ -615,23 +686,17 @@
     }
     
     document.querySelectorAll('.factura-row').forEach(function(row) {
-        let clickCount = 0;
-        let timer = null;
-        row.addEventListener('click', function() {
-            clickCount++;
-            if (clickCount === 2) {
-                clearTimeout(timer);
-                const email = row.getAttribute('data-email');
-                if(email) {
-                    let base = "{{ url('/facturas/usuario') }}";
-                    if (base.endsWith('/')) base = base.slice(0, -1);
-                    window.location.href = base + '/' + encodeURIComponent(email);
-                }
-                clickCount = 0;
-            } else {
-                timer = setTimeout(function() {
-                    clickCount = 0;
-                }, 350);
+        row.addEventListener('click', function(event) {
+            // Verificar si el clic fue en un botón, enlace o formulario
+            if (event.target.closest('button, a, form')) {
+                return; // No redirigir si se hizo clic en un elemento interactivo
+            }
+            
+            const email = row.getAttribute('data-email');
+            if(email) {
+                let base = "{{ url('/facturas/usuario') }}";
+                if (base.endsWith('/')) base = base.slice(0, -1);
+                window.location.href = base + '/' + encodeURIComponent(email);
             }
         });
     });
