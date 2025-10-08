@@ -8,74 +8,21 @@
         {!! file_get_contents(resource_path('views/admin/usuarios/css/partials/filters.css')) !!}
         {!! file_get_contents(resource_path('views/admin/usuarios/css/partials/table.css')) !!}
         
-        /* Estilos para estadísticas */
-        .stats-section {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+        /* Estilos específicos para usuarios eliminados */
+        .usuarios-eliminados .modern-table tbody tr {
+            cursor: default !important;
+            pointer-events: none;
         }
         
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            min-width: 200px;
-            transition: all 0.2s ease;
+        .usuarios-eliminados .modern-table tbody tr:hover {
+            background: transparent !important;
+            transform: none !important;
+            box-shadow: none !important;
         }
         
-        .stat-card:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transform: translateY(-1px);
-        }
-        
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
-            flex-shrink: 0;
-        }
-        
-        .stat-content {
-            flex: 1;
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1f2937;
-            line-height: 1;
-            margin-bottom: 0.25rem;
-        }
-        
-        .stat-label {
-            font-size: 0.875rem;
-            color: #6b7280;
-            font-weight: 500;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .stats-section {
-                flex-direction: column;
-            }
-            
-            .stat-card {
-                min-width: auto;
-            }
-            
-            .stat-number {
-                font-size: 1.5rem;
-            }
+        /* Reactivar eventos solo en la columna de acciones */
+        .usuarios-eliminados .modern-table tbody tr td:last-child {
+            pointer-events: auto;
         }
     </style>
     
@@ -94,26 +41,41 @@
     <script>
         {!! file_get_contents(resource_path('views/admin/usuarios/js/partials/filters.js')) !!}
     </script>
+    
+    {{-- Script para confirmación de restauración --}}
+    <script>
+        function confirmRestoreUsuario(usuarioId, nombreCompleto) {
+            // Prevenir propagación del evento click
+            event.stopPropagation();
+            
+            ModalConfirmation.confirmRestore(
+                nombreCompleto,
+                function() {
+                    document.getElementById(`restore-form-${usuarioId}`).submit();
+                }
+            );
+        }
+    </script>
 @endpush
 
 @section('content')
-    <div class="usuarios-workspace">
+    <div class="usuarios-workspace usuarios-eliminados">
         <div class="usuarios-content">
             {{-- Header Principal --}}
             <div class="usuarios-header header-pattern">
                 <div class="header-content">
                     <div>
-                        <h1 class="header-title">Usuarios Pendientes</h1>
-                        <p class="header-subtitle">Gestión de solicitudes de registro pendientes de aprobación</p>
+                        <h1 class="header-title">Usuarios Eliminados</h1>
+                        <p class="header-subtitle">Listado de usuarios eliminados del sistema con opción de restaurar</p>
                     </div>
                     <div class="btn-group">
-                        <a href="{{ route('usuarios.index') }}" class="btn-modern btn-success" style="background-color: #10b981; color: white;">
+                        <a href="{{ route('usuarios.index') }}" class="btn-modern btn-secondary-modern">
                             <i class="fas fa-users"></i>
-                            Ver Residentes
+                            Ver Activos
                         </a>
-                        <a href="{{ route('usuarios.eliminados') }}" class="btn-modern btn-secondary-modern">
-                            <i class="fas fa-trash-restore"></i>
-                            Ver Eliminados
+                        <a href="{{ route('usuarios.pendientes') }}" class="btn-modern btn-primary-modern">
+                            <i class="fas fa-clock"></i>
+                            Ver Pendientes
                         </a>
                     </div>
                 </div>
@@ -129,6 +91,16 @@
                 </div>
             @endif
 
+            {{-- Mostrar mensaje de error --}}
+            @if(session('error'))
+                <div class="error-message" style="background: #fee2e2; border: 1px solid #fca5a5; border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm);">
+                    <div class="error-content" style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-exclamation-triangle" style="color: #dc2626; font-size: 1.25rem;"></i>
+                        <p style="margin: 0; color: #991b1b; font-weight: 600; font-size: 1rem;">{{ session('error') }}</p>
+                    </div>
+                </div>
+            @endif
+
             {{-- Sección de Filtros Moderna --}}
             <div class="filters-section">
                 <div class="filters-header" onclick="toggleFilters()">
@@ -139,7 +111,7 @@
                 </div>
                 
                 <div class="filters-content" id="filters-content">
-                    <form method="GET" action="{{ route('usuarios.pendientes') }}" id="filters-form">
+                    <form method="GET" action="{{ route('usuarios.eliminados') }}" id="filters-form">
                         <div class="filters-grid">
                             {{-- Filtro por Nombre --}}
                             <div class="filter-group">
@@ -180,8 +152,8 @@
                                     Ordenar por
                                 </label>
                                 <select name="sort_field" id="sort_field" class="filter-select">
-                                    <option value="created_at" {{ request('sort_field', 'created_at') == 'created_at' ? 'selected' : '' }}>
-                                        Fecha de Registro
+                                    <option value="deleted_at" {{ request('sort_field', 'deleted_at') == 'deleted_at' ? 'selected' : '' }}>
+                                        Fecha de Eliminación
                                     </option>
                                     <option value="name" {{ request('sort_field') == 'name' ? 'selected' : '' }}>
                                         Orden Alfabético (Nombre)
@@ -212,7 +184,7 @@
                         </div>
 
                         <div class="filters-actions">
-                            <a href="{{ route('usuarios.pendientes') }}" class="filter-btn filter-btn-secondary">
+                            <a href="{{ route('usuarios.eliminados') }}" class="filter-btn filter-btn-secondary">
                                 <i class="fas fa-times"></i> Limpiar
                             </a>
                             <button type="submit" class="filter-btn filter-btn-primary">
@@ -237,13 +209,13 @@
                             @if(request('filter_email'))
                                 <span class="filter-tag">Email: {{ request('filter_email') }}</span>
                             @endif
-                            @if(request('sort_field') && request('sort_field') != 'created_at')
+                            @if(request('sort_field') && request('sort_field') != 'deleted_at')
                                 <span class="filter-tag">
                                     Ordenar por: 
                                     @switch(request('sort_field'))
                                         @case('name') Nombre @break
                                         @case('email') Email @break
-                                        @default Fecha de Registro @endswitch
+                                        @default Fecha de Eliminación @endswitch
                                 </span>
                             @endif
                             @if(request('sort_direction') && request('sort_direction') != 'desc')
@@ -251,27 +223,14 @@
                             @endif
                         </div>
                     </div>
-                    <a href="{{ route('usuarios.pendientes') }}" class="clear-filters-link">
+                    <a href="{{ route('usuarios.eliminados') }}" class="clear-filters-link">
                         <i class="fas fa-times"></i> Limpiar todos
                     </a>
                 </div>
             </div>
             @endif
 
-            {{-- Estadísticas de Usuarios Pendientes --}}
-            <div class="stats-section" style="margin-bottom: 1.5rem;">
-                <div class="stat-card">
-                    <div class="stat-icon" style="background-color: #f59e0b;">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-number">{{ $usuarios->count() }}</div>
-                        <div class="stat-label">Usuario{{ $usuarios->count() != 1 ? 's' : '' }} Pendiente{{ $usuarios->count() != 1 ? 's' : '' }}</div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Tabla de Usuarios Pendientes --}}
+            {{-- Tabla de Usuarios Eliminados --}}
             <div class="table-container">
                 @if($usuarios->count() > 0)
                     <table class="modern-table">
@@ -279,14 +238,30 @@
                             <tr>
                                 <th>Usuario</th>
                                 <th>CI</th>
-                                <th class="hide-mobile">Fecha Registro</th>
-                                <th>Estado</th>
+                                <th class="hide-mobile">Fecha Eliminación</th>
+                                <th>Estado Original</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($usuarios as $usuario)
-                            <tr class="usuario-row usuario-pendiente" data-usuario-id="{{ $usuario->id }}">
+                            @php
+                                $estadoClass = match($usuario->estadoRegistro) {
+                                    'Pendiente' => 'usuario-pendiente',
+                                    'Aceptado' => 'usuario-aceptado',
+                                    'Rechazado' => 'usuario-rechazado',
+                                    'Inactivo' => 'usuario-inactivo',
+                                    default => ''
+                                };
+                                $statusClass = match($usuario->estadoRegistro) {
+                                    'Pendiente' => 'status-pendiente',
+                                    'Aceptado' => 'status-aceptado',
+                                    'Rechazado' => 'status-rechazado',
+                                    'Inactivo' => 'status-inactivo',
+                                    default => 'status-inactivo'
+                                };
+                            @endphp
+                            <tr class="usuario-row {{ $estadoClass }}" data-usuario-id="{{ $usuario->id }}" style="opacity: 0.7; cursor: default;">
                                 
                                 {{-- Usuario --}}
                                 <td>
@@ -310,40 +285,40 @@
                                     <strong>{{ $usuario->CI ?? 'N/A' }}</strong>
                                 </td>
 
-                                {{-- Fecha de Registro --}}
+                                {{-- Fecha de Eliminación --}}
                                 <td class="hide-mobile">
-                                    <div class="date-badge">
-                                        {{ $usuario->created_at ? $usuario->created_at->format('d/m/Y H:i') : 'N/A' }}
+                                    <div class="date-badge" style="background-color: #fef2f2; color: #dc2626; border-color: #fecaca;">
+                                        {{ $usuario->deleted_at ? $usuario->deleted_at->format('d/m/Y H:i') : 'N/A' }}
                                     </div>
                                 </td>
 
-                                {{-- Estado --}}
+                                {{-- Estado Original --}}
                                 <td>
-                                    <span class="status-badge status-pendiente">
-                                        Pendiente
-                                        <i class="fas fa-clock" style="margin-left: 0.25rem;"></i>
+                                    <span class="status-badge {{ $statusClass }}">
+                                        {{ $usuario->estadoRegistro }}
+                                        @if($usuario->estadoRegistro == 'Aceptado')
+                                            <i class="fas fa-check-circle" style="margin-left: 0.25rem;"></i>
+                                        @elseif($usuario->estadoRegistro == 'Pendiente')
+                                            <i class="fas fa-clock" style="margin-left: 0.25rem;"></i>
+                                        @elseif($usuario->estadoRegistro == 'Rechazado')
+                                            <i class="fas fa-times-circle" style="margin-left: 0.25rem;"></i>
+                                        @endif
                                     </span>
                                 </td>
 
                                 {{-- Acciones --}}
                                 <td onclick="event.stopPropagation();">
                                     <div class="actions-group">
-                                        <button type="button" class="action-btn btn-accept" 
-                                                data-user-id="{{ $usuario->id }}" 
-                                                data-user-name="{{ $usuario->name }} {{ $usuario->apellido }}">
-                                            <i class="fas fa-check"></i>
-                                            Aceptar
-                                        </button>
-                                        <button type="button" class="action-btn btn-reject" 
-                                                data-user-id="{{ $usuario->id }}" 
-                                                data-user-name="{{ $usuario->name }} {{ $usuario->apellido }}">
-                                            <i class="fas fa-times"></i>
-                                            Rechazar
-                                        </button>
-                                        <a href="{{ route('usuarios.show', $usuario->id) }}" class="action-btn btn-view">
-                                            <i class="fas fa-eye"></i>
-                                            Ver
-                                        </a>
+                                        <form id="restore-form-{{ $usuario->id }}" action="{{ route('usuarios.restaurar', $usuario->id) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="button" class="action-btn" 
+                                                    onclick="confirmRestoreUsuario({{ $usuario->id }}, '{{ $usuario->name }} {{ $usuario->apellido }}')"
+                                                    style="background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7;">
+                                                <i class="fas fa-undo"></i>
+                                                Restaurar
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -353,13 +328,13 @@
                 @else
                     <div class="empty-state">
                         <div class="empty-state-icon">
-                            <i class="fas fa-user-check" style="color: #10b981;"></i>
+                            <i class="fas fa-trash-alt" style="opacity: 0.3;"></i>
                         </div>
-                        <h3>¡Excelente!</h3>
-                        <p>No hay usuarios pendientes de aprobación en este momento.</p>
+                        <h3>No hay usuarios eliminados</h3>
+                        <p>No se encontraron usuarios eliminados que coincidan con los filtros aplicados.</p>
                         <a href="{{ route('usuarios.index') }}" class="btn-modern btn-primary-modern" style="margin-top: 1rem;">
                             <i class="fas fa-users"></i>
-                            Ver Residentes
+                            Ver Usuarios Activos
                         </a>
                     </div>
                 @endif

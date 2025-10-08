@@ -24,6 +24,29 @@
     <script>
         {!! file_get_contents(resource_path('views/admin/usuarios/js/partials/filters.js')) !!}
     </script>
+    
+    {{-- Script para confirmación de eliminación --}}
+    <script>
+        function confirmDeleteUsuario(usuarioId, nombreCompleto) {
+            // Prevenir propagación del evento click
+            event.stopPropagation();
+            
+            ModalConfirmation.create({
+                title: 'Confirmar Eliminación de Usuario',
+                message: '¿Está seguro que desea eliminar al usuario:',
+                detail: `"${nombreCompleto}"`,
+                warning: 'NOTA: No se puede eliminar si tiene una unidad habitacional asignada. Esta acción se puede revertir desde usuarios eliminados.',
+                confirmText: 'Eliminar Usuario',
+                cancelText: 'Cancelar',
+                iconClass: 'fas fa-user-times',
+                iconColor: '#dc2626',
+                confirmColor: '#dc2626',
+                onConfirm: function() {
+                    document.getElementById(`delete-form-${usuarioId}`).submit();
+                }
+            });
+        }
+    </script>
 @endpush
 
 @section('content')
@@ -41,6 +64,10 @@
                             <i class="fas fa-clock"></i>
                             Ver Pendientes
                         </a>
+                        <a href="{{ route('usuarios.eliminados') }}" class="btn-modern btn-secondary-modern">
+                            <i class="fas fa-trash-restore"></i>
+                            Ver Eliminados
+                        </a>
                     </div>
                 </div>
             </div>
@@ -51,6 +78,16 @@
                     <div class="success-content">
                         <i class="fas fa-check-circle"></i>
                         <p>{{ session('success') }}</p>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Mostrar mensaje de error --}}
+            @if(session('error'))
+                <div class="error-message" style="background: #fee2e2; border: 1px solid #fca5a5; border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm);">
+                    <div class="error-content" style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-exclamation-triangle" style="color: #dc2626; font-size: 1.25rem;"></i>
+                        <p style="margin: 0; color: #991b1b; font-weight: 600; font-size: 1rem;">{{ session('error') }}</p>
                     </div>
                 </div>
             @endif
@@ -271,6 +308,16 @@
                                             <i class="fas fa-edit"></i>
                                             Editar
                                         </a>
+                                        <form id="delete-form-{{ $usuario->id }}" action="{{ route('usuarios.destroy', $usuario->id) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="action-btn btn-danger-modern" 
+                                                    onclick="confirmDeleteUsuario({{ $usuario->id }}, '{{ $usuario->name }} {{ $usuario->apellido }}')"
+                                                    style="background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;">
+                                                <i class="fas fa-trash-alt"></i>
+                                                Eliminar
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

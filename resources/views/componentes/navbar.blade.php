@@ -379,6 +379,10 @@
                                 <span class="nav-badge" style="position: relative; top: 0; right: 0; margin-left: 8px;">{{ $usuariosPendientes }}</span>
                             @endif
                         </a></li>
+                        <li><a href="{{ route('usuarios.eliminados') }}">
+                            <i class="fas fa-trash-restore"></i>
+                            Usuarios Eliminados
+                        </a></li>
                     </ul>
                 </div>
             </li>
@@ -560,7 +564,7 @@
             const linkPath = new URL(link.href).pathname;
             
             // Manejar específicamente las rutas de usuarios
-            if (currentPath === '/usuarios' || currentPath === '/usuarios/pendientes') {
+            if (currentPath === '/usuarios' || currentPath === '/usuarios/pendientes' || currentPath === '/usuarios/eliminados') {
                 // Marcar el menú principal de usuarios como activo
                 const usuariosMainLink = document.querySelector('a[href="/usuarios"]');
                 if (usuariosMainLink) {
@@ -578,6 +582,9 @@
                 } else if (currentPath === '/usuarios/pendientes') {
                     const pendientesLink = document.querySelector('a[href*="usuarios.pendientes"]');
                     if (pendientesLink) pendientesLink.classList.add('active');
+                } else if (currentPath === '/usuarios/eliminados') {
+                    const eliminadosLink = document.querySelector('a[href*="usuarios.eliminados"]');
+                    if (eliminadosLink) eliminadosLink.classList.add('active');
                 }
             }
             // Manejar específicamente las rutas de facturas
