@@ -407,10 +407,6 @@
                     <i class="fas fa-save"></i>
                     Crear Unidad
                 </button>
-                <a href="{{ route('unidades.index') }}" class="btn-modern btn-secondary-modern">
-                    <i class="fas fa-times"></i>
-                    Cancelar
-                </a>
             </div>
         </form>
     </div>

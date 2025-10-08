@@ -528,7 +528,7 @@
                 <p class="header-subtitle">Detalle de pagos y estado de cuenta del residente</p>
             </div>
             <div class="btn-group">
-                <a href="{{ route('admin.facturas.index') }}" class="btn-header">
+                <a href="{{ route('admin.facturas.usuario', $usuario->email ?? request()->route('email')) }}" class="btn-header">
                     <i class="fas fa-arrow-left"></i> Volver
                 </a>
                 @if($usuario)
@@ -586,12 +586,6 @@
                    class="btn-modern btn-resolve-modern">
                     <i class="fas fa-exclamation-triangle"></i> 
                     Resolver Rechazados ({{ $facturasRechazadas }})
-                </a>
-            @else
-                <a href="{{ route('admin.facturas.usuario', $usuario->email ?? request()->route('email')) }}" 
-                   class="btn-modern btn-secondary-modern">
-                    <i class="fas fa-list"></i> 
-                    Ver Todas las Facturas
                 </a>
             @endif
         </div>
@@ -660,7 +654,16 @@
                     <td style="text-align:center;">
                         <div class="action-buttons">
                             @if($mostrarRechazadas)
-                                {{-- En modo resolver rechazados, solo mostrar botón eliminar --}}
+                                {{-- En modo resolver rechazados, mostrar botón restablecer y eliminar --}}
+                                <form action="{{ route('admin.facturas.cancelar', $factura->id) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="from_user" value="1">
+                                    <input type="hidden" name="rechazadas" value="1">
+                                    <button type="submit" class="btn-modern btn-warning-modern" title="Restablecer a pendiente">
+                                        <i class="fas fa-undo"></i> Restablecer
+                                    </button>
+                                </form>
                                 <form action="{{ route('admin.facturas.eliminar', $factura->id) }}" method="POST" 
                                       onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta factura? Esta acción no se puede deshacer.')" 
                                       style="display:inline-block;">

@@ -440,10 +440,6 @@
                 </div>
 
                 <div class="form-actions">
-                    <a href="{{ route('admin.juntas_asamblea.show', $junta->id) }}" class="btn-cancel">
-                        <i class="fas fa-times"></i>
-                        Cancelar
-                    </a>
                     <button type="submit" class="btn-submit">
                         <i class="fas fa-save"></i>
                         Actualizar Junta

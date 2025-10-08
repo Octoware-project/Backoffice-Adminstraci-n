@@ -15,6 +15,29 @@
             background: #f4f6f8;
             margin: 0;
             overflow-x: hidden; /* Prevenir scroll horizontal */
+            /* Ocultar barra de scroll pero mantener funcionalidad */
+            overflow-y: scroll;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+
+        /* Ocultar scrollbar en Webkit browsers (Chrome, Safari, Edge) */
+        body::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none;
+        }
+
+        /* Aplicar también a elementos con scroll */
+        * {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+
+        *::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none;
         }
         
         /* Asegurar que el main-content respete el sidebar */

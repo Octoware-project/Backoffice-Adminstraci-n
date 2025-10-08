@@ -79,8 +79,22 @@ class AdminController extends Controller
 
     public function destroy($id)
     {
+        // Verificar si es el último administrador
+        $totalAdmins = UserAdmin::count();
+        
+        if ($totalAdmins <= 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se puede eliminar el último administrador del sistema. Debe haber al menos un administrador activo.'
+            ]);
+        }
+        
         $admin = UserAdmin::findOrFail($id);
         $admin->delete();
-        return redirect()->route('admin.list')->with('success', 'Administrador eliminado correctamente.');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Administrador eliminado correctamente.'
+        ]);
     }
 }

@@ -56,13 +56,9 @@
                                         <a href="{{ route('admin.edit', $adm->id) }}" class="btn-guardar-config btn-sm">
                                             <i class="fas fa-edit"></i> Modificar
                                         </a>
-                                        <form method="POST" action="{{ route('admin.destroy', $adm->id) }}" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-delete btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este administrador?')">
-                                                <i class="fas fa-trash"></i> Eliminar
-                                            </button>
-                                        </form>
+                                        <button class="btn-delete btn-sm" onclick="confirmarEliminacion('{{ $adm->id }}', '{{ $adm->name }}')">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -114,4 +110,104 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de Confirmación Personalizado -->
+<div id="confirmation-modal" class="confirmation-modal-overlay">
+    <div class="confirmation-modal">
+        <div class="confirmation-modal-header">
+            <h3 id="modal-title">Confirmar Eliminación</h3>
+        </div>
+        <div class="confirmation-modal-body">
+            <p id="modal-message">¿Estás seguro de que deseas eliminar este administrador?</p>
+        </div>
+        <div class="confirmation-modal-footer">
+            <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+            <button type="button" class="btn-delete" id="confirm-delete-btn">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+    let adminIdAEliminar = null;
+
+    function confirmarEliminacion(adminId, adminName) {
+        adminIdAEliminar = adminId;
+        
+        document.getElementById('modal-title').textContent = 'Confirmar Eliminación';
+        document.getElementById('modal-message').textContent = 
+            `¿Estás seguro de que deseas eliminar al administrador "${adminName}"? Esta acción no se puede deshacer.`;
+        
+        document.getElementById('confirmation-modal').style.display = 'flex';
+        
+        // Configurar el botón de confirmación
+        const confirmBtn = document.getElementById('confirm-delete-btn');
+        confirmBtn.onclick = function() {
+            eliminarAdministrador(adminId);
+        };
+    }
+
+    function cerrarModal() {
+        document.getElementById('confirmation-modal').style.display = 'none';
+        adminIdAEliminar = null;
+    }
+
+    async function eliminarAdministrador(adminId) {
+        try {
+            const response = await fetch(`/administradores/${adminId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Mostrar mensaje de éxito y recargar página
+                cerrarModal();
+                window.location.reload();
+            } else {
+                // Mostrar alerta personalizada para el error
+                mostrarAlertaError(data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarAlertaError('Ocurrió un error al eliminar el administrador.');
+        }
+    }
+
+    function mostrarAlertaError(mensaje) {
+        // Cerrar modal de confirmación
+        cerrarModal();
+        
+        // Cambiar el modal a modo de alerta de error
+        document.getElementById('modal-title').innerHTML = '<i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i> Error';
+        document.getElementById('modal-message').textContent = mensaje;
+        
+        // Ocultar botón de eliminar y cambiar texto del botón cancelar
+        document.getElementById('confirm-delete-btn').style.display = 'none';
+        document.querySelector('.confirmation-modal-footer .btn-cancel').textContent = 'Cerrar';
+        document.querySelector('.confirmation-modal-footer .btn-cancel').onclick = function() {
+            // Restaurar estado original del modal
+            document.getElementById('confirm-delete-btn').style.display = 'inline-block';
+            document.querySelector('.confirmation-modal-footer .btn-cancel').textContent = 'Cancelar';
+            document.querySelector('.confirmation-modal-footer .btn-cancel').onclick = cerrarModal;
+            cerrarModal();
+        };
+        
+        document.getElementById('confirmation-modal').style.display = 'flex';
+    }
+
+    // Cerrar modal al hacer clic fuera de él
+    document.getElementById('confirmation-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            cerrarModal();
+        }
+    });
+</script>
+@endpush
+
 @endsection

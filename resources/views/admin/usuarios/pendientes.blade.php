@@ -107,10 +107,6 @@
                         <p class="header-subtitle">Gestión de solicitudes de registro pendientes de aprobación</p>
                     </div>
                     <div class="btn-group">
-                        <a href="{{ route('usuarios.pendientes') }}" class="btn-modern btn-secondary-modern">
-                            <i class="fas fa-sync-alt"></i>
-                            Actualizar
-                        </a>
                         <a href="{{ route('usuarios.index') }}" class="btn-modern btn-success" style="background-color: #10b981; color: white;">
                             <i class="fas fa-users"></i>
                             Ver Residentes
@@ -129,17 +125,13 @@
                 </div>
             @endif
 
-            {{-- Sección de Filtros --}}
+            {{-- Sección de Filtros Moderna --}}
             <div class="filters-section">
-                <div class="filters-header">
-                    <h3 class="filters-title">
-                        <i class="fas fa-filter"></i>
-                        Filtros de Búsqueda
-                    </h3>
-                    <button class="filters-toggle" id="filters-toggle">
+                <div class="filters-header" onclick="toggleFilters()">
+                    <div class="filters-title">
+                        <span><i class="fas fa-filter"></i> Filtros de búsqueda</span>
                         <i class="fas fa-chevron-down" id="filter-icon"></i>
-                        <span id="filter-text">Mostrar Filtros</span>
-                    </button>
+                    </div>
                 </div>
                 
                 <div class="filters-content" id="filters-content">
@@ -216,13 +208,11 @@
                         </div>
 
                         <div class="filters-actions">
-                            <button type="button" class="filter-btn filter-btn-secondary" id="clear-filters">
-                                <i class="fas fa-times"></i>
-                                Limpiar Filtros
-                            </button>
-                            <button type="submit" class="filter-btn filter-btn-primary" id="apply-filters">
-                                <i class="fas fa-search"></i>
-                                Aplicar Filtros
+                            <a href="{{ route('usuarios.pendientes') }}" class="filter-btn filter-btn-secondary">
+                                <i class="fas fa-times"></i> Limpiar
+                            </a>
+                            <button type="submit" class="filter-btn filter-btn-primary">
+                                <i class="fas fa-search"></i> Aplicar Filtros
                             </button>
                         </div>
                     </form>

@@ -37,10 +37,6 @@
                         <p class="header-subtitle">Listado de usuarios aprobados e inactivos en el sistema</p>
                     </div>
                     <div class="btn-group">
-                        <a href="{{ route('usuarios.index') }}" class="btn-modern btn-secondary-modern">
-                            <i class="fas fa-sync-alt"></i>
-                            Actualizar
-                        </a>
                         <a href="{{ route('usuarios.pendientes') }}" class="btn-modern btn-warning" style="background-color: #f59e0b; color: white;">
                             <i class="fas fa-clock"></i>
                             Ver Pendientes
@@ -59,17 +55,13 @@
                 </div>
             @endif
 
-            {{-- Sección de Filtros --}}
+            {{-- Sección de Filtros Moderna --}}
             <div class="filters-section">
-                <div class="filters-header">
-                    <h3 class="filters-title">
-                        <i class="fas fa-filter"></i>
-                        Filtros de Búsqueda
-                    </h3>
-                    <button class="filters-toggle" id="filters-toggle">
+                <div class="filters-header" onclick="toggleFilters()">
+                    <div class="filters-title">
+                        <span><i class="fas fa-filter"></i> Filtros de búsqueda</span>
                         <i class="fas fa-chevron-down" id="filter-icon"></i>
-                        <span id="filter-text">Mostrar Filtros</span>
-                    </button>
+                    </div>
                 </div>
                 
                 <div class="filters-content" id="filters-content">
@@ -146,13 +138,11 @@
                         </div>
 
                         <div class="filters-actions">
-                            <button type="button" class="filter-btn filter-btn-secondary" id="clear-filters">
-                                <i class="fas fa-times"></i>
-                                Limpiar Filtros
-                            </button>
-                            <button type="submit" class="filter-btn filter-btn-primary" id="apply-filters">
-                                <i class="fas fa-search"></i>
-                                Aplicar Filtros
+                            <a href="{{ route('usuarios.index') }}" class="filter-btn filter-btn-secondary">
+                                <i class="fas fa-times"></i> Limpiar
+                            </a>
+                            <button type="submit" class="filter-btn filter-btn-primary">
+                                <i class="fas fa-search"></i> Aplicar Filtros
                             </button>
                         </div>
                     </form>
@@ -275,7 +265,7 @@
                                     <div class="actions-group">
                                         <a href="{{ route('usuarios.show', $usuario->id) }}" class="action-btn btn-view">
                                             <i class="fas fa-eye"></i>
-                                            Ver Detalle
+                                            Ver
                                         </a>
                                         <a href="{{ route('usuarios.edit', $usuario->id) }}" class="action-btn btn-edit" style="background-color: #f59e0b; color: white;">
                                             <i class="fas fa-edit"></i>
@@ -295,7 +285,7 @@
                         <h3>No hay usuarios</h3>
                         <p>No se encontraron usuarios que coincidan con los filtros aplicados.</p>
                         <a href="{{ route('usuarios.index') }}" class="btn-modern btn-primary-modern" style="margin-top: 1rem;">
-                            <i class="fas fa-sync-alt"></i>
+                            <i class="fas fa-list"></i>
                             Mostrar Todos
                         </a>
                     </div>

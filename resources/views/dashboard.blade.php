@@ -344,13 +344,15 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        /* Staggered animations */
-        .metric-card:nth-child(1) { animation-delay: 0.1s; }
-        .metric-card:nth-child(2) { animation-delay: 0.2s; }
-        .metric-card:nth-child(3) { animation-delay: 0.3s; }
-        .metric-card:nth-child(4) { animation-delay: 0.4s; }
-        .metric-card:nth-child(5) { animation-delay: 0.5s; }
-        .metric-card:nth-child(6) { animation-delay: 0.6s; }
+        /* Animaciones simultáneas - todas las tarjetas al mismo tiempo */
+        .metric-card:nth-child(1),
+        .metric-card:nth-child(2),
+        .metric-card:nth-child(3),
+        .metric-card:nth-child(4),
+        .metric-card:nth-child(5),
+        .metric-card:nth-child(6) { 
+            animation-delay: 0s; 
+        }
 
         /* Responsive design */
         @media (max-width: 1024px) {
@@ -597,7 +599,7 @@
                 <div class="chart-header">
                     <h3 class="chart-title">
                         <i class="fas fa-chart-area me-2"></i>
-                        Ingresos Mensuales (Últimos 6 meses)
+                        Ingresos Mensuales
                     </h3>
                 </div>
                 <canvas id="incomeChart" class="chart-canvas"></canvas>
