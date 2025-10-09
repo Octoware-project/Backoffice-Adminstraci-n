@@ -664,14 +664,13 @@
                                         <i class="fas fa-undo"></i> Restablecer
                                     </button>
                                 </form>
-                                <form action="{{ route('admin.facturas.eliminar', $factura->id) }}" method="POST" 
-                                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta factura? Esta acción no se puede deshacer.')" 
-                                      style="display:inline-block;">
+                                <form id="delete-factura-form-{{ $factura->id }}" action="{{ route('admin.facturas.eliminar', $factura->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <input type="hidden" name="from_user" value="1">
                                     <input type="hidden" name="rechazadas" value="1">
-                                    <button type="submit" class="btn-modern btn-delete-modern" title="Eliminar factura">
+                                    <button type="button" class="btn-modern btn-delete-modern" title="Eliminar factura"
+                                            onclick="confirmDeleteFactura({{ $factura->id }}, '{{ $factura->Monto }}', '{{ $factura->created_at->format('d/m/Y') }}')">
                                         <i class="fas fa-trash"></i> Eliminar
                                     </button>
                                 </form>
@@ -732,4 +731,25 @@
 </div>
 
 </div>
+
+<script>
+// Función para confirmar eliminación de factura
+function confirmDeleteFactura(facturaId, monto, fecha) {
+    ModalConfirmation.create({
+        title: 'Confirmar Eliminación de Factura',
+        message: '¿Está seguro que desea eliminar la factura:',
+        detail: `"$${monto} - ${fecha}"`,
+        warning: 'Esta acción no se puede deshacer. Se perderán todos los datos de la factura.',
+        confirmText: 'Eliminar Factura',
+        cancelText: 'Cancelar',
+        iconClass: 'fas fa-file-invoice-dollar',
+        iconColor: '#dc2626',
+        confirmColor: '#dc2626',
+        onConfirm: function() {
+            document.getElementById(`delete-factura-form-${facturaId}`).submit();
+        }
+    });
+}
+</script>
+
 @endsection

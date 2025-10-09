@@ -141,15 +141,19 @@ class UnidadHabitacionalController extends Controller
         $unidad = UnidadHabitacional::findOrFail($id);
 
         // Verificar si tiene residentes asignados
-        if ($unidad->personas()->count() > 0) {
+        $cantidadPersonas = $unidad->personas()->count();
+        if ($cantidadPersonas > 0) {
             return redirect()->back()
-                ->with('error', 'No se puede eliminar la unidad porque tiene residentes asignados.');
+                ->with('error', "No se puede eliminar la unidad Departamento {$unidad->numero_departamento} - Piso {$unidad->piso} porque tiene {$cantidadPersonas} persona" . ($cantidadPersonas > 1 ? 's' : '') . " asignada" . ($cantidadPersonas > 1 ? 's' : '') . ". Primero debe desasignar todas las personas.");
         }
 
+        $numeroDepartamento = $unidad->numero_departamento;
+        $piso = $unidad->piso;
+        
         $unidad->delete();
 
         return redirect()->route('unidades.index')
-            ->with('success', 'Unidad habitacional eliminada exitosamente.');
+            ->with('success', "Unidad habitacional Departamento {$numeroDepartamento} - Piso {$piso} eliminada exitosamente.");
     }
 
     /**

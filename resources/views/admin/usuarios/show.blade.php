@@ -602,9 +602,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const userId = this.getAttribute('data-user-id');
             const userName = this.getAttribute('data-user-name');
             
-            if (confirm(`¿Estás seguro de que quieres ACEPTAR a ${userName}? El usuario pasará al estado "Inactivo".`)) {
-                handleUserAction('aceptar', userId, this);
-            }
+            ModalConfirmation.create({
+                title: 'Confirmar Aceptación de Usuario',
+                message: '¿Está seguro que desea ACEPTAR al usuario:',
+                detail: `"${userName}"`,
+                warning: 'El usuario pasará al estado "Inactivo" y podrá acceder al sistema.',
+                confirmText: 'Aceptar Usuario',
+                cancelText: 'Cancelar',
+                iconClass: 'fas fa-user-check',
+                iconColor: '#059669',
+                confirmColor: '#059669',
+                onConfirm: () => {
+                    handleUserAction('aceptar', userId, this);
+                }
+            });
         });
     }
 
@@ -616,9 +627,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const userId = this.getAttribute('data-user-id');
             const userName = this.getAttribute('data-user-name');
             
-            if (confirm(`¿Estás seguro de que quieres RECHAZAR a ${userName}?`)) {
-                handleUserAction('rechazar', userId, this);
-            }
+            ModalConfirmation.create({
+                title: 'Confirmar Rechazo de Usuario',
+                message: '¿Está seguro que desea RECHAZAR al usuario:',
+                detail: `"${userName}"`,
+                warning: 'El usuario no podrá acceder al sistema y se marcará como rechazado.',
+                confirmText: 'Rechazar Usuario',
+                cancelText: 'Cancelar',
+                iconClass: 'fas fa-user-times',
+                iconColor: '#dc2626',
+                confirmColor: '#dc2626',
+                onConfirm: () => {
+                    handleUserAction('rechazar', userId, this);
+                }
+            });
         });
     }
 

@@ -65,10 +65,19 @@ const TableInteractions = {
         const userId = button.getAttribute('data-user-id');
         const userName = button.getAttribute('data-user-name') || 'este usuario';
         
-        if (confirm(`¿Estás seguro de que quieres ACEPTAR a ${userName}? El usuario pasará al estado "Inactivo".`)) {
-            this.showLoading(button, 'Aceptando...');
-            this.sendAjaxRequest('aceptar', userId, button);
-        }
+        ModalConfirmation.create({
+            title: 'Confirmar Aceptación',
+            message: `¿Estás seguro de que quieres ACEPTAR a ${userName}? El usuario pasará al estado "Inactivo".`,
+            type: 'success',
+            iconClass: 'fas fa-user-check',
+            iconColor: '#059669',
+            confirmColor: '#059669',
+            confirmText: 'Aceptar Usuario',
+            onConfirm: () => {
+                this.showLoading(button, 'Aceptando...');
+                this.sendAjaxRequest('aceptar', userId, button);
+            }
+        });
     },
 
     handleReject(e) {
@@ -79,10 +88,15 @@ const TableInteractions = {
         const userId = button.getAttribute('data-user-id');
         const userName = button.getAttribute('data-user-name') || 'este usuario';
         
-        if (confirm(`¿Estás seguro de que quieres RECHAZAR a ${userName}? Esta acción se puede revertir.`)) {
-            this.showLoading(button, 'Rechazando...');
-            this.sendAjaxRequest('rechazar', userId, button);
-        }
+        ModalConfirmation.create({
+            title: 'Confirmar Rechazo',
+            message: `¿Estás seguro de que quieres RECHAZAR a ${userName}? Esta acción se puede revertir.`,
+            type: 'warning',
+            onConfirm: () => {
+                this.showLoading(button, 'Rechazando...');
+                this.sendAjaxRequest('rechazar', userId, button);
+            }
+        });
     },
 
     sendAjaxRequest(action, userId, button) {
@@ -90,7 +104,12 @@ const TableInteractions = {
         const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         
         if (!token) {
-            alert('Error: Token CSRF no encontrado');
+            ModalConfirmation.create({
+                title: 'Error del Sistema',
+                message: 'Error: Token CSRF no encontrado',
+                type: 'error',
+                showCancelButton: false
+            });
             this.restoreButton(button);
             return;
         }
