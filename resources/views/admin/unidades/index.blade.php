@@ -30,6 +30,31 @@
         </div>
     </div>
 
+    {{-- Mensajes de sesión --}}
+    @if(session('success'))
+        <div class="alert alert-success">
+            <div class="alert-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div>
+                <strong>¡Éxito!</strong>
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-error">
+            <div class="alert-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div>
+                <strong>Error:</strong>
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
+
     <!-- Filtros Colapsables -->
     <div class="filters-container">
         <div class="filters-header" onclick="toggleFilters()">
@@ -154,12 +179,12 @@
                                        class="btn-edit" title="Editar">
                                         <i class="fas fa-edit"></i> Editar
                                     </a>
-                                    <form method="POST" action="{{ route('unidades.destroy', $unidad) }}" 
-                                          style="display: inline-block;"
-                                          onsubmit="return confirm('¿Estás seguro de eliminar esta unidad habitacional?')">
+                                    <form id="delete-form-unidad-{{ $unidad->id }}" method="POST" action="{{ route('unidades.destroy', $unidad) }}" 
+                                          style="display: inline-block;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-delete" title="Eliminar">
+                                        <button type="button" class="btn-delete" title="Eliminar"
+                                                onclick="confirmDeleteUnidad({{ $unidad->id }}, '{{ $unidad->numero_departamento }}', '{{ $unidad->piso }}')">
                                             <i class="fas fa-trash"></i> Eliminar
                                         </button>
                                     </form>
@@ -215,5 +240,24 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleFilters();
     }
 });
+
+// Función para confirmar eliminación de unidad
+// Función para confirmar eliminación de unidad
+function confirmDeleteUnidad(unidadId, numeroDepartamento, piso) {
+    ModalConfirmation.create({
+        title: 'Confirmar Eliminación de Unidad',
+        message: '¿Está seguro que desea eliminar la unidad:',
+        detail: `"Departamento ${numeroDepartamento} - Piso ${piso}"`,
+        warning: 'NOTA: No se puede eliminar si tiene personas asignadas. Primero debe desasignar todas las personas de la unidad.',
+        confirmText: 'Eliminar Unidad',
+        cancelText: 'Cancelar',
+        iconClass: 'fas fa-building',
+        iconColor: '#dc2626',
+        confirmColor: '#dc2626',
+        onConfirm: function() {
+            document.getElementById(`delete-form-unidad-${unidadId}`).submit();
+        }
+    });
+}
 </script>
 @endsection

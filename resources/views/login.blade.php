@@ -122,6 +122,8 @@
                 </form>
             </div>
 
+    <script src="{{ asset('js/modal-confirmation.js') }}"></script>
+
 <script>
 // Función para mostrar/ocultar contraseña
 function togglePassword() {
@@ -186,7 +188,12 @@ function validateForm(event) {
     
     if (password !== passwordConfirmation) {
         event.preventDefault();
-        alert('Las contraseñas no coinciden. Por favor, verifica que ambas contraseñas sean iguales.');
+        ModalConfirmation.create({
+            title: 'Error de Validación',
+            message: 'Las contraseñas no coinciden. Por favor, verifica que ambas contraseñas sean iguales.',
+            type: 'error',
+            showCancelButton: false
+        });
         return false;
     }
     return true;

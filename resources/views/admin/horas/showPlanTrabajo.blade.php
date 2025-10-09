@@ -462,11 +462,11 @@
                 </p>
             </div>
             <div class="header-buttons">
-                <form action="{{ route('plan-trabajos.destroy', $plan->id) }}" method="POST" style="display: inline;">
+                <form id="delete-plan-form-{{ $plan->id }}" action="{{ route('plan-trabajos.destroy', $plan->id) }}" method="POST" style="display: inline;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="delete-btn" 
-                            onclick="return confirm('¿Estás seguro de eliminar este plan de trabajo? Esta acción se puede revertir.')">
+                    <button type="button" class="delete-btn" 
+                            onclick="confirmDeletePlan({{ $plan->id }}, '{{ $plan->user->name }}', '{{ $plan->mes }}', {{ $plan->anio }})">
                         <i class="fas fa-trash-alt"></i>
                         Eliminar
                     </button>
@@ -761,5 +761,26 @@
             }, index * 100);
         });
     });
+
+    // Función para confirmar eliminación de plan de trabajo
+    function confirmDeletePlan(planId, userName, mes, anio) {
+        const meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        
+        ModalConfirmation.create({
+            title: 'Confirmar Eliminación de Plan',
+            message: '¿Está seguro que desea eliminar el plan de trabajo:',
+            detail: `"${userName} - ${meses[mes]} ${anio}"`,
+            warning: 'Esta acción se puede revertir desde la lista de planes eliminados.',
+            confirmText: 'Eliminar Plan',
+            cancelText: 'Cancelar',
+            iconClass: 'fas fa-calendar-times',
+            iconColor: '#dc2626',
+            confirmColor: '#dc2626',
+            onConfirm: function() {
+                document.getElementById(`delete-plan-form-${planId}`).submit();
+            }
+        });
+    }
 </script>
 @endsection

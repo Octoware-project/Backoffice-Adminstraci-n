@@ -17,8 +17,11 @@ Route::middleware('auth')->group(function () {
 // Rutas para usuarios
 Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index'); // Usuarios aceptados
 Route::get('/usuarios/pendientes', [UsuarioController::class, 'pendientes'])->name('usuarios.pendientes'); // Usuarios pendientes
+Route::get('/usuarios/eliminados', [UsuarioController::class, 'eliminados'])->name('usuarios.eliminados'); // Usuarios eliminados
 Route::put('/usuarios/{id}/aceptar', [UsuarioController::class, 'aceptar'])->name('usuarios.aceptar');
 Route::put('/usuarios/{id}/rechazar', [UsuarioController::class, 'rechazar'])->name('usuarios.rechazar');
+Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
+Route::put('/usuarios/{id}/restaurar', [UsuarioController::class, 'restaurar'])->name('usuarios.restaurar');
 Route::post('/admin/usuarios/{id}/aceptar', [UsuarioController::class, 'aceptar'])->name('usuarios.aceptar.ajax');
 Route::post('/admin/usuarios/{id}/rechazar', [UsuarioController::class, 'rechazar'])->name('usuarios.rechazar.ajax');
 Route::get('/admin/usuarios/{id}', [UsuarioController::class, 'show'])->name('usuarios.show');

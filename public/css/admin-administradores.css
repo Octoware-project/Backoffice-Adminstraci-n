@@ -551,7 +551,8 @@
     background: #a8a8a8;
 }
 
-/* Modal de Confirmación */
+/* Modal de Confirmación - COMENTADO: Ahora se usa el sistema global ModalConfirmation */
+/*
 .confirmation-modal-overlay {
     display: none;
     position: fixed;
@@ -677,3 +678,4 @@
         width: 100%;
     }
 }
+*/

@@ -315,4 +315,98 @@ class UsuarioController extends Controller
 
         return redirect()->route('usuarios.show', $usuario->id)->with('success', 'Datos actualizados correctamente.');
     }
+
+    public function destroy($id)
+    {
+        $usuario = Persona::with('unidadHabitacional')->findOrFail($id);
+        $nombreCompleto = "{$usuario->name} {$usuario->apellido}";
+        
+        // Verificar si el usuario tiene una unidad habitacional asignada
+        if ($usuario->unidad_habitacional_id) {
+            $unidadInfo = $usuario->unidadHabitacional ? 
+                "Unidad {$usuario->unidadHabitacional->numero}" : 
+                "una unidad habitacional";
+                
+            return redirect()->route('usuarios.index')
+                           ->with('error', "No se puede eliminar al usuario {$nombreCompleto} porque tiene asignada la {$unidadInfo}. Primero debe desasignarse la unidad desde la sección de Unidades Habitacionales.");
+        }
+        
+        // Usar soft delete
+        $usuario->delete();
+        
+        return redirect()->route('usuarios.index')
+                       ->with('success', "Usuario {$nombreCompleto} eliminado correctamente. Se puede restaurar desde usuarios eliminados.");
+    }
+
+    public function eliminados(Request $request)
+    {
+        // Construir query base para usuarios eliminados (soft deleted)
+        $query = Persona::onlyTrashed()->with('user');
+
+        // Filtro por nombre (busca en name y apellido)
+        if ($request->filled('filter_nombre')) {
+            $searchTerm = $request->filter_nombre;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('apellido', 'LIKE', "%{$searchTerm}%")
+                  ->orWhereRaw("CONCAT(name, ' ', apellido) LIKE ?", ["%{$searchTerm}%"]);
+            });
+        }
+
+        // Filtro por email
+        if ($request->filled('filter_email')) {
+            $searchEmail = $request->filter_email;
+            $query->whereHas('user', function($q) use ($searchEmail) {
+                $q->where('email', 'LIKE', "%{$searchEmail}%");
+            });
+        }
+
+        // Aplicar ordenamiento
+        $sortField = $request->get('sort_field', 'deleted_at');
+        $sortDirection = $request->get('sort_direction', 'desc');
+
+        // Validar campo de ordenamiento
+        $allowedSortFields = ['deleted_at', 'name', 'email'];
+        if (!in_array($sortField, $allowedSortFields)) {
+            $sortField = 'deleted_at';
+        }
+
+        // Validar dirección de ordenamiento
+        $allowedDirections = ['asc', 'desc'];
+        if (!in_array($sortDirection, $allowedDirections)) {
+            $sortDirection = 'desc';
+        }
+
+        // Aplicar ordenamiento según el campo seleccionado
+        switch ($sortField) {
+            case 'name':
+                $query->orderByRaw("CONCAT(name, ' ', apellido) {$sortDirection}");
+                break;
+            case 'email':
+                $query->leftJoin('users', 'personas.user_id', '=', 'users.id')
+                      ->orderBy('users.email', $sortDirection)
+                      ->select('personas.*');
+                break;
+            case 'deleted_at':
+            default:
+                $query->orderBy('deleted_at', $sortDirection);
+                break;
+        }
+
+        $usuarios = $query->get();
+
+        return view('admin.usuarios.eliminados', compact('usuarios'));
+    }
+
+    public function restaurar($id)
+    {
+        $usuario = Persona::onlyTrashed()->findOrFail($id);
+        $nombreCompleto = "{$usuario->name} {$usuario->apellido}";
+        
+        // Restaurar usuario
+        $usuario->restore();
+        
+        return redirect()->route('usuarios.eliminados')
+                       ->with('success', "Usuario {$nombreCompleto} restaurado correctamente.");
+    }
 }

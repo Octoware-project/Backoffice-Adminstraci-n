@@ -841,11 +841,11 @@
                                     <i class="fas fa-eye"></i>
                                     Ver
                                 </a>
-                                <form action="{{ route('plan-trabajos.destroy', $plan->id) }}" method="POST" style="display:inline-block;">
+                                <form id="delete-plan-list-form-{{ $plan->id }}" action="{{ route('plan-trabajos.destroy', $plan->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="action-btn btn-danger-modern" 
-                                            onclick="return confirm('¿Estás seguro de eliminar este plan de trabajo? Esta acción se puede revertir.')">
+                                    <button type="button" class="action-btn btn-danger-modern" 
+                                            onclick="confirmDeletePlanFromList({{ $plan->id }}, '{{ $plan->user->name ?? $plan->user_id }}', {{ $plan->mes }}, {{ $plan->anio }})">
                                         <i class="fas fa-trash-alt"></i>
                                         Eliminar
                                     </button>
@@ -942,6 +942,27 @@
             text.textContent = 'Ocultar Filtros';
         }
     });
+
+    // Función para confirmar eliminación de plan de trabajo desde la lista
+    function confirmDeletePlanFromList(planId, userName, mes, anio) {
+        const meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        
+        ModalConfirmation.create({
+            title: 'Confirmar Eliminación de Plan',
+            message: '¿Está seguro que desea eliminar el plan de trabajo:',
+            detail: `"${userName} - ${meses[mes]} ${anio}"`,
+            warning: 'Esta acción se puede revertir. El plan se marcará como eliminado.',
+            confirmText: 'Eliminar Plan',
+            cancelText: 'Cancelar',
+            iconClass: 'fas fa-calendar-times',
+            iconColor: '#dc2626',
+            confirmColor: '#dc2626',
+            onConfirm: function() {
+                document.getElementById(`delete-plan-list-form-${planId}`).submit();
+            }
+        });
+    }
 </script>
 
 @endsection

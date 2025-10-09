@@ -110,6 +110,9 @@
         @yield('content')
     </div>
     
+    {{-- Sistema de modales de confirmación global --}}
+    <script src="{{ asset('js/modal-confirmation.js') }}"></script>
+    
     {{-- Stack para scripts al final del body --}}
     @stack('scripts')
 </body>

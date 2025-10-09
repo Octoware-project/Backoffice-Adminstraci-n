@@ -246,6 +246,43 @@
     text-decoration: none;
 }
 
+/* Acciones */
+.actions-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+}
+
+.btn-danger-modern {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.btn-danger-modern:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+    transform: translateY(-1px);
+}
+
 /* Estados vacíos */
 .empty-state {
     text-align: center;

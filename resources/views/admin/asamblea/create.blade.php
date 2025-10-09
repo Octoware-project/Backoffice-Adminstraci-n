@@ -396,7 +396,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!lugar || !fecha) {
             e.preventDefault();
-            alert('Por favor complete todos los campos obligatorios.');
+            ModalConfirmation.create({
+                title: 'Error de Validación',
+                message: 'Por favor complete todos los campos obligatorios.',
+                type: 'error',
+                showCancelButton: false
+            });
             return false;
         }
         
@@ -406,7 +411,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (selectedDate < todayDate) {
             e.preventDefault();
-            alert('La fecha de la junta no puede ser anterior a hoy.');
+            ModalConfirmation.create({
+                title: 'Error de Validación',
+                message: 'La fecha de la junta no puede ser anterior a hoy.',
+                type: 'error',
+                showCancelButton: false
+            });
             return false;
         }
     });

@@ -853,10 +853,11 @@
                                 @endif
                             </td>
                             <td onclick="event.stopPropagation();">
-                                <form method="POST" action="{{ route('unidades.desasignar-persona', [$unidad->id, $persona->id]) }}" style="display: inline;">
+                                <form id="desasignar-form-{{ $persona->id }}" method="POST" action="{{ route('unidades.desasignar-persona', [$unidad->id, $persona->id]) }}" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Estás seguro de desasignar esta persona?')">>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            onclick="confirmDesasignarPersona({{ $persona->id }}, '{{ $persona->name }} {{ $persona->apellido }}', '{{ $unidad->numero }}')">
                                         <i class="fas fa-user-times"></i> Desasignar
                                     </button>
                                 </form>
@@ -997,10 +998,23 @@ function mostrarPersonasDisponibles(personas) {
 }
 
 function asignarPersona(personaId, nombrePersona) {
-    if (!confirm(`¿Estás seguro de asignar a ${nombrePersona} a esta unidad habitacional?`)) {
-        return;
-    }
-    
+    ModalConfirmation.create({
+        title: 'Confirmar Asignación',
+        message: '¿Está seguro que desea asignar a:',
+        detail: `"${nombrePersona}" a esta unidad habitacional`,
+        warning: 'La persona será asociada a esta unidad.',
+        confirmText: 'Asignar',
+        cancelText: 'Cancelar',
+        iconClass: 'fas fa-user-plus',
+        iconColor: '#059669',
+        confirmColor: '#059669',
+        onConfirm: function() {
+            ejecutarAsignacion(personaId, nombrePersona);
+        }
+    });
+}
+
+function ejecutarAsignacion(personaId, nombrePersona) {
     const formData = new FormData();
     formData.append('_token', '{{ csrf_token() }}');
     formData.append('persona_id', personaId);
@@ -1012,16 +1026,66 @@ function asignarPersona(personaId, nombrePersona) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Mostrar mensaje de éxito y recargar la página
-            alert(data.message);
-            window.location.reload();
+            // Mostrar mensaje de éxito personalizado y recargar la página
+            ModalConfirmation.create({
+                title: 'Asignación Exitosa',
+                message: data.message,
+                warning: null,
+                confirmText: 'Continuar',
+                cancelText: null,
+                iconClass: 'fas fa-check-circle',
+                iconColor: '#059669',
+                confirmColor: '#059669',
+                onConfirm: function() {
+                    window.location.reload();
+                }
+            });
         } else {
-            alert(data.message || 'Error al asignar la persona');
+            // Mostrar mensaje de error
+            ModalConfirmation.create({
+                title: 'Error en Asignación',
+                message: data.message || 'Error al asignar la persona',
+                warning: 'Inténtalo de nuevo.',
+                confirmText: 'Entendido',
+                cancelText: null,
+                iconClass: 'fas fa-exclamation-triangle',
+                iconColor: '#dc2626',
+                confirmColor: '#dc2626',
+                onConfirm: function() {}
+            });
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error al asignar la persona. Inténtalo de nuevo.');
+        ModalConfirmation.create({
+            title: 'Error de Conexión',
+            message: 'Error al asignar la persona.',
+            warning: 'Verifique su conexión e inténtalo de nuevo.',
+            confirmText: 'Entendido',
+            cancelText: null,
+            iconClass: 'fas fa-wifi',
+            iconColor: '#dc2626',
+            confirmColor: '#dc2626',
+            onConfirm: function() {}
+        });
+    });
+}
+
+// Función para confirmar desasignación de persona
+function confirmDesasignarPersona(personaId, nombrePersona, numeroUnidad) {
+    ModalConfirmation.create({
+        title: 'Confirmar Desasignación',
+        message: '¿Está seguro que desea desasignar a:',
+        detail: `"${nombrePersona}" de la unidad ${numeroUnidad}`,
+        warning: 'La persona ya no estará asociada a esta unidad.',
+        confirmText: 'Desasignar',
+        cancelText: 'Cancelar',
+        iconClass: 'fas fa-user-times',
+        iconColor: '#dc2626',
+        confirmColor: '#dc2626',
+        onConfirm: function() {
+            document.getElementById(`desasignar-form-${personaId}`).submit();
+        }
     });
 }
 </script>
