@@ -1,17 +1,25 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\UserAdmin;
 use Illuminate\Support\Facades\Hash;
+
 class UserAdminSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        UserAdmin::create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('123456'), // hash seguro
-        ]);
+        // Crear el usuario admin principal
+        UserAdmin::updateOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('123456'),
+            ]
+        );
+
+        $this->command->info('Usuario admin creado: admin@example.com / 123456');
     }
 }

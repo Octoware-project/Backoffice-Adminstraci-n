@@ -19,7 +19,7 @@ class UsuarioControllerTest extends TestCase
         $this->seed();
     }
 
-    public function test_IndexMuestraListasPorEstado()
+    public function test_IndexMuestraUsuariosAceptados()
     {
         // Usar admin real del seeder para autenticación
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
@@ -27,18 +27,36 @@ class UsuarioControllerTest extends TestCase
         $response = $this->actingAs($admin)->get(route('usuarios.index'));
         $response->assertStatus(200);
         $response->assertViewIs('admin.usuarios.index');
-        $response->assertViewHas(['pendientes', 'aceptados', 'rechazados', 'inactivos']);
+        $response->assertViewHas('usuarios');
         
-        // Verificar que hay datos de cada estado (creados por el seeder)
-        $pendientes = $response->viewData('pendientes');
-        $aceptados = $response->viewData('aceptados');
-        $rechazados = $response->viewData('rechazados');
-        $inactivos = $response->viewData('inactivos');
+        // Verificar que hay usuarios aceptados e inactivos (según lógica del controlador)
+        $usuarios = $response->viewData('usuarios');
+        $this->assertGreaterThan(0, $usuarios->count());
         
-        $this->assertGreaterThan(0, $pendientes->count());
-        $this->assertGreaterThan(0, $aceptados->count());
-        $this->assertGreaterThan(0, $rechazados->count());
-        $this->assertGreaterThan(0, $inactivos->count());
+        // Verificar que solo trae usuarios aceptados e inactivos
+        foreach ($usuarios as $usuario) {
+            $this->assertContains($usuario->estadoRegistro, ['Aceptado', 'Inactivo']);
+        }
+    }
+
+    public function test_PendientesMuestraUsuariosPendientes()
+    {
+        // Usar admin real del seeder para autenticación
+        $admin = UserAdmin::where('email', 'admin@example.com')->first();
+        
+        $response = $this->actingAs($admin)->get(route('usuarios.pendientes'));
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.usuarios.pendientes');
+        $response->assertViewHas('usuarios');
+        
+        // Verificar que hay usuarios pendientes
+        $usuarios = $response->viewData('usuarios');
+        $this->assertGreaterThan(0, $usuarios->count());
+        
+        // Verificar que solo trae usuarios pendientes
+        foreach ($usuarios as $usuario) {
+            $this->assertEquals('Pendiente', $usuario->estadoRegistro);
+        }
     }
 
     public function test_AceptarUsuarioCambiaEstado()
@@ -64,7 +82,7 @@ class UsuarioControllerTest extends TestCase
                          ->first();
         
         $response = $this->actingAs($admin)->put(route('usuarios.rechazar', $persona->id));
-        $response->assertRedirect(route('usuarios.index'));
+        $response->assertRedirect(route('usuarios.show', $persona->id));
         $this->assertEquals('Rechazado', $persona->fresh()->estadoRegistro);
     }
 
@@ -123,5 +141,108 @@ class UsuarioControllerTest extends TestCase
         $this->assertEquals('Nueva Direccion', $personaActualizada->direccion); // Usar nombre correcto
         $this->assertEquals('Aceptado', $personaActualizada->estadoRegistro); // Corregir nombre del campo
         $this->assertEquals('nuevo@email.com', $personaActualizada->user->email);
+    }
+
+    public function test_DestroyEliminaUsuario()
+    {
+        // Usar admin real del seeder
+        $admin = UserAdmin::where('email', 'admin@example.com')->first();
+        // Usar persona rechazada para no afectar otros tests
+        $persona = Persona::where('name', 'Usuario')->where('apellido', 'Rechazado')->first();
+        
+        $response = $this->actingAs($admin)->delete(route('usuarios.destroy', $persona->id));
+        $response->assertRedirect(route('usuarios.index'));
+        
+        // Verificar soft delete
+        $this->assertSoftDeleted('personas', ['id' => $persona->id]);
+    }
+
+    public function test_EliminadosMuestraUsuariosEliminados()
+    {
+        // Usar admin real del seeder
+        $admin = UserAdmin::where('email', 'admin@example.com')->first();
+        
+        // Primero eliminar un usuario
+        $persona = Persona::where('name', 'Usuario')->where('apellido', 'Rechazado')->first();
+        $persona->delete();
+        
+        $response = $this->actingAs($admin)->get(route('usuarios.eliminados'));
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.usuarios.eliminados');
+        $response->assertViewHas('usuarios');
+        
+        // Verificar que hay usuarios eliminados
+        $usuarios = $response->viewData('usuarios');
+        $this->assertGreaterThan(0, $usuarios->count());
+    }
+
+    public function test_RestaurarUsuarioRestaurasoftDelete()
+    {
+        // Usar admin real del seeder
+        $admin = UserAdmin::where('email', 'admin@example.com')->first();
+        
+        // Primero eliminar un usuario
+        $persona = Persona::where('name', 'Usuario')->where('apellido', 'Rechazado')->first();
+        $personaId = $persona->id;
+        $persona->delete();
+        
+        // Verificar que está eliminado
+        $this->assertSoftDeleted('personas', ['id' => $personaId]);
+        
+        // Restaurar usuario
+        $response = $this->actingAs($admin)->put(route('usuarios.restaurar', $personaId));
+        $response->assertRedirect(route('usuarios.eliminados'));
+        
+        // Verificar que ya no está eliminado
+        $this->assertDatabaseHas('personas', [
+            'id' => $personaId,
+            'deleted_at' => null
+        ]);
+    }
+
+    public function test_RequiereAutenticacion()
+    {
+        // Probar que las rutas requieren autenticación
+        $persona = Persona::first();
+        
+        $response = $this->get(route('usuarios.index'));
+        $response->assertRedirect(route('login'));
+        
+        $response = $this->get(route('usuarios.pendientes'));
+        $response->assertRedirect(route('login'));
+        
+        $response = $this->get(route('usuarios.show', $persona->id));
+        $response->assertRedirect(route('login'));
+        
+        $response = $this->put(route('usuarios.aceptar', $persona->id));
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_AceptarUsuarioSoloSiFuesPendiente()
+    {
+        // Usar admin real del seeder
+        $admin = UserAdmin::where('email', 'admin@example.com')->first();
+        // Usar persona que ya está aceptada
+        $persona = Persona::where('estadoRegistro', 'Aceptado')->first();
+        $estadoOriginal = $persona->estadoRegistro;
+        
+        $response = $this->actingAs($admin)->put(route('usuarios.aceptar', $persona->id));
+        
+        // El estado no debe cambiar si ya no es pendiente
+        $this->assertEquals($estadoOriginal, $persona->fresh()->estadoRegistro);
+    }
+
+    public function test_RechazarUsuarioSoloSiFuesPendiente()
+    {
+        // Usar admin real del seeder
+        $admin = UserAdmin::where('email', 'admin@example.com')->first();
+        // Usar persona que ya está aceptada
+        $persona = Persona::where('estadoRegistro', 'Aceptado')->first();
+        $estadoOriginal = $persona->estadoRegistro;
+        
+        $response = $this->actingAs($admin)->put(route('usuarios.rechazar', $persona->id));
+        
+        // El estado no debe cambiar si ya no es pendiente
+        $this->assertEquals($estadoOriginal, $persona->fresh()->estadoRegistro);
     }
 }
