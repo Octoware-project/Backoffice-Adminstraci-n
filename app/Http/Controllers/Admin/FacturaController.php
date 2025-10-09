@@ -13,7 +13,6 @@ class FacturaController extends Controller
     {
         $query = Factura::where('Estado_Pago', 'Pendiente');
         
-        // Aplicar filtros de año y mes
         if ($request->filled('año')) {
             $query->whereYear('fecha_pago', $request->año);
         }
@@ -24,7 +23,6 @@ class FacturaController extends Controller
         
         $facturas = $query->get();
         
-        // Obtener el total de facturas pendientes (sin filtros) para la alerta
         $totalFacturasPendientes = Factura::where('Estado_Pago', 'Pendiente')->count();
         
         return view('admin.facturas.index', compact('facturas', 'totalFacturasPendientes'));
@@ -34,7 +32,6 @@ class FacturaController extends Controller
     {
         $query = Factura::whereIn('Estado_Pago', ['Aceptado', 'Rechazado']);
         
-        // Aplicar filtros
         if ($request->filled('año')) {
             $query->whereYear('fecha_pago', $request->año);
         }
@@ -58,7 +55,6 @@ class FacturaController extends Controller
         $factura->Estado_Pago = 'Pendiente';
         $factura->save();
         
-        // Verificar si viene desde la vista de usuario específico
         if ($request->has('from_user') && $request->get('from_user')) {
             return redirect()->route('admin.facturas.usuario', $factura->email)->with('success', 'Estado de la factura restablecido a pendiente.');
         }
@@ -70,13 +66,10 @@ class FacturaController extends Controller
     {
         $query = Factura::where('email', $email);
         
-        // Filtrar por rechazadas si se especifica
         $mostrarRechazadas = $request->has('rechazadas') && $request->get('rechazadas') == '1';
         
-        // Contar facturas rechazadas antes de aplicar filtros
         $facturasRechazadas = Factura::where('email', $email)->where('Estado_Pago', 'Rechazado')->count();
         
-        // Si se solicita mostrar rechazadas pero no hay ninguna, redirigir a la vista normal
         if ($mostrarRechazadas && $facturasRechazadas == 0) {
             return redirect()->route('admin.facturas.usuario', $email)
                 ->with('info', 'No hay facturas rechazadas para este usuario.');
@@ -86,20 +79,15 @@ class FacturaController extends Controller
             $query->where('Estado_Pago', 'Rechazado');
         }
         
-        // Ordenar por fecha de creación descendente (más nuevas primero)
         $facturas = $query->orderBy('created_at', 'desc')->get();
         $usuario = \App\Models\User::where('email', $email)->first();
         
-        // Calcular estado de pagos (siempre con todas las facturas)
         $todasLasFacturas = Factura::where('email', $email)->get();
         $estadoPagos = $this->calcularEstadoPagos($todasLasFacturas);
         
         return view('admin.facturas.usuario', compact('facturas', 'usuario', 'estadoPagos', 'mostrarRechazadas', 'facturasRechazadas'));
     }
 
-    /**
-     * Calcula el estado de los pagos del usuario
-     */
     private function calcularEstadoPagos($facturas)
     {
         if ($facturas->isEmpty()) {
@@ -110,7 +98,6 @@ class FacturaController extends Controller
             ];
         }
 
-        // Obtener facturas aceptadas y pendientes/rechazadas
         $facturasAceptadas = $facturas->where('Estado_Pago', 'Aceptado');
         $facturasPendientes = $facturas->where('Estado_Pago', 'Pendiente');
         $facturasRechazadas = $facturas->where('Estado_Pago', 'Rechazado');
@@ -120,14 +107,12 @@ class FacturaController extends Controller
         $facturasPendientesCount = $facturasPendientes->count();
         $facturasRechazadasCount = $facturasRechazadas->count();
         
-        // Calcular facturas no pagadas (pendientes + rechazadas)
         $facturasNoPagadas = $facturasPendientesCount + $facturasRechazadasCount;
         
-        // Determinar estado y color basado en las facturas registradas
         if ($facturasNoPagadas == 0) {
             return [
                 'estado' => 'Al día',
-                'color' => 'success', // verde
+                'color' => 'success',
                 'detalle' => 'Todas las facturas están aceptadas (' . $facturasAceptadasCount . '/' . $totalFacturas . ')'
             ];
         } elseif ($facturasNoPagadas == 1) {
@@ -136,7 +121,7 @@ class FacturaController extends Controller
                 '1 factura rechazada';
             return [
                 'estado' => 'Pendiente',
-                'color' => 'warning', // amarillo
+                'color' => 'warning',
                 'detalle' => $detalle
             ];
         } else {
@@ -159,7 +144,6 @@ class FacturaController extends Controller
         $factura->Estado_Pago = 'Aceptado';
         $factura->save();
         
-        // Verificar si viene desde la vista de usuario específico
         if ($request->has('from_user') && $request->get('from_user')) {
             return redirect()->route('admin.facturas.usuario', $factura->email)->with('success', 'Factura aceptada correctamente.');
         }
@@ -173,7 +157,6 @@ class FacturaController extends Controller
         $factura->Estado_Pago = 'Rechazado';
         $factura->save();
         
-        // Verificar si viene desde la vista de usuario específico
         if ($request->has('from_user') && $request->get('from_user')) {
             return redirect()->route('admin.facturas.usuario', $factura->email)->with('success', 'Factura rechazada correctamente.');
         }
@@ -184,14 +167,11 @@ class FacturaController extends Controller
     public function eliminar(Request $request, $id)
     {
         $factura = Factura::findOrFail($id);
-        $email = $factura->email; // Guardar email antes de eliminar
+        $email = $factura->email;
         
-        // Usar soft delete
         $factura->delete();
         
-        // Verificar si viene desde la vista de usuario específico
         if ($request->has('from_user') && $request->get('from_user')) {
-            // Si está filtrando rechazadas, mantener el filtro
             $params = [];
             if ($request->has('rechazadas')) {
                 $params['rechazadas'] = $request->get('rechazadas');
