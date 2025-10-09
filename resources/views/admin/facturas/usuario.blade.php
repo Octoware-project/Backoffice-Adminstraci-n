@@ -641,7 +641,7 @@
                     <td>{{ $factura->created_at ? $factura->created_at->format('d/m/Y') : '-' }}</td>
                     <td style="text-align:center;">
                         @if($factura->Archivo_Comprobante)
-                            <a href="http://localhost:8001/comprobantes/{{ $factura->id }}" target="_blank" title="Ver comprobante">
+                            <a href="{{ asset('storage/' . $factura->Archivo_Comprobante) }}" target="_blank" title="Ver comprobante">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16" style="color:#007bff;vertical-align:middle;">
                                     <path d="M4.5 9.5A.5.5 0 0 1 5 9h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 7h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 5h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
                                     <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3-.5a.5.5 0 0 1-.5-.5V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5h-2a1 1 0 0 1-1-1V4z"/>

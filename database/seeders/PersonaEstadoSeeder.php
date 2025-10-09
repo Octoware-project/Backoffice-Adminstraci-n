@@ -20,8 +20,6 @@ class PersonaEstadoSeeder extends Seeder
         
         // Crear 10 usuarios/personas Pendientes
         $this->crearUsuariosPendientes();
-
-        $this->command->info('Creados 25 usuarios con sus personas asociadas');
     }
 
     private function crearUsuariosAceptados()
