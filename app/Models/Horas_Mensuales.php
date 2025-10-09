@@ -11,7 +11,7 @@ class Horas_Mensuales extends Model
     use HasFactory, SoftDeletes;
     protected $table = 'horas_mensuales';
     protected $fillable = [
-        'email', 'anio', 'mes', 'Semana', 'Cantidad_Horas', 'Motivo_Falla', 'Tipo_Justificacion', 'Monto_Compensario',
+        'email', 'anio', 'mes', 'dia', 'Semana', 'Cantidad_Horas', 'Motivo_Falla', 'Tipo_Justificacion', 'Monto_Compensario',
         'valor_hora_al_momento', 'horas_equivalentes_calculadas'
     ];
 
@@ -22,19 +22,15 @@ class Horas_Mensuales extends Model
         'horas_equivalentes_calculadas' => 'decimal:2',
     ];
 
-    /**
-     * Obtener las horas equivalentes (reales + justificadas)
-     */
+    
     public function getHorasEquivalentes()
     {
-        // Si ya tiene horas equivalentes calculadas (histórico), usar esas
         if ($this->horas_equivalentes_calculadas !== null) {
             return $this->horas_equivalentes_calculadas;
         }
         
         $horasReales = $this->Cantidad_Horas ?? 0;
         
-        // Si tiene monto pero no tiene horas equivalentes calculadas, calcular
         if ($this->Monto_Compensario && $this->Monto_Compensario > 0) {
             $valorHora = $this->valor_hora_al_momento ?? ConfiguracionHoras::getValorActual();
             if ($valorHora > 0) {
@@ -46,9 +42,7 @@ class Horas_Mensuales extends Model
         return $horasReales;
     }
 
-    /**
-     * Calcular y fijar las horas equivalentes usando el valor actual
-     */
+  
     public function calcularYFijarHorasEquivalentes()
     {
         $horasReales = $this->Cantidad_Horas ?? 0;
@@ -69,9 +63,7 @@ class Horas_Mensuales extends Model
         return $this;
     }
 
-    /**
-     * Obtener solo las horas de justificación calculadas
-     */
+   
     public function getHorasJustificacion()
     {
         if (!$this->Monto_Compensario || $this->Monto_Compensario <= 0) {

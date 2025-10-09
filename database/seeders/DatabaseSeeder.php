@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             UserAdminSeeder::class,
             PersonaEstadoSeeder::class,
             FacturasSeeder::class,
+            PlanTrabajoSeeder::class,
         ]);
 
     }
