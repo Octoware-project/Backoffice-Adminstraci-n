@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             UserAdminSeeder::class,
             PersonaEstadoSeeder::class,
             ConfiguracionHorasSeeder::class,
+            UnidadHabitacionalSeeder::class,
             FacturasSeeder::class,
             PlanTrabajoSeeder::class,
         ]);

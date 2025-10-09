@@ -9,32 +9,25 @@ use Illuminate\Support\Facades\Validator;
 
 class UnidadHabitacionalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request)
     {
         $query = UnidadHabitacional::with(['personas.user']);
 
-        // Debug: Mostrar qué parámetros está recibiendo
         \Log::info('Parámetros de filtro recibidos:', $request->all());
 
-        // Filtro por número de departamento
         if ($request->filled('numero_departamento')) {
             $query->where('numero_departamento', 'LIKE', "%{$request->numero_departamento}%");
         }
 
-        // Filtro por piso
         if ($request->filled('piso')) {
             $query->where('piso', $request->piso);
         }
 
-        // Filtro por estado
         if ($request->filled('estado')) {
             $query->where('estado', $request->estado);
         }
 
-        // Filtro por ocupación
         if ($request->filled('filter_ocupacion')) {
             if ($request->filter_ocupacion === 'ocupada') {
                 $query->whereHas('personas');
@@ -43,9 +36,8 @@ class UnidadHabitacionalController extends Controller
             }
         }
 
-        // Ordenamiento
         $sortField = $request->get('sort', 'numero_departamento');
-        $sortDirection = 'asc'; // Por defecto ascendente
+        $sortDirection = 'asc';
         
         $allowedSortFields = ['numero_departamento', 'piso', 'estado', 'created_at'];
         if (!in_array($sortField, $allowedSortFields)) {
@@ -57,17 +49,13 @@ class UnidadHabitacionalController extends Controller
         return view('admin.unidades.index', compact('unidades'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         return view('admin.unidades.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -88,9 +76,6 @@ class UnidadHabitacionalController extends Controller
             ->with('success', 'Unidad habitacional creada exitosamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $unidad = UnidadHabitacional::with(['personas.user', 'planesTrabajos.user'])
@@ -99,18 +84,13 @@ class UnidadHabitacionalController extends Controller
         return view('admin.unidades.show', compact('unidad'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $unidad = UnidadHabitacional::findOrFail($id);
         return view('admin.unidades.edit', compact('unidad'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, string $id)
     {
         $unidad = UnidadHabitacional::findOrFail($id);
@@ -133,14 +113,11 @@ class UnidadHabitacionalController extends Controller
             ->with('success', 'Unidad habitacional actualizada exitosamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
         $unidad = UnidadHabitacional::findOrFail($id);
 
-        // Verificar si tiene residentes asignados
         $cantidadPersonas = $unidad->personas()->count();
         if ($cantidadPersonas > 0) {
             return redirect()->back()
@@ -156,9 +133,6 @@ class UnidadHabitacionalController extends Controller
             ->with('success', "Unidad habitacional Departamento {$numeroDepartamento} - Piso {$piso} eliminada exitosamente.");
     }
 
-    /**
-     * Asignar una persona a una unidad habitacional
-     */
     public function asignarPersona(Request $request, $unidadId)
     {
         $validator = Validator::make($request->all(), [
@@ -175,7 +149,6 @@ class UnidadHabitacionalController extends Controller
         $unidad = UnidadHabitacional::findOrFail($unidadId);
         $persona = Persona::findOrFail($request->persona_id);
 
-        // Verificar que la persona no tenga ya una unidad asignada
         if ($persona->unidad_habitacional_id) {
             return response()->json([
                 'success' => false,
@@ -183,7 +156,6 @@ class UnidadHabitacionalController extends Controller
             ], 422);
         }
 
-        // Verificar que la persona esté en estado válido
         if (!in_array($persona->estadoRegistro, ['Aceptado', 'Inactivo'])) {
             return response()->json([
                 'success' => false,
@@ -202,9 +174,7 @@ class UnidadHabitacionalController extends Controller
         ]);
     }
 
-    /**
-     * Desasignar una persona de una unidad habitacional
-     */
+
     public function desasignarPersona($unidadId, $personaId)
     {
         $unidad = UnidadHabitacional::findOrFail($unidadId);
@@ -223,9 +193,6 @@ class UnidadHabitacionalController extends Controller
             ->with('success', "La persona {$nombrePersona} ha sido desasignada exitosamente de la unidad {$unidad->numero_departamento}.");
     }
 
-    /**
-     * Obtener personas disponibles para asignar a una unidad
-     */
     public function personasDisponibles()
     {
         $personas = Persona::with('user')
