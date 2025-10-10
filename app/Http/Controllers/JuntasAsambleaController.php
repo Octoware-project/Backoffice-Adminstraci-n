@@ -11,21 +11,17 @@ class JuntasAsambleaController extends Controller
     {
         $query = \App\Models\JuntasAsamblea::query();
 
-        // Filtro por mes
         if ($request->filled('filter_mes')) {
             $query->whereMonth('fecha', $request->filter_mes);
         }
 
-        // Filtro por año
         if ($request->filled('filter_anio')) {
             $query->whereYear('fecha', $request->filter_anio);
         }
 
-        // Ordenamiento
         $sortField = $request->get('sort_field', 'fecha');
         $sortDirection = $request->get('sort_direction', 'desc');
         
-        // Validar campos de ordenamiento
         $allowedSortFields = ['fecha', 'lugar', 'created_at'];
         if (!in_array($sortField, $allowedSortFields)) {
             $sortField = 'fecha';
@@ -85,21 +81,17 @@ class JuntasAsambleaController extends Controller
     {
         $query = \App\Models\JuntasAsamblea::query();
 
-        // Filtro por mes
         if ($request->filled('filter_mes')) {
             $query->whereMonth('fecha', $request->filter_mes);
         }
 
-        // Filtro por año
         if ($request->filled('filter_anio')) {
             $query->whereYear('fecha', $request->filter_anio);
         }
 
-        // Ordenamiento
         $sortField = $request->get('sort_field', 'fecha');
         $sortDirection = $request->get('sort_direction', 'desc');
         
-        // Validar campos de ordenamiento
         $allowedSortFields = ['fecha', 'lugar', 'created_at'];
         if (!in_array($sortField, $allowedSortFields)) {
             $sortField = 'fecha';

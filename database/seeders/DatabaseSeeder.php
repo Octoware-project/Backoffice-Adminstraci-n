@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             UnidadHabitacionalSeeder::class,
             FacturasSeeder::class,
             PlanTrabajoSeeder::class,
+            JuntasAsambleaSeeder::class,
         ]);
 
     }
