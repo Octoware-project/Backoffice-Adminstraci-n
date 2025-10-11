@@ -27,8 +27,11 @@ return new class extends Migration
             ->comment('Total de horas reales + horas de justificación calculadas');
             $table->timestamps();
             $table->softDeletes();
+            
             // Índices para optimizar consultas
-            $table->index(['email', 'anio', 'mes']);
+            $table->index(['email', 'mes', 'anio'], 'idx_email_mes_anio');
+            $table->index('email', 'idx_email');
+            $table->index('created_at', 'idx_created_at');
         });
     }
 
