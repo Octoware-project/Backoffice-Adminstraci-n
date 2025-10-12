@@ -26,21 +26,24 @@ class Facturas_y_Pagos extends Seeder
                 'tipo_pago' => 'Transferencia',
                 'estado' => 'Pendiente',
                 'mes' => 9, // Septiembre
-                'archivo_origen' => 'comprobante1.pdf'
+                'archivo_origen' => 'comprobante1.pdf',
+                'motivo' => 'Pago de cuota mensual de la cooperativa correspondiente a septiembre 2024'
             ],
             [
                 'monto' => 1100.00,
                 'tipo_pago' => 'Efectivo',
                 'estado' => 'Rechazado',
                 'mes' => 8, // Agosto
-                'archivo_origen' => 'comprobante2.pdf'
+                'archivo_origen' => 'comprobante2.pdf',
+                'motivo' => 'Abono a cuenta corriente y pago de intereses acumulados'
             ],
             [
                 'monto' => 1200.00,
                 'tipo_pago' => 'Débito',
                 'estado' => 'Aceptado',
                 'mes' => 7, // Julio
-                'archivo_origen' => 'comprobante3.pdf'
+                'archivo_origen' => 'comprobante3.pdf',
+                'motivo' => 'Liquidación de deuda pendiente más recargo por mora'
             ]
         ];
 
@@ -75,6 +78,7 @@ class Facturas_y_Pagos extends Seeder
                         'Estado_Pago' => $facturaData['estado'],
                         'tipo_pago' => $facturaData['tipo_pago'],
                         'fecha_pago' => now()->year . '-' . str_pad($facturaData['mes'], 2, '0', STR_PAD_LEFT) . '-01',
+                        'motivo' => $facturaData['motivo'],
                         'created_at' => now()->subMonths(10 - $facturaData['mes']),
                         'updated_at' => now()
                     ]);
@@ -94,6 +98,7 @@ class Facturas_y_Pagos extends Seeder
                     'Estado_Pago' => $facturaData['estado'],
                     'tipo_pago' => $facturaData['tipo_pago'],
                     'fecha_pago' => now()->year . '-' . str_pad($facturaData['mes'], 2, '0', STR_PAD_LEFT) . '-01',
+                    'motivo' => $facturaData['motivo'],
                     'created_at' => now()->subMonths(10 - $facturaData['mes']),
                     'updated_at' => now()
                 ]);
@@ -119,6 +124,7 @@ class Facturas_y_Pagos extends Seeder
                     'tipo_pago' => 'Transferencia',
                     'estado' => 'Pendiente',
                     'mes' => 6,
+                    'motivo' => 'Pago de servicios adicionales y mantenimiento',
                     'bg_color' => [240, 248, 255], // Alice Blue
                     'text_color' => [25, 25, 112],  // Midnight Blue
                     'border_color' => [70, 130, 180] // Steel Blue
@@ -128,6 +134,7 @@ class Facturas_y_Pagos extends Seeder
                     'tipo_pago' => 'Crédito',
                     'estado' => 'Pendiente',
                     'mes' => 5,
+                    'motivo' => 'Cancelación de préstamo personal otorgado',
                     'bg_color' => [240, 255, 240], // Honeydew
                     'text_color' => [0, 100, 0],    // Dark Green
                     'border_color' => [34, 139, 34] // Forest Green
@@ -137,6 +144,7 @@ class Facturas_y_Pagos extends Seeder
                     'tipo_pago' => 'Efectivo',
                     'estado' => 'Aceptado',
                     'mes' => 4,
+                    'motivo' => 'Aporte extraordinario para capital social',
                     'bg_color' => [255, 248, 220], // Cornsilk
                     'text_color' => [139, 69, 19],  // Saddle Brown
                     'border_color' => [210, 180, 140] // Tan
@@ -191,6 +199,7 @@ class Facturas_y_Pagos extends Seeder
                 'Estado_Pago' => $data['estado'],
                 'tipo_pago' => $data['tipo_pago'],
                 'fecha_pago' => now()->year . '-' . str_pad($data['mes'], 2, '0', STR_PAD_LEFT) . '-01',
+                'motivo' => $data['motivo'],
                 'created_at' => now()->subMonths(10 - $data['mes']),
                 'updated_at' => now()
             ]);

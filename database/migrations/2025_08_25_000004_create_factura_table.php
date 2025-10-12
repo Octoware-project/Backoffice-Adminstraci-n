@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string("Estado_Pago")->nullable();
             $table->string("tipo_pago")->nullable();
             $table->string('fecha_pago')->nullable();
+            $table->text('motivo');
             $table->softDeletes();
             $table->timestamps();
         });
