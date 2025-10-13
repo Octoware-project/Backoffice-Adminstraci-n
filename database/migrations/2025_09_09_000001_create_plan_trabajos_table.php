@@ -17,6 +17,11 @@ return new class extends Migration
 			$table->integer('horas_requeridas');
 			$table->timestamps();
 			$table->softDeletes(); // Agregar soporte para soft deletes
+			
+			// Índices para optimizar consultas frecuentes
+			$table->index(['user_id', 'mes', 'anio'], 'idx_user_mes_anio');
+			$table->index('user_id', 'idx_user_id');
+			
 			// Comentamos la foreign key ya que no tenemos tabla users en esta API
 			// $table->foreign('user_id')->references('id')->on('users');
 			$table->foreign('unidad_habitacional_id')->references('id')->on('unidades_habitacionales')->onDelete('set null');
