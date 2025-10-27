@@ -12,16 +12,13 @@ class UsuarioController extends Controller
 {
     public function index(Request $request)
     {
-        // Esta será la página de usuarios aceptados solamente
         return $this->usuariosAceptados($request);
     }
 
     public function pendientes(Request $request)
     {
-        // Página específica para usuarios pendientes
         $query = Persona::with('user')->where('estadoRegistro', 'Pendiente');
 
-        // Filtro por nombre (busca en name y apellido)
         if ($request->filled('filter_nombre')) {
             $searchTerm = $request->filter_nombre;
             $query->where(function($q) use ($searchTerm) {
@@ -31,7 +28,6 @@ class UsuarioController extends Controller
             });
         }
 
-        // Filtro por email
         if ($request->filled('filter_email')) {
             $searchEmail = $request->filter_email;
             $query->whereHas('user', function($q) use ($searchEmail) {
@@ -39,23 +35,19 @@ class UsuarioController extends Controller
             });
         }
 
-        // Aplicar ordenamiento
         $sortField = $request->get('sort_field', 'created_at');
         $sortDirection = $request->get('sort_direction', 'desc');
 
-        // Validar campo de ordenamiento
         $allowedSortFields = ['created_at', 'name', 'email'];
         if (!in_array($sortField, $allowedSortFields)) {
             $sortField = 'created_at';
         }
 
-        // Validar dirección de ordenamiento
         $allowedDirections = ['asc', 'desc'];
         if (!in_array($sortDirection, $allowedDirections)) {
             $sortDirection = 'desc';
         }
 
-        // Aplicar ordenamiento según el campo seleccionado
         switch ($sortField) {
             case 'name':
                 $query->orderByRaw("CONCAT(name, ' ', apellido) {$sortDirection}");
@@ -78,10 +70,8 @@ class UsuarioController extends Controller
 
     public function usuariosAceptados(Request $request)
     {
-        // Construir query base con relaciones para usuarios aceptados e inactivos
         $query = Persona::with('user')->whereIn('estadoRegistro', ['Aceptado', 'Inactivo']);
 
-        // Filtro por nombre (busca en name y apellido)
         if ($request->filled('filter_nombre')) {
             $searchTerm = $request->filter_nombre;
             $query->where(function($q) use ($searchTerm) {
@@ -91,7 +81,6 @@ class UsuarioController extends Controller
             });
         }
 
-        // Filtro por email
         if ($request->filled('filter_email')) {
             $searchEmail = $request->filter_email;
             $query->whereHas('user', function($q) use ($searchEmail) {
@@ -99,23 +88,19 @@ class UsuarioController extends Controller
             });
         }
 
-        // Aplicar ordenamiento
         $sortField = $request->get('sort_field', 'created_at');
         $sortDirection = $request->get('sort_direction', 'desc');
 
-        // Validar campo de ordenamiento
         $allowedSortFields = ['created_at', 'name', 'email'];
         if (!in_array($sortField, $allowedSortFields)) {
             $sortField = 'created_at';
         }
 
-        // Validar dirección de ordenamiento
         $allowedDirections = ['asc', 'desc'];
         if (!in_array($sortDirection, $allowedDirections)) {
             $sortDirection = 'desc';
         }
 
-        // Aplicar ordenamiento según el campo seleccionado
         switch ($sortField) {
             case 'name':
                 $query->orderByRaw("CONCAT(name, ' ', apellido) {$sortDirection}");
@@ -143,10 +128,9 @@ class UsuarioController extends Controller
             
             if ($usuario->estadoRegistro === 'Pendiente') {
                 $usuario->estadoRegistro = 'Inactivo';
-                $usuario->fecha_aceptacion = now(); // Registrar fecha y hora de aceptación
+                $usuario->fecha_aceptacion = now();
                 $usuario->save();
                 
-                // Si es una petición AJAX
                 if ($request->ajax()) {
                     return response()->json([
                         'success' => true,
@@ -158,7 +142,6 @@ class UsuarioController extends Controller
                                ->with('success', "Usuario {$usuario->name} {$usuario->apellido} aceptado correctamente (estado: Inactivo)");
             }
             
-            // Si es una petición AJAX
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -191,7 +174,6 @@ class UsuarioController extends Controller
                 $usuario->estadoRegistro = 'Rechazado';
                 $usuario->save();
                 
-                // Si es una petición AJAX
                 if ($request->ajax()) {
                     return response()->json([
                         'success' => true,
@@ -203,7 +185,6 @@ class UsuarioController extends Controller
                                ->with('success', "Usuario {$usuario->name} {$usuario->apellido} rechazado correctamente");
             }
             
-            // Si es una petición AJAX
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -231,9 +212,8 @@ class UsuarioController extends Controller
     {
         try {
             $usuario = Persona::with(['user', 'unidadHabitacional'])->findOrFail($id);
-            $password = request()->query('password'); // Recibe la contraseña si viene de aceptar
+            $password = request()->query('password');
             
-            // Obtener información de facturas si el usuario tiene email
             $estadoFacturas = null;
             $totalFacturas = 0;
             
@@ -242,7 +222,6 @@ class UsuarioController extends Controller
                 $totalFacturas = $facturas->count();
                 
                 if ($totalFacturas > 0) {
-                    // Usar el mismo método que en FacturaController para calcular estado
                     $estadoFacturas = $this->calcularEstadoFacturas($facturas);
                 }
             }
@@ -254,9 +233,6 @@ class UsuarioController extends Controller
         }
     }
 
-    /**
-     * Calcula el estado de las facturas del usuario
-     */
     private function calcularEstadoFacturas($facturas)
     {
         if ($facturas->isEmpty()) {
@@ -268,7 +244,6 @@ class UsuarioController extends Controller
             ];
         }
 
-        // Obtener facturas por estado
         $facturasAceptadas = $facturas->where('Estado_Pago', 'Aceptado');
         $facturasPendientes = $facturas->where('Estado_Pago', 'Pendiente');
         $facturasRechazadas = $facturas->where('Estado_Pago', 'Rechazado');
@@ -278,10 +253,8 @@ class UsuarioController extends Controller
         $facturasPendientesCount = $facturasPendientes->count();
         $facturasRechazadasCount = $facturasRechazadas->count();
         
-        // Calcular facturas no pagadas (pendientes + rechazadas)
         $facturasNoPagadas = $facturasPendientesCount + $facturasRechazadasCount;
         
-        // Determinar estado y color basado en las facturas registradas
         if ($facturasNoPagadas == 0) {
             return [
                 'estado' => 'Al día',
@@ -325,8 +298,7 @@ class UsuarioController extends Controller
         try {
             $usuario = Persona::findOrFail($id);
 
-            // Ajusta según los nombres reales de las columnas en la tabla personas
-            $usuario->name = $request->nombre; // El campo en la BD es 'name' pero el request viene como 'nombre'
+            $usuario->name = $request->nombre;
             $usuario->apellido = $request->apellido;
             $usuario->CI = $request->CI;
             $usuario->telefono = $request->telefono;
@@ -341,7 +313,6 @@ class UsuarioController extends Controller
 
             if ($usuario->user) {
                 $usuario->user->email = $request->email;
-                // También actualiza el nombre en la tabla users para mantener sincronía
                 $usuario->user->name = $request->nombre;
                 $usuario->user->save();
             }
@@ -359,7 +330,6 @@ class UsuarioController extends Controller
             $usuario = Persona::with('unidadHabitacional')->findOrFail($id);
             $nombreCompleto = "{$usuario->name} {$usuario->apellido}";
             
-            // Verificar si el usuario tiene una unidad habitacional asignada
             if ($usuario->unidad_habitacional_id) {
                 $unidadInfo = $usuario->unidadHabitacional ? 
                     "Unidad {$usuario->unidadHabitacional->numero}" : 
@@ -369,7 +339,6 @@ class UsuarioController extends Controller
                                ->with('error', "No se puede eliminar al usuario {$nombreCompleto} porque tiene asignada la {$unidadInfo}. Primero debe desasignarse la unidad desde la sección de Unidades Habitacionales.");
             }
             
-            // Usar soft delete
             $usuario->delete();
             
             return redirect()->route('usuarios.index')
@@ -382,10 +351,8 @@ class UsuarioController extends Controller
 
     public function eliminados(Request $request)
     {
-        // Construir query base para usuarios eliminados (soft deleted)
         $query = Persona::onlyTrashed()->with('user');
 
-        // Filtro por nombre (busca en name y apellido)
         if ($request->filled('filter_nombre')) {
             $searchTerm = $request->filter_nombre;
             $query->where(function($q) use ($searchTerm) {
@@ -395,7 +362,6 @@ class UsuarioController extends Controller
             });
         }
 
-        // Filtro por email
         if ($request->filled('filter_email')) {
             $searchEmail = $request->filter_email;
             $query->whereHas('user', function($q) use ($searchEmail) {
@@ -403,23 +369,19 @@ class UsuarioController extends Controller
             });
         }
 
-        // Aplicar ordenamiento
         $sortField = $request->get('sort_field', 'deleted_at');
         $sortDirection = $request->get('sort_direction', 'desc');
 
-        // Validar campo de ordenamiento
         $allowedSortFields = ['deleted_at', 'name', 'email'];
         if (!in_array($sortField, $allowedSortFields)) {
             $sortField = 'deleted_at';
         }
 
-        // Validar dirección de ordenamiento
         $allowedDirections = ['asc', 'desc'];
         if (!in_array($sortDirection, $allowedDirections)) {
             $sortDirection = 'desc';
         }
 
-        // Aplicar ordenamiento según el campo seleccionado
         switch ($sortField) {
             case 'name':
                 $query->orderByRaw("CONCAT(name, ' ', apellido) {$sortDirection}");
@@ -446,7 +408,6 @@ class UsuarioController extends Controller
             $usuario = Persona::onlyTrashed()->findOrFail($id);
             $nombreCompleto = "{$usuario->name} {$usuario->apellido}";
             
-            // Restaurar usuario
             $usuario->restore();
             
             return redirect()->route('usuarios.eliminados')

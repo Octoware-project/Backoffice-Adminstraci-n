@@ -27,7 +27,6 @@ class DashboardController extends Controller
 
     public function getMetrics()
     {
-        // Métricas de usuarios - Solo aceptados e inactivos
         try {
             $totalUsuarios = Persona::whereIn('estadoRegistro', ['Aceptado', 'Inactivo'])->count();
             $usuariosPendientes = Persona::where('estadoRegistro', 'Pendiente')->count();
@@ -37,7 +36,6 @@ class DashboardController extends Controller
             $usuariosPendientes = 0;
         }
         
-        // Nuevos usuarios del mes
         try {
             $fechaInicioMes = Carbon::now()->startOfMonth();
             $fechaFinMes = Carbon::now()->endOfMonth();
@@ -52,7 +50,6 @@ class DashboardController extends Controller
             $usuariosAceptadosEsteMes = 0;
         }
 
-        // Métricas de facturas
         $facturasPendientes = 0;
         $facturasVencidas = 0;
         $ingresosMes = 0;
@@ -62,7 +59,6 @@ class DashboardController extends Controller
             $facturasPendientes = Factura::where('Estado_Pago', 'pendiente')->count();
             $facturasVencidas = Factura::where('Estado_Pago', 'vencida')->count();
             
-            // Consulta optimizada para ingresos y porcentaje del mes actual
             $facturasMes = Factura::whereBetween('created_at', [$fechaInicioMes, $fechaFinMes])
                 ->select('Estado_Pago', DB::raw('COUNT(*) as total'), DB::raw('SUM(Monto) as suma'))
                 ->groupBy('Estado_Pago')
@@ -83,13 +79,11 @@ class DashboardController extends Controller
             $porcentajeCobro = rand(75, 95);
         }
 
-        // Métricas de unidades con manejo de errores
         $totalUnidades = 0;
         $unidadesOcupadas = 0;
         $porcentajeOcupacion = 0;
         
         try {
-            // Optimizar: una sola consulta con withCount
             $unidadesData = UnidadHabitacional::where('estado', 'Finalizado')
                 ->withCount('personas')
                 ->get();
@@ -104,7 +98,6 @@ class DashboardController extends Controller
             $porcentajeOcupacion = 0;
         }
 
-        // Métricas de planes de trabajo
         $planesActivos = 0;
         $horasCompletadas = 0;
         
@@ -121,7 +114,6 @@ class DashboardController extends Controller
             $horasCompletadas = rand(150, 300);
         }
 
-        // Próximas asambleas
         $asambleasProximas = 0;
         try {
             $asambleasProximas = JuntasAsamblea::whereBetween('fecha_reunion', [Carbon::now(), Carbon::now()->addDays(7)])
@@ -131,7 +123,6 @@ class DashboardController extends Controller
             $asambleasProximas = rand(0, 2);
         }
 
-        // Datos para gráficos
         $ingresosMensuales = $this->getIngresosMensuales();
         $usuariosMensuales = $this->getUsuariosMensuales();
 
@@ -171,7 +162,6 @@ class DashboardController extends Controller
             $ingresos = [];
             $fechaInicio = Carbon::now()->subMonths(5)->startOfMonth();
             
-            // Optimizar: una sola consulta agrupada en lugar de 6 consultas
             $facturasPorMes = Factura::where('Estado_Pago', 'Aceptado')
                 ->where('created_at', '>=', $fechaInicio)
                 ->select(
@@ -206,7 +196,6 @@ class DashboardController extends Controller
             $usuarios = [];
             $fechaInicio = Carbon::now()->subMonths(5)->startOfMonth();
             
-            // Optimizar: una sola consulta agrupada
             $personasPorMes = Persona::whereNotNull('fecha_aceptacion')
                 ->where('fecha_aceptacion', '>=', $fechaInicio)
                 ->select(
@@ -238,7 +227,6 @@ class DashboardController extends Controller
     public function getRecentActivity()
     {
         try {
-            // Obtener actividad reciente de personas registradas
             $recentPersonas = Persona::select('name', 'apellido', 'created_at')
                 ->orderBy('created_at', 'desc')
                 ->limit(5)
@@ -254,7 +242,6 @@ class DashboardController extends Controller
                 ];
             }
 
-            // Agregar actividad de facturas recientes (aceptadas)
             $recentFacturas = Factura::where('Estado_Pago', 'Aceptado')
                 ->orderBy('updated_at', 'desc')
                 ->limit(3)
@@ -269,9 +256,8 @@ class DashboardController extends Controller
                 ];
             }
 
-            return array_slice($activities, 0, 6); // Máximo 6 actividades
+            return array_slice($activities, 0, 6);
         } catch (\Exception $e) {
-            // Actividad simulada si hay error
             return [
                 [
                     'type' => 'user_registered',
@@ -289,7 +275,6 @@ class DashboardController extends Controller
             $alerts = [];
             $metrics = $this->getMetrics();
 
-            // Alerta por usuarios pendientes
             if ($metrics['usuarios_pendientes'] > 5) {
                 $alerts[] = [
                     'type' => 'high',
@@ -300,7 +285,6 @@ class DashboardController extends Controller
                 ];
             }
 
-            // Alerta por facturas pendientes (más de 10)
             if ($metrics['facturas_pendientes'] > 10) {
                 $alerts[] = [
                     'type' => 'medium',
@@ -311,7 +295,6 @@ class DashboardController extends Controller
                 ];
             }
 
-            // Alerta por asambleas próximas
             if ($metrics['asambleas_proximas'] > 0) {
                 $alerts[] = [
                     'type' => 'low',
@@ -322,7 +305,6 @@ class DashboardController extends Controller
                 ];
             }
 
-            // Si no hay alertas críticas
             if (empty($alerts) || ($metrics['usuarios_pendientes'] <= 5 && $metrics['facturas_pendientes'] <= 10)) {
                 $alerts[] = [
                     'type' => 'low',

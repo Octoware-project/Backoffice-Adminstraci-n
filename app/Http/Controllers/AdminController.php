@@ -92,7 +92,6 @@ class AdminController extends Controller
     public function destroy($id)
     {
         try {
-            // Verificar si es el último administrador
             $totalAdmins = UserAdmin::count();
             
             if ($totalAdmins <= 1) {

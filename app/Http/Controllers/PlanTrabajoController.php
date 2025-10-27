@@ -13,7 +13,6 @@ class PlanTrabajoController extends Controller
         try {
             $planes = PlanTrabajo::with('user')->get();
             
-            // Calcular métricas para cada plan y almacenar en la colección
             $planesWithMetrics = $planes->map(function($plan) {
                 $horasRegistros = \App\Models\Horas_Mensuales::where('email', $plan->user->email)
                     ->where('anio', $plan->anio)
@@ -28,7 +27,6 @@ class PlanTrabajoController extends Controller
                 $porcentaje = $plan->horas_requeridas > 0 ? round(($horasEquivalentes / $plan->horas_requeridas) * 100, 2) : 0;
                 $porcentaje = min($porcentaje, 100);
                 
-                // Agregar métricas calculadas al plan
                 $plan->horas_trabajadas = $horasEquivalentes;
                 $plan->porcentaje = $porcentaje;
                 $plan->is_completed = $porcentaje >= 100;
@@ -36,7 +34,6 @@ class PlanTrabajoController extends Controller
                 return $plan;
             });
             
-            // Aplicar filtros
             if ($request->filled('filter_user')) {
                 $planesWithMetrics = $planesWithMetrics->filter(function($plan) use ($request) {
                     return $plan->user->email === $request->filter_user;
@@ -61,7 +58,6 @@ class PlanTrabajoController extends Controller
                 }
             }
             
-            // Aplicar ordenamientos
             if ($request->filled('sort_progress')) {
                 if ($request->sort_progress === 'asc') {
                     $planesWithMetrics = $planesWithMetrics->sortBy('porcentaje');
@@ -77,9 +73,7 @@ class PlanTrabajoController extends Controller
                     $planesWithMetrics = $planesWithMetrics->sortByDesc('horas_trabajadas');
                 }
             }
-            
-            // Convertir de nuevo a colección indexada
-            $planes = $planesWithMetrics->values();
+                        $planes = $planesWithMetrics->values();
             
             return view('admin.horas.planTrabajos', compact('planes'));
         } catch (\Exception $e) {
@@ -109,7 +103,6 @@ class PlanTrabajoController extends Controller
                 'horas_requeridas' => 'required|integer|min:1',
             ]);
 
-            // Verificar que el usuario tenga una persona asociada con unidad asignada
             $user = User::with('persona.unidadHabitacional')->findOrFail($request->user_id);
             
             if (!$user->persona) {
@@ -120,13 +113,11 @@ class PlanTrabajoController extends Controller
 
             $unidadHabitacionalId = null;
             if (!$user->persona->unidad_habitacional_id) {
-                // Permitir crear el plan pero mostrar advertencia
                 session()->flash('warning', 'ADVERTENCIA: Se ha creado el plan de trabajo, pero la persona no tiene una unidad habitacional asignada. Se recomienda asignar una unidad antes de comenzar a registrar horas.');
             } else {
                 $unidadHabitacionalId = $user->persona->unidad_habitacional_id;
             }
 
-            // Verificar si ya existe un plan activo (no soft deleted) para este usuario, mes y año
             $existingPlan = PlanTrabajo::withTrashed()
                 ->where('user_id', $request->user_id)
                 ->where('mes', $request->mes)
@@ -149,7 +140,6 @@ class PlanTrabajoController extends Controller
                     ]);
             }
 
-            // Crear el plan de trabajo
             PlanTrabajo::create([
                 'user_id' => $request->user_id,
                 'unidad_habitacional_id' => $unidadHabitacionalId,
@@ -164,7 +154,6 @@ class PlanTrabajoController extends Controller
                 ->withInput()
                 ->withErrors($e->validator);
         } catch (\Illuminate\Database\QueryException $e) {
-            // Si hay error de restricción única, intentar restaurar plan soft deleted
             if ($e->getCode() == 23000) {
                 try {
                     $softDeletedPlan = PlanTrabajo::onlyTrashed()
