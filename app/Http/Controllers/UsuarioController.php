@@ -138,88 +138,120 @@ class UsuarioController extends Controller
 
     public function aceptar(Request $request, $id)
     {
-        $usuario = Persona::findOrFail($id);
-        
-        if ($usuario->estadoRegistro === 'Pendiente') {
-            $usuario->estadoRegistro = 'Inactivo';
-            $usuario->fecha_aceptacion = now(); // Registrar fecha y hora de aceptación
-            $usuario->save();
+        try {
+            $usuario = Persona::findOrFail($id);
+            
+            if ($usuario->estadoRegistro === 'Pendiente') {
+                $usuario->estadoRegistro = 'Inactivo';
+                $usuario->fecha_aceptacion = now(); // Registrar fecha y hora de aceptación
+                $usuario->save();
+                
+                // Si es una petición AJAX
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => "Usuario {$usuario->name} {$usuario->apellido} aceptado correctamente (estado: Inactivo)"
+                    ]);
+                }
+                
+                return redirect()->route('usuarios.show', $id)
+                               ->with('success', "Usuario {$usuario->name} {$usuario->apellido} aceptado correctamente (estado: Inactivo)");
+            }
             
             // Si es una petición AJAX
             if ($request->ajax()) {
                 return response()->json([
-                    'success' => true,
-                    'message' => "Usuario {$usuario->name} {$usuario->apellido} aceptado correctamente (estado: Inactivo)"
+                    'success' => false,
+                    'message' => 'El usuario ya no está pendiente de aprobación'
                 ]);
             }
             
-            return redirect()->route('usuarios.show', $id)
-                           ->with('success', "Usuario {$usuario->name} {$usuario->apellido} aceptado correctamente (estado: Inactivo)");
+            return redirect()->route('usuarios.pendientes')
+                           ->with('error', 'El usuario ya no está pendiente de aprobación');
+        } catch (\Exception $e) {
+            \Log::error('Error al aceptar usuario: ' . $e->getMessage());
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al aceptar el usuario'
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Error al aceptar el usuario.');
         }
-        
-        // Si es una petición AJAX
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'El usuario ya no está pendiente de aprobación'
-            ]);
-        }
-        
-        return redirect()->route('usuarios.pendientes')
-                       ->with('error', 'El usuario ya no está pendiente de aprobación');
     }
 
     public function rechazar(Request $request, $id)
     {
-        $usuario = Persona::findOrFail($id);
-        
-        if ($usuario->estadoRegistro === 'Pendiente') {
-            $usuario->estadoRegistro = 'Rechazado';
-            $usuario->save();
+        try {
+            $usuario = Persona::findOrFail($id);
+            
+            if ($usuario->estadoRegistro === 'Pendiente') {
+                $usuario->estadoRegistro = 'Rechazado';
+                $usuario->save();
+                
+                // Si es una petición AJAX
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => "Usuario {$usuario->name} {$usuario->apellido} rechazado"
+                    ]);
+                }
+                
+                return redirect()->route('usuarios.show', $id)
+                               ->with('success', "Usuario {$usuario->name} {$usuario->apellido} rechazado correctamente");
+            }
             
             // Si es una petición AJAX
             if ($request->ajax()) {
                 return response()->json([
-                    'success' => true,
-                    'message' => "Usuario {$usuario->name} {$usuario->apellido} rechazado"
+                    'success' => false,
+                    'message' => 'El usuario ya no está pendiente de aprobación'
                 ]);
             }
             
-            return redirect()->route('usuarios.show', $id)
-                           ->with('success', "Usuario {$usuario->name} {$usuario->apellido} rechazado correctamente");
+            return redirect()->route('usuarios.pendientes')
+                           ->with('error', 'El usuario ya no está pendiente de aprobación');
+        } catch (\Exception $e) {
+            \Log::error('Error al rechazar usuario: ' . $e->getMessage());
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al rechazar el usuario'
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Error al rechazar el usuario.');
         }
-        
-        // Si es una petición AJAX
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'El usuario ya no está pendiente de aprobación'
-            ]);
-        }
-        
-        return redirect()->route('usuarios.pendientes')
-                       ->with('error', 'El usuario ya no está pendiente de aprobación');
     }
 
     public function show($id)
     {
-        $usuario = Persona::with(['user', 'unidadHabitacional'])->findOrFail($id);
-        $password = request()->query('password'); // Recibe la contraseña si viene de aceptar
-        
-        // Obtener información de facturas si el usuario tiene email
-        $estadoFacturas = null;
-        $totalFacturas = 0;
-        if ($usuario->user && $usuario->user->email) {
-            $facturas = \App\Models\Factura::where('email', $usuario->user->email)->get();
-            $totalFacturas = $facturas->count();
+        try {
+            $usuario = Persona::with(['user', 'unidadHabitacional'])->findOrFail($id);
+            $password = request()->query('password'); // Recibe la contraseña si viene de aceptar
             
-            if ($totalFacturas > 0) {
-                // Usar el mismo método que en FacturaController para calcular estado
-                $estadoFacturas = $this->calcularEstadoFacturas($facturas);
+            // Obtener información de facturas si el usuario tiene email
+            $estadoFacturas = null;
+            $totalFacturas = 0;
+            
+            if ($usuario->user && $usuario->user->email) {
+                $facturas = \App\Models\Factura::where('email', $usuario->user->email)->get();
+                $totalFacturas = $facturas->count();
+                
+                if ($totalFacturas > 0) {
+                    // Usar el mismo método que en FacturaController para calcular estado
+                    $estadoFacturas = $this->calcularEstadoFacturas($facturas);
+                }
             }
+            
+            return view('admin.usuarios.show', compact('usuario', 'password', 'estadoFacturas', 'totalFacturas'));
+        } catch (\Exception $e) {
+            \Log::error('Error al mostrar usuario: ' . $e->getMessage());
+            return redirect()->route('usuarios.index')->with('error', 'Usuario no encontrado.');
         }
-        
-        return view('admin.usuarios.show', compact('usuario', 'password', 'estadoFacturas', 'totalFacturas'));
     }
 
     /**
@@ -290,52 +322,62 @@ class UsuarioController extends Controller
 
     public function update(Request $request, $id)
     {
-        $usuario = Persona::findOrFail($id);
+        try {
+            $usuario = Persona::findOrFail($id);
 
-        // Ajusta según los nombres reales de las columnas en la tabla personas
-        $usuario->name = $request->nombre; // El campo en la BD es 'name' pero el request viene como 'nombre'
-        $usuario->apellido = $request->apellido;
-        $usuario->CI = $request->CI;
-        $usuario->telefono = $request->telefono;
-        $usuario->direccion = $request->direccion;
-        $usuario->fechaNacimiento = $request->fechaNacimiento;
-        $usuario->genero = $request->genero;
-        $usuario->estadoCivil = $request->estadoCivil;
-        $usuario->nacionalidad = $request->nacionalidad;
-        $usuario->ocupacion = $request->ocupacion;
-        $usuario->estadoRegistro = $request->estadoRegistro;
-        $usuario->save();
+            // Ajusta según los nombres reales de las columnas en la tabla personas
+            $usuario->name = $request->nombre; // El campo en la BD es 'name' pero el request viene como 'nombre'
+            $usuario->apellido = $request->apellido;
+            $usuario->CI = $request->CI;
+            $usuario->telefono = $request->telefono;
+            $usuario->direccion = $request->direccion;
+            $usuario->fechaNacimiento = $request->fechaNacimiento;
+            $usuario->genero = $request->genero;
+            $usuario->estadoCivil = $request->estadoCivil;
+            $usuario->nacionalidad = $request->nacionalidad;
+            $usuario->ocupacion = $request->ocupacion;
+            $usuario->estadoRegistro = $request->estadoRegistro;
+            $usuario->save();
 
-        if ($usuario->user) {
-            $usuario->user->email = $request->email;
-            // También actualiza el nombre en la tabla users para mantener sincronía
-            $usuario->user->name = $request->nombre;
-            $usuario->user->save();
+            if ($usuario->user) {
+                $usuario->user->email = $request->email;
+                // También actualiza el nombre en la tabla users para mantener sincronía
+                $usuario->user->name = $request->nombre;
+                $usuario->user->save();
+            }
+
+            return redirect()->route('usuarios.show', $usuario->id)->with('success', 'Datos actualizados correctamente.');
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar usuario: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Error al actualizar los datos del usuario.');
         }
-
-        return redirect()->route('usuarios.show', $usuario->id)->with('success', 'Datos actualizados correctamente.');
     }
 
     public function destroy($id)
     {
-        $usuario = Persona::with('unidadHabitacional')->findOrFail($id);
-        $nombreCompleto = "{$usuario->name} {$usuario->apellido}";
-        
-        // Verificar si el usuario tiene una unidad habitacional asignada
-        if ($usuario->unidad_habitacional_id) {
-            $unidadInfo = $usuario->unidadHabitacional ? 
-                "Unidad {$usuario->unidadHabitacional->numero}" : 
-                "una unidad habitacional";
-                
+        try {
+            $usuario = Persona::with('unidadHabitacional')->findOrFail($id);
+            $nombreCompleto = "{$usuario->name} {$usuario->apellido}";
+            
+            // Verificar si el usuario tiene una unidad habitacional asignada
+            if ($usuario->unidad_habitacional_id) {
+                $unidadInfo = $usuario->unidadHabitacional ? 
+                    "Unidad {$usuario->unidadHabitacional->numero}" : 
+                    "una unidad habitacional";
+                    
+                return redirect()->route('usuarios.index')
+                               ->with('error', "No se puede eliminar al usuario {$nombreCompleto} porque tiene asignada la {$unidadInfo}. Primero debe desasignarse la unidad desde la sección de Unidades Habitacionales.");
+            }
+            
+            // Usar soft delete
+            $usuario->delete();
+            
             return redirect()->route('usuarios.index')
-                           ->with('error', "No se puede eliminar al usuario {$nombreCompleto} porque tiene asignada la {$unidadInfo}. Primero debe desasignarse la unidad desde la sección de Unidades Habitacionales.");
+                           ->with('success', "Usuario {$nombreCompleto} eliminado correctamente. Se puede restaurar desde usuarios eliminados.");
+        } catch (\Exception $e) {
+            \Log::error('Error al eliminar usuario: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al eliminar el usuario.');
         }
-        
-        // Usar soft delete
-        $usuario->delete();
-        
-        return redirect()->route('usuarios.index')
-                       ->with('success', "Usuario {$nombreCompleto} eliminado correctamente. Se puede restaurar desde usuarios eliminados.");
     }
 
     public function eliminados(Request $request)
@@ -400,13 +442,18 @@ class UsuarioController extends Controller
 
     public function restaurar($id)
     {
-        $usuario = Persona::onlyTrashed()->findOrFail($id);
-        $nombreCompleto = "{$usuario->name} {$usuario->apellido}";
-        
-        // Restaurar usuario
-        $usuario->restore();
-        
-        return redirect()->route('usuarios.eliminados')
-                       ->with('success', "Usuario {$nombreCompleto} restaurado correctamente.");
+        try {
+            $usuario = Persona::onlyTrashed()->findOrFail($id);
+            $nombreCompleto = "{$usuario->name} {$usuario->apellido}";
+            
+            // Restaurar usuario
+            $usuario->restore();
+            
+            return redirect()->route('usuarios.eliminados')
+                           ->with('success', "Usuario {$nombreCompleto} restaurado correctamente.");
+        } catch (\Exception $e) {
+            \Log::error('Error al restaurar usuario: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al restaurar el usuario.');
+        }
     }
 }

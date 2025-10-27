@@ -945,7 +945,6 @@ function cargarPersonasDisponibles() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             container.innerHTML = `
                 <div class="alert alert-danger">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -1056,7 +1055,6 @@ function ejecutarAsignacion(personaId, nombrePersona) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
         ModalConfirmation.create({
             title: 'Error de Conexión',
             message: 'Error al asignar la persona.',

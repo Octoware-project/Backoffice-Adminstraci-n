@@ -138,7 +138,6 @@ const TableInteractions = {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             this.showNotification('error', 'Error de conexión. Intenta nuevamente.');
             this.restoreButton(button);
         });

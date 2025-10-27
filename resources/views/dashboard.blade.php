@@ -845,9 +845,8 @@ function updateMetrics() {
                 pendientesElement.style.color = data.usuarios_pendientes > 5 ? '#fc466b' : '#4ecdc4';
             }
             
-            console.log('Métricas actualizadas');
-        })
-        .catch(error => console.log('Error al actualizar métricas:', error));
+            })
+        .catch(error => );
 }
 </script>
 @endsection

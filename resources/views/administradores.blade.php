@@ -174,7 +174,6 @@
                 });
             }
         } catch (error) {
-            console.error('Error:', error);
             ModalConfirmation.create({
                 title: 'Error de Conexión',
                 message: 'Ocurrió un error al eliminar el administrador. Por favor, intente nuevamente.',

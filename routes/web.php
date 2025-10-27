@@ -8,7 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\JuntasAsambleaController;
-use App\Http\Controllers\Admin\FacturaController;
+use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\ConfiguracionHorasController;
 use App\Http\Controllers\UnidadHabitacionalController;
 
