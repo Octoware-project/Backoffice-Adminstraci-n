@@ -42,9 +42,9 @@ class UnidadHabitacionalController extends Controller
                 $sortField = 'numero_departamento';
             }
 
-            $unidades = $query->orderBy($sortField, $sortDirection)->paginate(15);
+            $unidades = $query->orderBy($sortField, $sortDirection)->get();
             
-            return view('admin.unidades.index', compact('unidades'));
+            return view('unidades.index', compact('unidades'));
         } catch (\Exception $e) {
             \Log::error('Error al listar unidades habitacionales: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al cargar las unidades habitacionales.');
@@ -54,7 +54,12 @@ class UnidadHabitacionalController extends Controller
 
     public function create()
     {
-        return view('admin.unidades.create');
+        try {
+            return view('unidades.create');
+        } catch (\Exception $e) {
+            \Log::error('Error al mostrar formulario de creación: ' . $e->getMessage());
+            return redirect()->route('unidades.index')->with('error', 'Error al cargar el formulario.');
+        }
     }
 
     public function store(Request $request)
@@ -90,7 +95,7 @@ class UnidadHabitacionalController extends Controller
             $unidad = UnidadHabitacional::with(['personas.user', 'planesTrabajos.user'])
                 ->findOrFail($id);
 
-            return view('admin.unidades.show', compact('unidad'));
+            return view('unidades.show', compact('unidad'));
         } catch (\Exception $e) {
             \Log::error('Error al mostrar unidad habitacional: ' . $e->getMessage());
             return redirect()->route('unidades.index')->with('error', 'Unidad habitacional no encontrada.');
@@ -101,7 +106,7 @@ class UnidadHabitacionalController extends Controller
     {
         try {
             $unidad = UnidadHabitacional::findOrFail($id);
-            return view('admin.unidades.edit', compact('unidad'));
+            return view('unidades.edit', compact('unidad'));
         } catch (\Exception $e) {
             \Log::error('Error al editar unidad habitacional: ' . $e->getMessage());
             return redirect()->route('unidades.index')->with('error', 'Unidad habitacional no encontrada.');

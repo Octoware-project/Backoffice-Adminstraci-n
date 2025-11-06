@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/admin-administradores.css') }}">
-@endpush
+<link rel="stylesheet" href="{{ asset('css/Administradores.css') }}">
 
 @section('content')
 <div class="planes-workspace">

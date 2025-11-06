@@ -65,7 +65,7 @@ class UsuarioController extends Controller
 
         $usuarios = $query->get();
 
-        return view('admin.usuarios.pendientes', compact('usuarios'));
+        return view('usuarios.pendientes', compact('usuarios'));
     }
 
     public function usuariosAceptados(Request $request)
@@ -118,7 +118,7 @@ class UsuarioController extends Controller
 
         $usuarios = $query->get();
 
-        return view('admin.usuarios.index', compact('usuarios'));
+        return view('usuarios.index', compact('usuarios'));
     }
 
     public function aceptar(Request $request, $id)
@@ -226,7 +226,7 @@ class UsuarioController extends Controller
                 }
             }
             
-            return view('admin.usuarios.show', compact('usuario', 'password', 'estadoFacturas', 'totalFacturas'));
+            return view('usuarios.show', compact('usuario', 'password', 'estadoFacturas', 'totalFacturas'));
         } catch (\Exception $e) {
             \Log::error('Error al mostrar usuario: ' . $e->getMessage());
             return redirect()->route('usuarios.index')->with('error', 'Usuario no encontrado.');
@@ -290,7 +290,7 @@ class UsuarioController extends Controller
     public function edit($id)
     {
         $usuario = Persona::findOrFail($id);
-        return view('admin.usuarios.edit', compact('usuario'));
+        return view('usuarios.edit', compact('usuario'));
     }
 
     public function update(Request $request, $id)
@@ -399,7 +399,7 @@ class UsuarioController extends Controller
 
         $usuarios = $query->get();
 
-        return view('admin.usuarios.eliminados', compact('usuarios'));
+        return view('usuarios.eliminados', compact('usuarios'));
     }
 
     public function restaurar($id)

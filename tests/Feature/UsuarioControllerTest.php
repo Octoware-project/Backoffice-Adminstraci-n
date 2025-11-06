@@ -26,7 +26,7 @@ class UsuarioControllerTest extends TestCase
         
         $response = $this->actingAs($admin)->get(route('usuarios.index'));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.usuarios.index');
+        $response->assertViewIs('usuarios.index');
         $response->assertViewHas(['pendientes', 'aceptados', 'rechazados', 'inactivos']);
         
         // Verificar que hay datos de cada estado (creados por el seeder)
@@ -77,7 +77,7 @@ class UsuarioControllerTest extends TestCase
         
         $response = $this->actingAs($admin)->get(route('usuarios.show', $persona->id));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.usuarios.show');
+        $response->assertViewIs('usuarios.show');
         $response->assertViewHas('usuario');
     }
 
@@ -90,7 +90,7 @@ class UsuarioControllerTest extends TestCase
         
         $response = $this->actingAs($admin)->get(route('usuarios.edit', $persona->id));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.usuarios.edit');
+        $response->assertViewIs('usuarios.edit');
         $response->assertViewHas('usuario');
     }
 

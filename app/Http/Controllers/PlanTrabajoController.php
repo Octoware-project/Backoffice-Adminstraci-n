@@ -75,7 +75,7 @@ class PlanTrabajoController extends Controller
             }
                         $planes = $planesWithMetrics->values();
             
-            return view('admin.horas.planTrabajos', compact('planes'));
+            return view('horas.planTrabajos', compact('planes'));
         } catch (\Exception $e) {
             \Log::error('Error al listar planes de trabajo: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al cargar los planes de trabajo.');
@@ -86,7 +86,7 @@ class PlanTrabajoController extends Controller
     {
         try {
             $usuarios = User::all();
-            return view('admin.horas.createPlanTrabajo', compact('usuarios'));
+            return view('horas.createPlanTrabajo', compact('usuarios'));
         } catch (\Exception $e) {
             \Log::error('Error al mostrar formulario de creación de plan: ' . $e->getMessage());
             return redirect()->route('plan-trabajos.index')->with('error', 'Error al cargar el formulario.');
@@ -212,7 +212,7 @@ class PlanTrabajoController extends Controller
             $porcentaje = $plan->horas_requeridas > 0 ? round(($horas_trabajadas / $plan->horas_requeridas) * 100, 2) : 0;
             $porcentaje = min($porcentaje, 100);
             
-            return view('admin.horas.showPlanTrabajo', compact(
+            return view('horas.showPlanTrabajo', compact(
                 'plan', 
                 'horas', 
                 'horas_trabajadas', 

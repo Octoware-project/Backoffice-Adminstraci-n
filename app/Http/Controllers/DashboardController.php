@@ -18,7 +18,8 @@ class DashboardController extends Controller
     {
         try {
             $metrics = $this->getMetrics();
-            return view('dashboard', compact('metrics'));
+            $usuariosPendientes = $this->getUsuariosPendientes();
+            return view('dashboard', compact('metrics', 'usuariosPendientes'));
         } catch (\Exception $e) {
             \Log::error('Error al cargar dashboard: ' . $e->getMessage());
             return view('dashboard')->with('error', 'Error al cargar las métricas del dashboard.');

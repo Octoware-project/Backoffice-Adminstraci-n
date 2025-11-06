@@ -21,7 +21,7 @@ class ConfiguracionHorasController extends Controller
         $totalRegistrosCalculados = Horas_Mensuales::whereNotNull('horas_equivalentes_calculadas')
             ->count();
         
-        return view('admin.horas.configuracion', compact(
+        return view('horas.configuracion', compact(
             'configuracion', 
             'historial', 
             'totalRegistrosConJustificacion',
@@ -102,6 +102,6 @@ class ConfiguracionHorasController extends Controller
         $configuraciones = ConfiguracionHoras::orderBy('created_at', 'desc')
             ->paginate(10);
             
-        return view('admin.horas.historialConfiguracion', compact('configuraciones'));
+        return view('horas.historialConfiguracion', compact('configuraciones'));
     }
 }

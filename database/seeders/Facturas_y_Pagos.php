@@ -82,14 +82,8 @@ class Facturas_y_Pagos extends Seeder
                         'created_at' => now()->subMonths(10 - $facturaData['mes']),
                         'updated_at' => now()
                     ]);
-                    
-                    echo "✓ Factura " . ($index + 1) . " creada con comprobante: " . $nombreDestino . "\n";
-                } else {
-                    echo "✗ Error copiando archivo: " . $facturaData['archivo_origen'] . "\n";
                 }
             } else {
-                echo "✗ Archivo no encontrado: " . $archivoOrigen . "\n";
-                
                 // Crear factura sin comprobante como respaldo
                 Factura::create([
                     'email' => $email,
@@ -107,8 +101,6 @@ class Facturas_y_Pagos extends Seeder
         
         // Crear imágenes PNG programáticamente si GD está disponible
         $this->createSamplePNGs($apiCooperativaStoragePath, $email);
-        
-        echo "\n🎉 Seeder de facturas completado exitosamente!\n";
     }
     
     /**
@@ -154,8 +146,6 @@ class Facturas_y_Pagos extends Seeder
             foreach ($imagenesData as $index => $data) {
                 $this->createPNGImage($destinationPath, $email, $data, $index + 4);
             }
-        } else {
-            echo "⚠ Extensión GD no disponible. Saltando creación de imágenes PNG.\n";
         }
     }
     
@@ -203,10 +193,6 @@ class Facturas_y_Pagos extends Seeder
                 'created_at' => now()->subMonths(10 - $data['mes']),
                 'updated_at' => now()
             ]);
-            
-            echo "✓ Factura con imagen PNG #$numero creada: $nombreArchivo\n";
-        } else {
-            echo "✗ Error creando imagen PNG #$numero\n";
         }
         
         // Liberar memoria

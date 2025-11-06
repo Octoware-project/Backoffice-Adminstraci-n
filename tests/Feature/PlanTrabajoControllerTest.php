@@ -26,7 +26,7 @@ class PlanTrabajoControllerTest extends TestCase
         
         $respuesta = $this->actingAs($usuario)->get(route('plan-trabajos.index'));
         $respuesta->assertStatus(200);
-        $respuesta->assertViewIs('admin.horas.planTrabajos');
+        $respuesta->assertViewIs('horas.planTrabajos');
         $respuesta->assertViewHas('planes');
     }
 
@@ -37,7 +37,7 @@ class PlanTrabajoControllerTest extends TestCase
         
         $respuesta = $this->actingAs($admin)->get(route('plan-trabajos.create'));
         $respuesta->assertStatus(200);
-        $respuesta->assertViewIs('admin.horas.createPlanTrabajo');
+        $respuesta->assertViewIs('horas.createPlanTrabajo');
         $respuesta->assertViewHas('usuarios');
     }
 
@@ -86,7 +86,7 @@ class PlanTrabajoControllerTest extends TestCase
         
         $respuesta = $this->actingAs($usuario)->get(route('plan-trabajos.show', $plan->id));
         $respuesta->assertStatus(200);
-        $respuesta->assertViewIs('admin.horas.showPlanTrabajo');
+        $respuesta->assertViewIs('horas.showPlanTrabajo');
         $respuesta->assertViewHas(['plan', 'horas', 'horas_trabajadas', 'porcentaje']);
     }
 

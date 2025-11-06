@@ -29,7 +29,7 @@ class JuntasAsambleaControllerTest extends TestCase
         
         $response = $this->get(route('admin.asamblea.index'));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.asamblea.Asamblea');
+        $response->assertViewIs('asamblea.Asamblea');
         $response->assertViewHas('juntas');
         $response->assertSee($junta->lugar);
     }
@@ -38,7 +38,7 @@ class JuntasAsambleaControllerTest extends TestCase
     {
         $response = $this->get(route('admin.juntas_asamblea.create'));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.asamblea.create');
+        $response->assertViewIs('asamblea.create');
     }
 
     public function test_CreaJuntaCorrectamente()
@@ -66,7 +66,7 @@ class JuntasAsambleaControllerTest extends TestCase
         
         $response = $this->get(route('admin.juntas_asamblea.edit', $junta->id));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.asamblea.edit');
+        $response->assertViewIs('asamblea.edit');
         $response->assertViewHas('junta');
     }
 
@@ -114,7 +114,7 @@ class JuntasAsambleaControllerTest extends TestCase
         
         $response = $this->get(route('admin.juntas_asamblea.show', $junta->id));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.asamblea.show');
+        $response->assertViewIs('asamblea.show');
         $response->assertViewHas('junta');
     }
 }

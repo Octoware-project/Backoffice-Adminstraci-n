@@ -26,7 +26,7 @@ class FacturaController extends Controller
             
             $totalFacturasPendientes = Factura::where('Estado_Pago', 'Pendiente')->count();
             
-            return view('admin.facturas.index', compact('facturas', 'totalFacturasPendientes'));
+            return view('facturas.index', compact('facturas', 'totalFacturasPendientes'));
         } catch (\Exception $e) {
             \Log::error('Error al listar facturas: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al cargar las facturas.');
@@ -51,7 +51,7 @@ class FacturaController extends Controller
             }
             
             $facturas = $query->get();
-            return view('admin.facturas.archivadas', compact('facturas'));
+            return view('facturas.archivadas', compact('facturas'));
         } catch (\Exception $e) {
             \Log::error('Error al listar facturas archivadas: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al cargar las facturas archivadas.');
@@ -105,7 +105,7 @@ class FacturaController extends Controller
             $todasLasFacturas = Factura::where('email', $email)->get();
             $estadoPagos = $this->calcularEstadoPagos($todasLasFacturas);
             
-            return view('admin.facturas.usuario', compact('facturas', 'usuario', 'estadoPagos', 'mostrarRechazadas', 'facturasRechazadas'));
+            return view('facturas.usuario', compact('facturas', 'usuario', 'estadoPagos', 'mostrarRechazadas', 'facturasRechazadas'));
         } catch (\Exception $e) {
             \Log::error('Error al listar facturas por usuario: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al cargar las facturas del usuario.');
