@@ -18,10 +18,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UserAdminSeeder::class,
-            JuntasAsambleaSeeder::class,
-            Facturas_y_Pagos::class,
-            PersonaEstadoSeeder::class,
-            UnidadHabitacionalSeeder::class,
+            UserTestSeeder::class,
             UserTestCompleteSeeder::class,
             DatosAleatoriosSeeder::class
         ]);

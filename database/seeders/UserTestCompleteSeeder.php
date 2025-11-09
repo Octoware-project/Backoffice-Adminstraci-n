@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Horas_Mensuales;
 use App\Models\PlanTrabajo;
 use App\Models\UnidadHabitacional;
+use App\Models\Factura;
 use Carbon\Carbon;
 
 class UserTestCompleteSeeder extends Seeder
@@ -267,5 +268,113 @@ class UserTestCompleteSeeder extends Seeder
 
         // Días 10-14: En progreso (hasta hoy 4 de nov solo día 10 está completo)
         // No agregamos más porque estamos el 4 de noviembre
+
+        // ==============================================
+        // FACTURAS / COMPROBANTES
+        // ==============================================
+        
+        // SEPTIEMBRE 2025 - Pago aceptado (mes completo cumplido)
+        Factura::create([
+            'email' => $email,
+            'Monto' => 7500.00,
+            'Archivo_Comprobante' => 'comprobantes/sept_2025_user_test.pdf',
+            'Estado_Pago' => 'Aceptado',
+            'tipo_pago' => 'Transferencia',
+            'fecha_pago' => '2025-09-30',
+            'motivo' => 'Pago mensual - Septiembre 2025',
+            'created_at' => Carbon::create(2025, 9, 30, 16, 30, 0),
+            'updated_at' => Carbon::create(2025, 10, 2, 10, 15, 0), // Aceptado 2 días después
+        ]);
+
+        // OCTUBRE 2025 - Factura pendiente (recién enviada hace 3 días)
+        Factura::create([
+            'email' => $email,
+            'Monto' => 820.00,
+            'Archivo_Comprobante' => 'comprobantes/oct_2025_user_test.pdf',
+            'Estado_Pago' => 'Pendiente',
+            'tipo_pago' => 'Transferencia',
+            'fecha_pago' => '2025-10-31',
+            'motivo' => 'Pago mensual - Octubre 2025',
+            'created_at' => Carbon::create(2025, 11, 5, 14, 20, 0), // Hace 3 días
+            'updated_at' => Carbon::create(2025, 11, 5, 14, 20, 0),
+        ]);
+
+        // AGOSTO 2025 - Pago rechazado (monto incorrecto)
+        Factura::create([
+            'email' => $email,
+            'Monto' => 500.00, // Monto menor al esperado
+            'Archivo_Comprobante' => 'comprobantes/ago_2025_user_test.pdf',
+            'Estado_Pago' => 'Rechazado',
+            'tipo_pago' => 'Efectivo',
+            'fecha_pago' => '2025-08-31',
+            'motivo' => 'Pago mensual - Agosto 2025',
+            'created_at' => Carbon::create(2025, 8, 31, 11, 0, 0),
+            'updated_at' => Carbon::create(2025, 9, 3, 9, 45, 0), // Rechazado después de revisión
+        ]);
+
+        // JULIO 2025 - Pago aceptado (antiguo)
+        Factura::create([
+            'email' => $email,
+            'Monto' => 7000.00,
+            'Archivo_Comprobante' => 'comprobantes/jul_2025_user_test.pdf',
+            'Estado_Pago' => 'Aceptado',
+            'tipo_pago' => 'Transferencia',
+            'fecha_pago' => '2025-07-31',
+            'motivo' => 'Pago mensual - Julio 2025',
+            'created_at' => Carbon::create(2025, 7, 31, 18, 0, 0),
+            'updated_at' => Carbon::create(2025, 8, 1, 11, 30, 0),
+        ]);
+
+        // NOVIEMBRE 2025 - Pago adelantado pendiente (de hace 2 días)
+        Factura::create([
+            'email' => $email,
+            'Monto' => 450.00,
+            'Archivo_Comprobante' => 'comprobantes/nov_2025_adelanto_user_test.pdf',
+            'Estado_Pago' => 'Pendiente',
+            'tipo_pago' => 'Transferencia',
+            'fecha_pago' => '2025-11-06',
+            'motivo' => 'Adelanto - Primera quincena Noviembre 2025',
+            'created_at' => Carbon::create(2025, 11, 6, 10, 15, 0), // Hace 2 días
+            'updated_at' => Carbon::create(2025, 11, 6, 10, 15, 0),
+        ]);
+
+        // JUNIO 2025 - Pago aceptado con justificación
+        Factura::create([
+            'email' => $email,
+            'Monto' => 680.00,
+            'Archivo_Comprobante' => 'comprobantes/jun_2025_user_test.pdf',
+            'Estado_Pago' => 'Aceptado',
+            'tipo_pago' => 'Cheque',
+            'fecha_pago' => '2025-06-28',
+            'motivo' => 'Pago mensual - Junio 2025 (incluye compensación)',
+            'created_at' => Carbon::create(2025, 6, 28, 15, 45, 0),
+            'updated_at' => Carbon::create(2025, 6, 30, 14, 0, 0),
+        ]);
+
+        // OCTUBRE 2025 - Segundo comprobante rechazado (duplicado/error)
+        Factura::create([
+            'email' => $email,
+            'Monto' => 8250.00,
+            'Archivo_Comprobante' => 'comprobantes/oct_2025_duplicado_user_test.pdf',
+            'Estado_Pago' => 'Rechazado',
+            'tipo_pago' => 'Transferencia',
+            'fecha_pago' => '2025-10-31',
+            'motivo' => 'Pago mensual - Octubre 2025 (duplicado)',
+            'created_at' => Carbon::create(2025, 11, 1, 9, 0, 0),
+            'updated_at' => Carbon::create(2025, 11, 2, 10, 30, 0), // Rechazado rápido
+        ]);
+
+        // MAYO 2025 - Pago aceptado (antiguo)
+        Factura::create([
+            'email' => $email,
+            'Monto' => 650.00,
+            'Archivo_Comprobante' => 'comprobantes/may_2025_user_test.pdf',
+            'Estado_Pago' => 'Aceptado',
+            'tipo_pago' => 'Transferencia',
+            'fecha_pago' => '2025-05-31',
+            'motivo' => 'Pago mensual - Mayo 2025',
+            'created_at' => Carbon::create(2025, 5, 31, 17, 30, 0),
+            'updated_at' => Carbon::create(2025, 6, 2, 9, 15, 0),
+        ]);
     }
 }

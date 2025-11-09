@@ -17,12 +17,10 @@ class DatosAleatoriosSeeder extends Seeder
 
     public function run(): void
     {
-        $this->command->info('Iniciando creación de datos aleatorios...');
 
         $fechaInicio = Carbon::create(2025, 7, 1);
         $fechaFin = Carbon::create(2025, 11, 4); 
 
-        $this->command->info('Creando 20 Unidades Habitacionales...');
         $unidades = [];
         for ($i = 1; $i <= 20; $i++) {
             $piso = fake()->numberBetween(1, 15);
@@ -38,7 +36,6 @@ class DatosAleatoriosSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('Creando 20 Usuarios con sus Personas asociadas...');
         $users = [];
         $personas = [];
         
@@ -91,7 +88,6 @@ class DatosAleatoriosSeeder extends Seeder
             $personas[] = $persona;
         }
 
-        $this->command->info('Creando 20 Facturas...');
         $tiposPago = ['Transferencia', 'Efectivo', 'Cheque', 'Tarjeta de crédito', 'Tarjeta de débito'];
         // Mayoría aceptadas: 80% Aceptado, 15% Pendiente, 5% Rechazado
         $estadosPago = ['Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Aceptado', 'Pendiente', 'Pendiente', 'Pendiente', 'Rechazado'];
@@ -135,7 +131,6 @@ class DatosAleatoriosSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('Creando 20 registros de Horas Mensuales...');
         $motivosFalla = [
             'Enfermedad', 
             'Emergencia familiar', 
@@ -188,7 +183,6 @@ class DatosAleatoriosSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('Creando 20 Planes de Trabajo...');
         
         $planesCreados = [];
         $intentos = 0;
@@ -223,7 +217,6 @@ class DatosAleatoriosSeeder extends Seeder
             $intentos++;
         }
 
-        $this->command->info('Creando 20 Juntas de Asamblea...');
         
         $lugares = [
             'Salón de eventos del edificio',
@@ -260,14 +253,5 @@ class DatosAleatoriosSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
-
-        $this->command->info('✓ Datos aleatorios creados exitosamente!');
-        $this->command->info('  - 20 Unidades Habitacionales');
-        $this->command->info('  - 20 Usuarios (aceptados entre Julio y Noviembre 2025)');
-        $this->command->info('  - 20 Personas');
-        $this->command->info('  - 20 Facturas');
-        $this->command->info('  - 20 Horas Mensuales');
-        $this->command->info('  - 20 Planes de Trabajo');
-        $this->command->info('  - 20 Juntas de Asamblea');
     }
 }
