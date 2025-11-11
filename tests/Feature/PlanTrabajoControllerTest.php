@@ -94,10 +94,17 @@ class PlanTrabajoControllerTest extends TestCase
     {
         // Crear un plan específico para eliminar (no afectar datos del seeder)
         $usuario = User::where('email', 'user@test.com')->first();
+        
+        // Eliminar planes existentes para este mes si existen
+        PlanTrabajo::where('user_id', $usuario->id)
+                   ->where('mes', 1)
+                   ->where('anio', 2026)
+                   ->delete();
+        
         $plan = PlanTrabajo::create([
             'user_id' => $usuario->id,
-            'mes' => 11, // Noviembre (mes no usado en seeder)
-            'anio' => 2025,
+            'mes' => 1, // Enero 2026 (mes no usado en seeder)
+            'anio' => 2026,
             'horas_requeridas' => 25,
         ]);
         

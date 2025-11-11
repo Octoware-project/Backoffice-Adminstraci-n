@@ -24,8 +24,12 @@ class JuntasAsambleaControllerTest extends TestCase
 
     public function test_MuestraListaDeJuntas()
     {
-        // Usar una junta real del seeder
-        $junta = JuntasAsamblea::where('lugar', 'Salón Principal')->first();
+        // Crear una junta para el test
+        $junta = JuntasAsamblea::create([
+            'lugar' => 'Salón Principal',
+            'fecha' => '2025-12-15',
+            'detalle' => 'Asamblea general ordinaria',
+        ]);
         
         $response = $this->get(route('admin.asamblea.index'));
         $response->assertStatus(200);
@@ -61,8 +65,12 @@ class JuntasAsambleaControllerTest extends TestCase
 
     public function test_MuestraFormularioEdicion()
     {
-        // Usar una junta real del seeder
-        $junta = JuntasAsamblea::where('lugar', 'Sala de Reuniones')->first();
+        // Crear una junta para el test
+        $junta = JuntasAsamblea::create([
+            'lugar' => 'Sala de Reuniones',
+            'fecha' => '2025-12-10',
+            'detalle' => 'Reunión de consorcio',
+        ]);
         
         $response = $this->get(route('admin.juntas_asamblea.edit', $junta->id));
         $response->assertStatus(200);
@@ -72,8 +80,12 @@ class JuntasAsambleaControllerTest extends TestCase
 
     public function test_ActualizaJunta()
     {
-        // Usar una junta real del seeder
-        $junta = JuntasAsamblea::where('lugar', 'Patio Central')->first();
+        // Crear una junta para el test
+        $junta = JuntasAsamblea::create([
+            'lugar' => 'Patio Central',
+            'fecha' => '2025-11-15',
+            'detalle' => 'Reunión informativa',
+        ]);
         
         $data = [
             'lugar' => 'Patio Central - Actualizado',
@@ -109,8 +121,12 @@ class JuntasAsambleaControllerTest extends TestCase
 
     public function test_MuestraDetalleJunta()
     {
-        // Usar una junta real del seeder
-        $junta = JuntasAsamblea::where('lugar', 'Salón Principal')->first();
+        // Crear una junta para el test
+        $junta = JuntasAsamblea::create([
+            'lugar' => 'Salón Principal',
+            'fecha' => '2025-12-01',
+            'detalle' => 'Asamblea extraordinaria',
+        ]);
         
         $response = $this->get(route('admin.juntas_asamblea.show', $junta->id));
         $response->assertStatus(200);

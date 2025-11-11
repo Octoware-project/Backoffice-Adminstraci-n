@@ -37,7 +37,7 @@ class AdminController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->route('admin.list')
                 ->withInput()
-                ->withErrors($e->validator);
+                ->with('error', 'El email ya ha sido registrado.');
         } catch (\Exception $e) {
             \Log::error('Error al crear administrador: ' . $e->getMessage());
             return redirect()->route('admin.list')
@@ -89,31 +89,41 @@ class AdminController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         try {
             $totalAdmins = UserAdmin::count();
             
             if ($totalAdmins <= 1) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No se puede eliminar el último administrador del sistema. Debe haber al menos un administrador activo.'
-                ]);
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'No se puede eliminar el último administrador del sistema. Debe haber al menos un administrador activo.'
+                    ]);
+                }
+                return redirect()->route('admin.list')->with('error', 'No se puede eliminar el último administrador del sistema.');
             }
             
             $admin = UserAdmin::findOrFail($id);
             $admin->delete();
             
-            return response()->json([
-                'success' => true,
-                'message' => 'Administrador eliminado correctamente.'
-            ]);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Administrador eliminado correctamente.'
+                ]);
+            }
+            
+            return redirect()->route('admin.list')->with('success', 'Administrador eliminado correctamente.');
         } catch (\Exception $e) {
             \Log::error('Error al eliminar administrador: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al eliminar el administrador.'
-            ], 500);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al eliminar el administrador.'
+                ], 500);
+            }
+            return redirect()->route('admin.list')->with('error', 'Error al eliminar el administrador.');
         }
     }
 }

@@ -181,7 +181,7 @@ class UsuarioController extends Controller
                     ]);
                 }
                 
-                return redirect()->route('usuarios.show', $id)
+                return redirect()->route('usuarios.index')
                                ->with('success', "Usuario {$usuario->name} {$usuario->apellido} rechazado correctamente");
             }
             
