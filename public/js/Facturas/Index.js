@@ -16,9 +16,7 @@
             
             const email = row.getAttribute('data-email');
             if(email) {
-                let base = "{{ url('/facturas/usuario') }}";
-                if (base.endsWith('/')) base = base.slice(0, -1);
-                window.location.href = base + '/' + encodeURIComponent(email);
+                window.location.href = '/facturas/usuario/' + encodeURIComponent(email);
             }
         });
     });

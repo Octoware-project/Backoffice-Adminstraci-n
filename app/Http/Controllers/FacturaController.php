@@ -22,7 +22,7 @@ class FacturaController extends Controller
                 $query->whereMonth('fecha_pago', $request->mes);
             }
             
-            $facturas = $query->get();
+            $facturas = $query->orderBy('created_at', 'desc')->get();
             
             $totalFacturasPendientes = Factura::where('Estado_Pago', 'Pendiente')->count();
             
@@ -50,7 +50,7 @@ class FacturaController extends Controller
                 $query->where('Estado_Pago', $request->estado);
             }
             
-            $facturas = $query->get();
+            $facturas = $query->orderBy('created_at', 'desc')->get();
             return view('facturas.archivadas', compact('facturas'));
         } catch (\Exception $e) {
             \Log::error('Error al listar facturas archivadas: ' . $e->getMessage());

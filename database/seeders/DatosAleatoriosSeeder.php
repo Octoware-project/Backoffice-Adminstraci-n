@@ -112,16 +112,15 @@ class DatosAleatoriosSeeder extends Seeder
             
             $estadoPago = $estadosPago[array_rand($estadosPago)];
             
-            // Si está aceptado, tiene fecha de pago
-            $fechaPago = null;
-            if ($estadoPago === 'Aceptado') {
-                $fechaPago = $fechaCreacion->copy()->addDays(rand(1, 15))->format('Y-m-d');
-            }
+            // Todas las facturas tienen fecha de pago (el mes que corresponde al pago)
+            // Para pendientes/rechazadas, es el mes del pago esperado
+            // Para aceptadas, es el mes en que se realizó el pago
+            $fechaPago = Carbon::create(2025, $mesAleatorio, rand(25, 28))->format('Y-m-d');
             
             Factura::create([
                 'email' => $user->email,
                 'Monto' => fake()->randomFloat(2, 500, 8000),
-                'Archivo_Comprobante' => rand(1, 100) <= 85 ? 'comprobante_' . fake()->uuid() . '.pdf' : null,
+                'Archivo_Comprobante' => 'comprobantes/comprobante.pdf', // Archivo de prueba
                 'Estado_Pago' => $estadoPago,
                 'tipo_pago' => $tiposPago[array_rand($tiposPago)],
                 'fecha_pago' => $fechaPago,

@@ -277,7 +277,7 @@ class UserTestCompleteSeeder extends Seeder
         Factura::create([
             'email' => $email,
             'Monto' => 7500.00,
-            'Archivo_Comprobante' => 'comprobantes/sept_2025_user_test.pdf',
+            'Archivo_Comprobante' => 'comprobantes/comprobante.pdf',
             'Estado_Pago' => 'Aceptado',
             'tipo_pago' => 'Transferencia',
             'fecha_pago' => '2025-09-30',
@@ -290,7 +290,7 @@ class UserTestCompleteSeeder extends Seeder
         Factura::create([
             'email' => $email,
             'Monto' => 820.00,
-            'Archivo_Comprobante' => 'comprobantes/oct_2025_user_test.pdf',
+            'Archivo_Comprobante' => 'comprobantes/comprobante.pdf',
             'Estado_Pago' => 'Pendiente',
             'tipo_pago' => 'Transferencia',
             'fecha_pago' => '2025-10-31',
@@ -303,7 +303,7 @@ class UserTestCompleteSeeder extends Seeder
         Factura::create([
             'email' => $email,
             'Monto' => 500.00, // Monto menor al esperado
-            'Archivo_Comprobante' => 'comprobantes/ago_2025_user_test.pdf',
+            'Archivo_Comprobante' => 'comprobantes/comprobante.pdf',
             'Estado_Pago' => 'Rechazado',
             'tipo_pago' => 'Efectivo',
             'fecha_pago' => '2025-08-31',
@@ -316,7 +316,7 @@ class UserTestCompleteSeeder extends Seeder
         Factura::create([
             'email' => $email,
             'Monto' => 7000.00,
-            'Archivo_Comprobante' => 'comprobantes/jul_2025_user_test.pdf',
+            'Archivo_Comprobante' => 'comprobantes/comprobante.pdf',
             'Estado_Pago' => 'Aceptado',
             'tipo_pago' => 'Transferencia',
             'fecha_pago' => '2025-07-31',
@@ -329,7 +329,7 @@ class UserTestCompleteSeeder extends Seeder
         Factura::create([
             'email' => $email,
             'Monto' => 450.00,
-            'Archivo_Comprobante' => 'comprobantes/nov_2025_adelanto_user_test.pdf',
+            'Archivo_Comprobante' => 'comprobantes/comprobante.pdf',
             'Estado_Pago' => 'Pendiente',
             'tipo_pago' => 'Transferencia',
             'fecha_pago' => '2025-11-06',
@@ -342,7 +342,7 @@ class UserTestCompleteSeeder extends Seeder
         Factura::create([
             'email' => $email,
             'Monto' => 680.00,
-            'Archivo_Comprobante' => 'comprobantes/jun_2025_user_test.pdf',
+            'Archivo_Comprobante' => 'comprobantes/comprobante.pdf',
             'Estado_Pago' => 'Aceptado',
             'tipo_pago' => 'Cheque',
             'fecha_pago' => '2025-06-28',
@@ -355,7 +355,7 @@ class UserTestCompleteSeeder extends Seeder
         Factura::create([
             'email' => $email,
             'Monto' => 8250.00,
-            'Archivo_Comprobante' => 'comprobantes/oct_2025_duplicado_user_test.pdf',
+            'Archivo_Comprobante' => 'comprobantes/comprobante.pdf',
             'Estado_Pago' => 'Rechazado',
             'tipo_pago' => 'Transferencia',
             'fecha_pago' => '2025-10-31',
@@ -368,7 +368,7 @@ class UserTestCompleteSeeder extends Seeder
         Factura::create([
             'email' => $email,
             'Monto' => 650.00,
-            'Archivo_Comprobante' => 'comprobantes/may_2025_user_test.pdf',
+            'Archivo_Comprobante' => 'comprobantes/comprobante.pdf',
             'Estado_Pago' => 'Aceptado',
             'tipo_pago' => 'Transferencia',
             'fecha_pago' => '2025-05-31',
