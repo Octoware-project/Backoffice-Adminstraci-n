@@ -131,5 +131,13 @@
     @method('DELETE')
 </form>
 
+<script>
+    // Pasar datos de Laravel a JavaScript
+    window.asambleaConfig = {
+        juntaId: {{ $junta->id }},
+        deleteUrl: '{{ url('/juntas_asamblea') }}',
+        indexUrl: '{{ route('admin.juntas_asamblea.index') }}'
+    };
+</script>
 <script src="{{ asset('js/Asamblea/Show.js') }}"></script>
 @endsection

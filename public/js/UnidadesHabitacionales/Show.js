@@ -29,7 +29,7 @@ document.getElementById('modal-asignar-personas').addEventListener('click', func
 function cargarPersonasDisponibles() {
     const container = document.getElementById('personas-disponibles-container');
     
-    fetch(`{{ route('unidades.personas-disponibles') }}`)
+    fetch(window.unidadData.routes.personasDisponibles)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -47,6 +47,7 @@ function cargarPersonasDisponibles() {
             }
         })
         .catch(error => {
+            console.error('Error al cargar personas:', error);
             container.innerHTML = `
                 <div class="alert alert-danger">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -117,10 +118,10 @@ function asignarPersona(personaId, nombrePersona) {
 
 function ejecutarAsignacion(personaId, nombrePersona) {
     const formData = new FormData();
-    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('_token', window.unidadData.csrfToken);
     formData.append('persona_id', personaId);
     
-    fetch(`{{ route('unidades.asignar-persona', $unidad->id) }}`, {
+    fetch(window.unidadData.routes.asignarPersona, {
         method: 'POST',
         body: formData
     })

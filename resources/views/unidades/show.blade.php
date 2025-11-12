@@ -206,5 +206,17 @@
     </div>
 </div>
 
+<script>
+    // Pasar datos de Laravel a JavaScript
+    window.unidadData = {
+        id: {{ $unidad->id }},
+        numero: '{{ $unidad->numero_departamento }}',
+        routes: {
+            personasDisponibles: '{{ route('unidades.personas-disponibles') }}',
+            asignarPersona: '{{ route('unidades.asignar-persona', $unidad->id) }}'
+        },
+        csrfToken: '{{ csrf_token() }}'
+    };
+</script>
 <script src="{{ asset('js/UnidadesHabitacionales/Show.js') }}"></script>
 @endsection

@@ -188,7 +188,7 @@ function closeDeleteModal() {
 
 function deleteJunta(juntaId) {
     const form = document.getElementById('delete-form');
-    form.action = `{{ url('/juntas_asamblea') }}/${juntaId}`;
+    form.action = `${window.asambleaConfig.deleteUrl}/${juntaId}`;
     form.submit();
 }
 
