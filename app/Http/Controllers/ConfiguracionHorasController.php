@@ -8,15 +8,12 @@ use App\Models\Horas_Mensuales;
 
 class ConfiguracionHorasController extends Controller
 {
-    /**
-     * Mostrar la página de configuración
-     */
+
     public function index()
     {
         $configuracion = ConfiguracionHoras::getConfiguracionActual();
         $historial = ConfiguracionHoras::getHistorial(5);
         
-        // Estadísticas
         $totalRegistrosConJustificacion = Horas_Mensuales::whereNotNull('Monto_Compensario')
             ->where('Monto_Compensario', '>', 0)
             ->count();
@@ -24,7 +21,7 @@ class ConfiguracionHorasController extends Controller
         $totalRegistrosCalculados = Horas_Mensuales::whereNotNull('horas_equivalentes_calculadas')
             ->count();
         
-        return view('admin.horas.configuracion', compact(
+        return view('horas.configuracion', compact(
             'configuracion', 
             'historial', 
             'totalRegistrosConJustificacion',
@@ -32,9 +29,6 @@ class ConfiguracionHorasController extends Controller
         ));
     }
 
-    /**
-     * Actualizar el valor por hora
-     */
     public function update(Request $request)
     {
         $request->validate([
@@ -43,10 +37,8 @@ class ConfiguracionHorasController extends Controller
         ]);
 
         try {
-            // Desactivar configuraciones anteriores
             ConfiguracionHoras::where('activo', true)->update(['activo' => false]);
             
-            // Crear nueva configuración
             $nuevaConfig = ConfiguracionHoras::create([
                 'valor_por_hora' => $request->valor_por_hora,
                 'activo' => true,
@@ -65,9 +57,7 @@ class ConfiguracionHorasController extends Controller
         }
     }
 
-    /**
-     * Recalcular registros existentes sin valor histórico
-     */
+
     public function recalcularRegistros()
     {
         try {
@@ -79,7 +69,6 @@ class ConfiguracionHorasController extends Controller
                 );
             }
 
-            // Buscar registros con justificación pero sin valor histórico
             $registros = Horas_Mensuales::whereNotNull('Monto_Compensario')
                 ->where('Monto_Compensario', '>', 0)
                 ->whereNull('valor_hora_al_momento')
@@ -108,14 +97,11 @@ class ConfiguracionHorasController extends Controller
         }
     }
 
-    /**
-     * Ver historial detallado
-     */
     public function historial()
     {
         $configuraciones = ConfiguracionHoras::orderBy('created_at', 'desc')
             ->paginate(10);
             
-        return view('admin.horas.historialConfiguracion', compact('configuraciones'));
+        return view('horas.historialConfiguracion', compact('configuraciones'));
     }
 }

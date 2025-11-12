@@ -16,16 +16,13 @@ class AdminControllerTest extends TestCase
     {
         parent::setUp();
         
-        // Ejecutar seeders para tener datos reales
         $this->artisan('db:seed');
         
-        // Obtener el usuario admin que se creó en el seeder
         $this->admin = UserAdmin::where('email', 'admin@example.com')->first();
     }
 
     public function test_ListarAdministradores(): void
     {
-        // Autenticar como el usuario admin real
         $response = $this->actingAs($this->admin)
                          ->get('/administradores');
         $response->assertStatus(200);
@@ -35,7 +32,7 @@ class AdminControllerTest extends TestCase
     {
         $data = [
             'name' => 'Test Admin',
-            'email' => 'testadmin@example.com', // Usar email diferente para evitar conflictos
+            'email' => 'testadmin@example.com', 
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ];
@@ -52,7 +49,7 @@ class AdminControllerTest extends TestCase
     {
         $data = [
             'name' => 'Another Admin',
-            'email' => 'admin@example.com', // Usar el mismo email que ya existe
+            'email' => 'admin@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ];
@@ -88,7 +85,6 @@ class AdminControllerTest extends TestCase
 
     public function test_EliminarAdministrador(): void
     {
-        // Crear otro admin para eliminar (no el principal)
         $adminToDelete = UserAdmin::create([
             'name' => 'Admin To Delete',
             'email' => 'delete@example.com',

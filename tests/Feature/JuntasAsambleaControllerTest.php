@@ -14,22 +14,23 @@ class JuntasAsambleaControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Ejecutar los seeders para tener datos reales
         $this->seed();
         
-        // Autenticar con usuario admin para los tests
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         $this->be($admin);
     }
 
     public function test_MuestraListaDeJuntas()
     {
-        // Usar una junta real del seeder
-        $junta = JuntasAsamblea::where('lugar', 'Salón Principal')->first();
+        $junta = JuntasAsamblea::create([
+            'lugar' => 'Salón Principal',
+            'fecha' => '2025-12-15',
+            'detalle' => 'Asamblea general ordinaria',
+        ]);
         
         $response = $this->get(route('admin.asamblea.index'));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.asamblea.Asamblea');
+        $response->assertViewIs('asamblea.Asamblea');
         $response->assertViewHas('juntas');
         $response->assertSee($junta->lugar);
     }
@@ -38,12 +39,11 @@ class JuntasAsambleaControllerTest extends TestCase
     {
         $response = $this->get(route('admin.juntas_asamblea.create'));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.asamblea.create');
+        $response->assertViewIs('asamblea.create');
     }
 
     public function test_CreaJuntaCorrectamente()
     {
-        // Datos realistas para crear una nueva junta
         $data = [
             'lugar' => 'Auditorio Municipal',
             'fecha' => '2025-12-20',
@@ -61,19 +61,25 @@ class JuntasAsambleaControllerTest extends TestCase
 
     public function test_MuestraFormularioEdicion()
     {
-        // Usar una junta real del seeder
-        $junta = JuntasAsamblea::where('lugar', 'Sala de Reuniones')->first();
+        $junta = JuntasAsamblea::create([
+            'lugar' => 'Sala de Reuniones',
+            'fecha' => '2025-12-10',
+            'detalle' => 'Reunión de consorcio',
+        ]);
         
         $response = $this->get(route('admin.juntas_asamblea.edit', $junta->id));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.asamblea.edit');
+        $response->assertViewIs('asamblea.edit');
         $response->assertViewHas('junta');
     }
 
     public function test_ActualizaJunta()
     {
-        // Usar una junta real del seeder
-        $junta = JuntasAsamblea::where('lugar', 'Patio Central')->first();
+        $junta = JuntasAsamblea::create([
+            'lugar' => 'Patio Central',
+            'fecha' => '2025-11-15',
+            'detalle' => 'Reunión informativa',
+        ]);
         
         $data = [
             'lugar' => 'Patio Central - Actualizado',
@@ -92,7 +98,6 @@ class JuntasAsambleaControllerTest extends TestCase
 
     public function test_EliminaJunta()
     {
-        // Crear una junta específica para eliminar (para no afectar otras pruebas)
         $junta = JuntasAsamblea::create([
             'lugar' => 'Sala Temporal',
             'fecha' => '2025-12-31',
@@ -103,18 +108,21 @@ class JuntasAsambleaControllerTest extends TestCase
         $response->assertRedirect(route('admin.asamblea.index'));
         $this->assertDatabaseMissing('juntas_asambleas', [
             'id' => $junta->id,
-            'deleted_at' => null, // Verificar que fue soft deleted
+            'deleted_at' => null, 
         ]);
     }
 
     public function test_MuestraDetalleJunta()
     {
-        // Usar una junta real del seeder
-        $junta = JuntasAsamblea::where('lugar', 'Salón Principal')->first();
+        $junta = JuntasAsamblea::create([
+            'lugar' => 'Salón Principal',
+            'fecha' => '2025-12-01',
+            'detalle' => 'Asamblea extraordinaria',
+        ]);
         
         $response = $this->get(route('admin.juntas_asamblea.show', $junta->id));
         $response->assertStatus(200);
-        $response->assertViewIs('admin.asamblea.show');
+        $response->assertViewIs('asamblea.show');
         $response->assertViewHas('junta');
     }
 }

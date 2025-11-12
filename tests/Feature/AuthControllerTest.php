@@ -14,7 +14,6 @@ class AuthControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Ejecutar el seeder para tener usuarios reales
         $this->seed();
     }
 
@@ -27,7 +26,6 @@ class AuthControllerTest extends TestCase
 
     public function test_LoginExitosoRedirigeADashboard()
     {
-        // Usar el usuario admin creado por el seeder
         $response = $this->post('/login', [
             'email' => 'admin@example.com',
             'password' => '123456',
@@ -35,7 +33,6 @@ class AuthControllerTest extends TestCase
         
         $response->assertRedirect('dashboard');
         
-        // Verificar que el usuario está autenticado
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         $this->assertAuthenticatedAs($admin);
     }
@@ -52,7 +49,6 @@ class AuthControllerTest extends TestCase
 
     public function test_LogoutCierraSesionYRedirige()
     {
-        // Usar el usuario admin real del seeder
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         $this->be($admin);
         
@@ -63,7 +59,6 @@ class AuthControllerTest extends TestCase
 
     public function test_DashboardMuestraVistaDashboard()
     {
-        // Usar el usuario admin real del seeder
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         $this->be($admin);
         

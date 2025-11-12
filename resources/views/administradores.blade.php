@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/admin-administradores.css') }}">
-@endpush
+<link rel="stylesheet" href="{{ asset('css/Administradores.css') }}">
 
 @section('content')
 <div class="planes-workspace">
@@ -174,7 +172,6 @@
                 });
             }
         } catch (error) {
-            console.error('Error:', error);
             ModalConfirmation.create({
                 title: 'Error de Conexión',
                 message: 'Ocurrió un error al eliminar el administrador. Por favor, intente nuevamente.',
