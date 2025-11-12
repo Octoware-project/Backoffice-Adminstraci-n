@@ -181,5 +181,7 @@
     </div>
 </div>
 
-<script src="{{ asset('js/Horas/Configuracion.js') }}"></script>@endpush
+@push('scripts')
+<script src="{{ asset('js/Horas/Configuracion.js') }}"></script>
+@endpush
 @endsection
