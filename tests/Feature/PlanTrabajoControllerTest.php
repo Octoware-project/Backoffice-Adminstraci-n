@@ -15,13 +15,11 @@ class PlanTrabajoControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Ejecutar los seeders para tener datos reales
         $this->seed();
     }
 
     public function test_PuedeListarLosPlanesDeTrabajo()
     {
-        // Usar usuario real del seeder
         $usuario = User::where('email', 'user@test.com')->first();
         
         $respuesta = $this->actingAs($usuario)->get(route('plan-trabajos.index'));
@@ -32,7 +30,6 @@ class PlanTrabajoControllerTest extends TestCase
 
     public function test_PuedeVerElFormularioDeCreacion()
     {
-        // Usar usuario admin real del seeder
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         
         $respuesta = $this->actingAs($admin)->get(route('plan-trabajos.create'));
@@ -43,13 +40,12 @@ class PlanTrabajoControllerTest extends TestCase
 
     public function test_PuedeGuardarUnPlanDeTrabajo()
     {
-        // Usar usuarios reales del seeder
         $usuario = User::where('email', 'user@test.com')->first();
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         
         $datos = [
             'user_id' => $usuario->id,
-            'mes' => 12, // Diciembre (para no interferir con datos existentes)
+            'mes' => 12,
             'anio' => 2025,
             'horas_requeridas' => 45,
         ];
@@ -61,7 +57,6 @@ class PlanTrabajoControllerTest extends TestCase
 
     public function test_MuestraErroresDeValidacionAlGuardar()
     {
-        // Usar admin real del seeder
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         
         $datos = [
@@ -77,7 +72,6 @@ class PlanTrabajoControllerTest extends TestCase
 
     public function test_PuedeVerUnPlanDeTrabajo()
     {
-        // Usar usuario y plan real del seeder
         $usuario = User::where('email', 'user@test.com')->first();
         $plan = PlanTrabajo::where('user_id', $usuario->id)
                           ->where('mes', 9)
@@ -92,10 +86,8 @@ class PlanTrabajoControllerTest extends TestCase
 
     public function test_PuedeEliminarUnPlanDeTrabajo()
     {
-        // Crear un plan específico para eliminar (no afectar datos del seeder)
         $usuario = User::where('email', 'user@test.com')->first();
         
-        // Eliminar planes existentes para este mes si existen
         PlanTrabajo::where('user_id', $usuario->id)
                    ->where('mes', 1)
                    ->where('anio', 2026)
@@ -103,7 +95,7 @@ class PlanTrabajoControllerTest extends TestCase
         
         $plan = PlanTrabajo::create([
             'user_id' => $usuario->id,
-            'mes' => 1, // Enero 2026 (mes no usado en seeder)
+            'mes' => 1,
             'anio' => 2026,
             'horas_requeridas' => 25,
         ]);

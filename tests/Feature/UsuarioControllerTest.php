@@ -15,13 +15,11 @@ class UsuarioControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Ejecutar los seeders para tener datos reales
         $this->seed();
     }
 
     public function test_IndexMuestraListasPorEstado()
     {
-        // Usar admin real del seeder para autenticación
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         
         $response = $this->actingAs($admin)->get(route('usuarios.index'));
@@ -29,17 +27,14 @@ class UsuarioControllerTest extends TestCase
         $response->assertViewIs('usuarios.index');
         $response->assertViewHas('usuarios');
         
-        // Verificar que hay usuarios (aceptados e inactivos)
         $usuarios = $response->viewData('usuarios');
         $this->assertGreaterThan(0, $usuarios->count());
     }
 
     public function test_AceptarUsuarioCambiaEstado()
     {
-        // Usar admin real del seeder
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         
-        // Crear un usuario para el test
         $user = User::create([
             'name' => 'Usuario Pendiente',
             'email' => 'pendiente@test.com',
@@ -63,10 +58,8 @@ class UsuarioControllerTest extends TestCase
 
     public function test_RechazarUsuarioCambiaEstado()
     {
-        // Usar admin real del seeder
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         
-        // Crear un usuario para el test
         $user = User::create([
             'name' => 'Usuario Para Rechazar',
             'email' => 'rechazar@test.com',
@@ -90,10 +83,8 @@ class UsuarioControllerTest extends TestCase
 
     public function test_ShowMuestraUsuario()
     {
-        // Usar admin real del seeder
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         
-        // Crear un usuario para el test
         $user = User::create([
             'name' => 'Test Show',
             'email' => 'show@test.com',
@@ -118,10 +109,8 @@ class UsuarioControllerTest extends TestCase
 
     public function test_EditMuestraFormularioEdicion()
     {
-        // Usar admin real del seeder
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         
-        // Crear un usuario para el test
         $user = User::create([
             'name' => 'Test Edit',
             'email' => 'edit@test.com',
@@ -146,10 +135,8 @@ class UsuarioControllerTest extends TestCase
 
     public function test_UpdateActualizaDatosUsuario()
     {
-        // Usar admin real del seeder
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         
-        // Crear un usuario para el test
         $user = User::create([
             'name' => 'Usuario Antiguo',
             'email' => 'update@test.com',
@@ -179,7 +166,6 @@ class UsuarioControllerTest extends TestCase
         $response = $this->actingAs($admin)->put(route('usuarios.update', $persona->id), $data);
         $response->assertRedirect(route('usuarios.show', $persona->id));
         
-        // Verificar los cambios
         $personaActualizada = $persona->fresh();
         $this->assertEquals('NuevoNombre', $personaActualizada->name);
         $this->assertEquals('NuevoApellido', $personaActualizada->apellido);

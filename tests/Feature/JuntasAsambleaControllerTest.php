@@ -14,17 +14,14 @@ class JuntasAsambleaControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Ejecutar los seeders para tener datos reales
         $this->seed();
         
-        // Autenticar con usuario admin para los tests
         $admin = UserAdmin::where('email', 'admin@example.com')->first();
         $this->be($admin);
     }
 
     public function test_MuestraListaDeJuntas()
     {
-        // Crear una junta para el test
         $junta = JuntasAsamblea::create([
             'lugar' => 'Salón Principal',
             'fecha' => '2025-12-15',
@@ -47,7 +44,6 @@ class JuntasAsambleaControllerTest extends TestCase
 
     public function test_CreaJuntaCorrectamente()
     {
-        // Datos realistas para crear una nueva junta
         $data = [
             'lugar' => 'Auditorio Municipal',
             'fecha' => '2025-12-20',
@@ -65,7 +61,6 @@ class JuntasAsambleaControllerTest extends TestCase
 
     public function test_MuestraFormularioEdicion()
     {
-        // Crear una junta para el test
         $junta = JuntasAsamblea::create([
             'lugar' => 'Sala de Reuniones',
             'fecha' => '2025-12-10',
@@ -80,7 +75,6 @@ class JuntasAsambleaControllerTest extends TestCase
 
     public function test_ActualizaJunta()
     {
-        // Crear una junta para el test
         $junta = JuntasAsamblea::create([
             'lugar' => 'Patio Central',
             'fecha' => '2025-11-15',
@@ -104,7 +98,6 @@ class JuntasAsambleaControllerTest extends TestCase
 
     public function test_EliminaJunta()
     {
-        // Crear una junta específica para eliminar (para no afectar otras pruebas)
         $junta = JuntasAsamblea::create([
             'lugar' => 'Sala Temporal',
             'fecha' => '2025-12-31',
@@ -115,13 +108,12 @@ class JuntasAsambleaControllerTest extends TestCase
         $response->assertRedirect(route('admin.asamblea.index'));
         $this->assertDatabaseMissing('juntas_asambleas', [
             'id' => $junta->id,
-            'deleted_at' => null, // Verificar que fue soft deleted
+            'deleted_at' => null, 
         ]);
     }
 
     public function test_MuestraDetalleJunta()
     {
-        // Crear una junta para el test
         $junta = JuntasAsamblea::create([
             'lugar' => 'Salón Principal',
             'fecha' => '2025-12-01',
